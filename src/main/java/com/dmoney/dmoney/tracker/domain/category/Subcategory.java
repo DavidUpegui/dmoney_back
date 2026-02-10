@@ -1,4 +1,4 @@
-package com.dmoney.dmoney.tracker.domain;
+package com.dmoney.dmoney.tracker.domain.category;
 
 
 import java.util.Objects;
@@ -14,19 +14,23 @@ public class Subcategory {
         this.description = description;
     }
 
-    SubcategoryName name(){
-        return name;
-    }
-
-    SubcategoryId id(){
-        return id;
-    }
-
     public void rename(SubcategoryName newName){
         this.name = Objects.requireNonNull(newName);
     }
 
     public void changeDescription(String description) {
         this.description = description;
+    }
+
+    public SubcategoryName name(){
+        return name;
+    }
+
+    public SubcategoryId id(){
+        return id;
+    }
+
+    public String description(){
+        return description;
     }
 }

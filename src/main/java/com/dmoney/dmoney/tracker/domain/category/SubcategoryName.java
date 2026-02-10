@@ -1,4 +1,4 @@
-package com.dmoney.dmoney.tracker.domain;
+package com.dmoney.dmoney.tracker.domain.category;
 
 public record SubcategoryName(String value) {
     public SubcategoryName {

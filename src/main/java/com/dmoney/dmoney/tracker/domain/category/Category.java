@@ -1,7 +1,6 @@
-package com.dmoney.dmoney.tracker.domain;
+package com.dmoney.dmoney.tracker.domain.category;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -9,7 +8,7 @@ public class Category {
     private final CategoryId id;
     private CategoryName name;
     private String description;
-    private final Set<Subcategory> subcategoryList = new HashSet<>();
+    private final Set<Subcategory> subcategories = new HashSet<>();
 
     public Category(
             CategoryId id,
@@ -21,6 +20,20 @@ public class Category {
         this.description = Objects.requireNonNull(description);
     }
 
+    public Category(
+            CategoryId id,
+            CategoryName name,
+            String description,
+            Set<Subcategory> subcategories
+    ) {
+        this.id = Objects.requireNonNull(id);
+        this.name = Objects.requireNonNull(name);
+        this.description = Objects.requireNonNull(description);
+        this.subcategories.addAll(
+                Objects.requireNonNull(subcategories)
+        );
+    }
+
     public void addSubcategory(Subcategory subcategory){
         Objects.requireNonNull(subcategory);
 
@@ -30,8 +43,9 @@ public class Category {
             );
 
         }
-        subcategoryList.add(subcategory);
+        subcategories.add(subcategory);
     }
+
 
     public void renameSubcategory(SubcategoryId id, SubcategoryName newName){
         if(hasSubcategoryWithName(newName)){
@@ -42,7 +56,7 @@ public class Category {
         sc.rename(newName);
     }
     private Subcategory findSubcategory(SubcategoryId id) {
-        return subcategoryList.stream()
+        return subcategories.stream()
                 .filter(sc -> sc.id().equals(id))
                 .findFirst()
                 .orElseThrow(() ->
@@ -52,7 +66,20 @@ public class Category {
 
 
     private boolean hasSubcategoryWithName(SubcategoryName name) {
-        return subcategoryList.stream()
+        return subcategories.stream()
                 .anyMatch(sc -> sc.name().equals(name));
+    }
+
+    public CategoryId id(){
+        return this.id;
+    }
+    public CategoryName name(){
+        return this.name;
+    }
+    public String description(){
+        return this.description;
+    }
+    public Set<Subcategory> subcategories(){
+        return this.subcategories;
     }
 }

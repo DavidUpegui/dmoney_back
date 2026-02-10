@@ -1,4 +1,4 @@
-package com.dmoney.dmoney.tracker.domain;
+package com.dmoney.dmoney.tracker.domain.category;
 
 import java.util.Objects;
 import java.util.UUID;
