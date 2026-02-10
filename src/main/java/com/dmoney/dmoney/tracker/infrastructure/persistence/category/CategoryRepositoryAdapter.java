@@ -18,7 +18,8 @@ public class CategoryRepositoryAdapter implements CategoryRepository {
 
     @Override
     public Optional<Category> findById(CategoryId id) {
-        return Optional.empty();
+        return jpaRepo.findById(id.value())
+                .map(CategoryMapper::toDomain);
     }
 
     @Override
