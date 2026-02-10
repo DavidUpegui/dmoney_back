@@ -23,7 +23,9 @@ public class CategoryRepositoryAdapter implements CategoryRepository {
 
     @Override
     public List<Category> findAll() {
-        return List.of();
+        return jpaRepo.findAll().stream()
+                .map(CategoryMapper::toDomain)
+                .toList();
     }
 
     @Override
