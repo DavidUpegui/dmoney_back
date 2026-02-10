@@ -37,12 +37,17 @@ public class CategoryRepositoryAdapter implements CategoryRepository {
     }
 
     @Override
+    public boolean existsById(CategoryId id) {
+        return jpaRepo.existsById(id.value());
+    }
+
+    @Override
     public boolean existsByName(CategoryName name) {
         return jpaRepo.existsByNameIgnoreCase(name.value());
     }
 
     @Override
     public void delete(CategoryId id) {
-
+        jpaRepo.deleteById(id.value());
     }
 }

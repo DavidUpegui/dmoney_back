@@ -7,6 +7,7 @@ public interface CategoryRepository {
     Optional<Category> findById(CategoryId id);
     List<Category> findAll();
     Category save(Category category);
+    boolean existsById(CategoryId id);
     boolean existsByName(CategoryName name);
     void delete(CategoryId id);
 }
