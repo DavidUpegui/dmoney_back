@@ -1,5 +1,8 @@
 package com.dmoney.dmoney.tracker.domain.category;
 
+import com.dmoney.dmoney.tracker.exceptions.SubcategoryAlreadyExistsException;
+import com.dmoney.dmoney.tracker.exceptions.SubcategoryNotFoundException;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -34,16 +37,22 @@ public class Category {
         );
     }
 
-    public void addSubcategory(Subcategory subcategory){
-        Objects.requireNonNull(subcategory);
+    public Subcategory addSubcategory(SubcategoryName name, String description){
+        Objects.requireNonNull(name);
 
-        if(hasSubcategoryWithName(subcategory.name())){
-            throw new IllegalArgumentException(
-                    "Subcategory with same name already exists in this category"
-            );
+        if(hasSubcategoryWithName(name)){
+            throw new SubcategoryAlreadyExistsException("name", name().value());
 
         }
+
+        Subcategory subcategory = new Subcategory(
+                SubcategoryId.newId(),
+                name,
+                description
+        );
         subcategories.add(subcategory);
+
+        return subcategory;
     }
 
 
@@ -60,7 +69,7 @@ public class Category {
                 .filter(sc -> sc.id().equals(id))
                 .findFirst()
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Subcategory not found in this category")
+                        new SubcategoryNotFoundException("id", id.value().toString())
                 );
     }
 

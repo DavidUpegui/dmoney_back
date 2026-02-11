@@ -7,7 +7,7 @@ public class CategoryId {
     private final UUID value;
 
     public CategoryId(UUID value) {
-        this.value = value;
+        this.value = Objects.requireNonNull(value);
     }
 
     public static CategoryId newId() {

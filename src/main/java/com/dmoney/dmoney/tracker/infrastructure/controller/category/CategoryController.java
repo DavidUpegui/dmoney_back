@@ -3,7 +3,10 @@ package com.dmoney.dmoney.tracker.infrastructure.controller.category;
 import com.dmoney.dmoney.tracker.application.category.create.*;
 import com.dmoney.dmoney.tracker.domain.category.Category;
 import com.dmoney.dmoney.tracker.domain.category.CategoryId;
+import com.dmoney.dmoney.tracker.domain.category.Subcategory;
+import com.dmoney.dmoney.tracker.domain.category.SubcategoryName;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +22,7 @@ public class CategoryController {
     private final FindAllCategoriesUseCase findAllCategoriesUseCase;
     private final FindCategoryByIdUseCase findCategoryByIdUseCase;
     private final DeleteCategoryUseCase deleteCategoryUseCase;
+    private final AddSubcategoryUseCase addSubcategoryUseCase;
 
     @PostMapping
     public ResponseEntity<CategoryResponse> createCategory(
@@ -61,5 +65,24 @@ public class CategoryController {
         deleteCategoryUseCase.execute(categoryId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{categoryId}/subcategories")
+    public ResponseEntity<SubcategoryResponse> createSubcategory(
+            @PathVariable String categoryId,
+            @RequestBody CreateSubcategoryRequest request
+    ){
+        CategoryId catId = new CategoryId(UUID.fromString(categoryId));
+        AddSubcategoryCommand command = new AddSubcategoryCommand(
+                catId,
+                new SubcategoryName(request.name()),
+                request.description()
+        );
+
+        Subcategory subcategory = addSubcategoryUseCase.execute(command);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(SubcategoryResponse.from(subcategory, catId ));
     }
 }
