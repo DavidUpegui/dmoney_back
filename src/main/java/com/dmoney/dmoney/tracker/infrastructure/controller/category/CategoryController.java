@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -26,6 +27,7 @@ public class CategoryController {
     private final AddSubcategoryUseCase addSubcategoryUseCase;
     private final EditCategoryUseCase editCategoryUseCase;
     private final EditSubcategoryUseCase editSubcategoryUseCase;
+    private final FindAllSubcategoriesByCategoryIdUseCase findAllSubcategoriesByCategoryIdUseCase;
 
     @PostMapping
     public ResponseEntity<CategoryResponse> createCategory(
@@ -139,7 +141,21 @@ public class CategoryController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(SubcategoryResponse.from(subcategory, catId));
+    }
 
+    @GetMapping("/{categoryId}/subcategories")
+    public ResponseEntity<List<SubcategoryResponse>> findAllSubcategoriesByCatId(
+            @PathVariable String categoryId
+    ){
+        CategoryId catId = new CategoryId(UUID.fromString(categoryId));
 
+        Set<Subcategory> subcategories =
+                findAllSubcategoriesByCategoryIdUseCase.execute(catId);
+
+        return ResponseEntity
+                .ok()
+                .body(subcategories.stream()
+                        .map((sc) ->SubcategoryResponse.from(sc, catId))
+                        .toList());
     }
 }

@@ -21,6 +21,8 @@ public class EditSubcategoryUseCase {
                         command.categoryId().value().toString()
                 ));
 
+
+
         Subcategory subcategory = category.editSubcategory(
                 command.subcategoryId(),
                 command.subcategoryName(),

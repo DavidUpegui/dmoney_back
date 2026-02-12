@@ -1,8 +1,11 @@
 package com.dmoney.dmoney.tracker.domain.category;
 
 
+import lombok.ToString;
+
 import java.util.Objects;
 
+@ToString
 public class Subcategory {
     private final SubcategoryId id;
     private SubcategoryName name;
@@ -26,7 +29,7 @@ public class Subcategory {
         if(name != null){
             this.name = name;
         }
-        if(this.description !=null){
+        if(description != null){
             this.description = description;
         }
     }
