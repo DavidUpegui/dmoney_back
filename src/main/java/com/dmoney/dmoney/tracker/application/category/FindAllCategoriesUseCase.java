@@ -1,4 +1,4 @@
-package com.dmoney.dmoney.tracker.application.category.create;
+package com.dmoney.dmoney.tracker.application.category;
 
 
 import com.dmoney.dmoney.tracker.domain.category.Category;

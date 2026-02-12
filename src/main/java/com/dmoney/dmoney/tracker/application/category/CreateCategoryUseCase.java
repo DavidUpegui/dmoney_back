@@ -1,5 +1,6 @@
-package com.dmoney.dmoney.tracker.application.category.create;
+package com.dmoney.dmoney.tracker.application.category;
 
+import com.dmoney.dmoney.tracker.application.category.commands.CreateCategoryCommand;
 import com.dmoney.dmoney.tracker.domain.category.Category;
 import com.dmoney.dmoney.tracker.domain.category.CategoryId;
 import com.dmoney.dmoney.tracker.domain.category.CategoryName;

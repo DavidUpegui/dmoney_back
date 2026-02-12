@@ -37,6 +37,16 @@ public class Category {
         );
     }
 
+    public void edit(CategoryName name, String description){
+        if(name != null){
+            this.name = name;
+        }
+        if(description != null){
+            this.description = description;
+        }
+
+    }
+
     public Subcategory addSubcategory(SubcategoryName name, String description){
         Objects.requireNonNull(name);
 

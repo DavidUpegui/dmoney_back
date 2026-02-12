@@ -1,4 +1,4 @@
-package com.dmoney.dmoney.tracker.application.category.create;
+package com.dmoney.dmoney.tracker.application.category;
 
 import com.dmoney.dmoney.tracker.domain.category.Category;
 import com.dmoney.dmoney.tracker.domain.category.CategoryId;
@@ -9,16 +9,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class DeleteCategoryUseCase {
+public class FindCategoryByIdUseCase {
 
     private final CategoryRepository categoryRepository;
 
-    public void execute(CategoryId categoryId){
-        if(!categoryRepository.existsById(categoryId)){
-            throw new CategoryNotFoundException("id", categoryId.value().toString());
-        }
-
-        categoryRepository.delete(categoryId);
+    public Category execute(CategoryId id){
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException("id", id.value().toString()));
     }
-
 }

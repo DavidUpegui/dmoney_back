@@ -1,4 +1,4 @@
-package com.dmoney.dmoney.tracker.application.category.create;
+package com.dmoney.dmoney.tracker.application.category.commands;
 
 public record CreateCategoryCommand(String name, String description) {
 }
