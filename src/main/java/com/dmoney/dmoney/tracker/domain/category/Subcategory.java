@@ -22,6 +22,15 @@ public class Subcategory {
         this.description = description;
     }
 
+    public void edit(SubcategoryName name, String description){
+        if(name != null){
+            this.name = name;
+        }
+        if(this.description !=null){
+            this.description = description;
+        }
+    }
+
     public SubcategoryName name(){
         return name;
     }

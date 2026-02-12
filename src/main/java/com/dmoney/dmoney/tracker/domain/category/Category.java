@@ -44,7 +44,6 @@ public class Category {
         if(description != null){
             this.description = description;
         }
-
     }
 
     public Subcategory addSubcategory(SubcategoryName name, String description){
@@ -66,14 +65,23 @@ public class Category {
     }
 
 
-    public void renameSubcategory(SubcategoryId id, SubcategoryName newName){
-        if(hasSubcategoryWithName(newName)){
-            throw new IllegalArgumentException("Duplicate subcategory name");
+    public Subcategory editSubcategory(SubcategoryId id, SubcategoryName name, String description){
+        Subcategory subcategory = subcategories.stream()
+                .filter(sc -> sc.id().equals(id))
+                .findFirst()
+                .orElseThrow( () ->
+                        new SubcategoryNotFoundException("id", id.value().toString()));
+
+        if(name != null && subcategories.stream()
+                .anyMatch(sc -> !sc.id().equals(id)
+                && sc.name().equals(name))){
+            throw new SubcategoryAlreadyExistsException("name", name().value());
         }
 
-        Subcategory sc = findSubcategory(id);
-        sc.rename(newName);
+        subcategory.edit(name, description);
+        return subcategory;
     }
+
     private Subcategory findSubcategory(SubcategoryId id) {
         return subcategories.stream()
                 .filter(sc -> sc.id().equals(id))

@@ -4,7 +4,9 @@ import com.dmoney.dmoney.tracker.application.category.*;
 import com.dmoney.dmoney.tracker.application.category.commands.AddSubcategoryCommand;
 import com.dmoney.dmoney.tracker.application.category.commands.CreateCategoryCommand;
 import com.dmoney.dmoney.tracker.application.category.commands.EditCategoryCommand;
+import com.dmoney.dmoney.tracker.application.category.commands.EditSubcategoryCommand;
 import com.dmoney.dmoney.tracker.domain.category.*;
+import com.dmoney.dmoney.tracker.infrastructure.controller.category.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ public class CategoryController {
     private final DeleteCategoryUseCase deleteCategoryUseCase;
     private final AddSubcategoryUseCase addSubcategoryUseCase;
     private final EditCategoryUseCase editCategoryUseCase;
+    private final EditSubcategoryUseCase editSubcategoryUseCase;
 
     @PostMapping
     public ResponseEntity<CategoryResponse> createCategory(
@@ -106,6 +109,37 @@ public class CategoryController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(CategoryWebMapper.toResponse(category));
+
+    }
+
+    @PatchMapping("/{categoryId}/subcategories/{subcategoryId}")
+    public ResponseEntity<SubcategoryResponse> editSubcategory(
+            @PathVariable String categoryId,
+            @PathVariable String subcategoryId,
+            @RequestBody EditSubcategoryRequest request
+    ){
+        SubcategoryName subcategoryName = null;
+
+        CategoryId catId = new CategoryId(UUID.fromString(categoryId));
+        SubcategoryId subcatId = new SubcategoryId(UUID.fromString(subcategoryId));
+
+        if(request.name() != null){
+            subcategoryName =  new SubcategoryName(request.name());
+        }
+
+        EditSubcategoryCommand command = new EditSubcategoryCommand(
+            catId,
+            subcatId,
+            subcategoryName,
+            request.description()
+        );
+
+        Subcategory subcategory =  editSubcategoryUseCase.execute(command);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(SubcategoryResponse.from(subcategory, catId));
+
 
     }
 }

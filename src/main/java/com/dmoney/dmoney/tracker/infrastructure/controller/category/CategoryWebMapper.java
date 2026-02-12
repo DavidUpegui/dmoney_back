@@ -1,6 +1,7 @@
 package com.dmoney.dmoney.tracker.infrastructure.controller.category;
 
 import com.dmoney.dmoney.tracker.domain.category.Category;
+import com.dmoney.dmoney.tracker.infrastructure.controller.category.dto.CategoryResponse;
 
 public class CategoryWebMapper {
 

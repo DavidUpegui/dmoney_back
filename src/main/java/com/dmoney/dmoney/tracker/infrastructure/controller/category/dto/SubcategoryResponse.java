@@ -1,4 +1,4 @@
-package com.dmoney.dmoney.tracker.infrastructure.controller.category;
+package com.dmoney.dmoney.tracker.infrastructure.controller.category.dto;
 
 import com.dmoney.dmoney.tracker.domain.category.CategoryId;
 import com.dmoney.dmoney.tracker.domain.category.Subcategory;
