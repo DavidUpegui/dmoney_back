@@ -3,6 +3,7 @@ plugins {
 	id 'org.springframework.boot' version '4.0.2'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'org.sonarqube' version '7.2.2.6593'
+	id 'jacoco'
 }
 
 group = 'com.dmoney'
@@ -34,6 +35,11 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation 'com.h2database:h2'
+}
+
+jacoco {
+	toolVersion = "0.8.13"
 }
 
 sonarqube {
@@ -41,9 +47,46 @@ sonarqube {
 		property "sonar.projectKey", "DavidUpegui_dmoney_back"
 		property "sonar.organization", "davidupegui"
 		property "sonar.host.url", "https://sonarcloud.io"
+		property "sonar.coverage.jacoco.xmlReportPaths",
+					"build/reports/jacoco/test/jacocoTestReport.xml"
 	}
 }
 
+def excludedClasses = [
+		'**/DmoneyApplication.class'
+]
+
+jacocoTestReport {
+	dependsOn test
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: excludedClasses)
+		}))
+	}
+	reports {
+		xml.required = true
+		html.required = true
+	}
+}
+
+jacocoTestCoverageVerification{
+	classDirectories.setFrom(
+			files(classDirectories.files.collect {
+				fileTree(dir: it, exclude: excludedClasses)
+			})
+	)
+	violationRules{
+		rule{
+			limit{
+				minimum = 0.80
+			}
+		}
+	}
+}
+
+check.dependsOn jacocoTestCoverageVerification
+
 tasks.named('test') {
 	useJUnitPlatform()
+	finalizedBy jacocoTestReport
 }
