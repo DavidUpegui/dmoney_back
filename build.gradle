@@ -52,13 +52,15 @@ sonarqube {
 	}
 }
 
+def excludedClasses = [
+		'**/DmoneyApplication.class'
+]
+
 jacocoTestReport {
 	dependsOn test
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
-			fileTree(dir: it, exclude: [
-			        '**/DmoneyApplication.class'
-			])
+			fileTree(dir: it, exclude: excludedClasses)
 		}))
 	}
 	reports {
@@ -68,6 +70,11 @@ jacocoTestReport {
 }
 
 jacocoTestCoverageVerification{
+	classDirectories.setFrom(
+			files(classDirectories.files.collect {
+				fileTree(dir: it, exclude: excludedClasses)
+			})
+	)
 	violationRules{
 		rule{
 			limit{
