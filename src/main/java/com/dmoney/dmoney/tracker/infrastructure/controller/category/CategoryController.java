@@ -1,10 +1,7 @@
 package com.dmoney.dmoney.tracker.infrastructure.controller.category;
 
 import com.dmoney.dmoney.tracker.application.category.*;
-import com.dmoney.dmoney.tracker.application.category.commands.AddSubcategoryCommand;
-import com.dmoney.dmoney.tracker.application.category.commands.CreateCategoryCommand;
-import com.dmoney.dmoney.tracker.application.category.commands.EditCategoryCommand;
-import com.dmoney.dmoney.tracker.application.category.commands.EditSubcategoryCommand;
+import com.dmoney.dmoney.tracker.application.category.commands.*;
 import com.dmoney.dmoney.tracker.domain.category.*;
 import com.dmoney.dmoney.tracker.infrastructure.controller.category.dto.*;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +25,7 @@ public class CategoryController {
     private final EditCategoryUseCase editCategoryUseCase;
     private final EditSubcategoryUseCase editSubcategoryUseCase;
     private final FindAllSubcategoriesByCategoryIdUseCase findAllSubcategoriesByCategoryIdUseCase;
+    private final DeleteSubcategoryUseCase deleteSubcategoryUseCase;
 
     @PostMapping
     public ResponseEntity<CategoryResponse> createCategory(
@@ -157,5 +155,21 @@ public class CategoryController {
                 .body(subcategories.stream()
                         .map((sc) ->SubcategoryResponse.from(sc, catId))
                         .toList());
+    }
+
+    @DeleteMapping("/{pathCategoryId}/subcategories/{pathSubcategoryId}")
+    public ResponseEntity<Void> deleteSubcategory(
+            @PathVariable String pathCategoryId,
+            @PathVariable String pathSubcategoryId
+    ){
+        CategoryId categoryId = new CategoryId(UUID.fromString(pathCategoryId));
+        SubcategoryId subcategoryId = new SubcategoryId(UUID.fromString(pathSubcategoryId));
+
+        deleteSubcategoryUseCase.execute(new DeleteSubcategoryCommand(
+                categoryId,
+                subcategoryId
+        ));
+
+        return ResponseEntity.noContent().build();
     }
 }

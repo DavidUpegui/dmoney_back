@@ -82,6 +82,16 @@ public class Category {
         return subcategory;
     }
 
+    public void deleteSubcategory(SubcategoryId subcategoryId){
+        boolean removed = subcategories.removeIf(
+                sc -> sc.id().equals(subcategoryId)
+        );
+
+        if(!removed){
+            throw new SubcategoryNotFoundException("id", subcategoryId.value().toString());
+        }
+    }
+
     private Subcategory findSubcategory(SubcategoryId id) {
         return subcategories.stream()
                 .filter(sc -> sc.id().equals(id))
