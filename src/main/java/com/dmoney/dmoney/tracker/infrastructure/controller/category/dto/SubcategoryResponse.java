@@ -11,13 +11,13 @@ public record SubcategoryResponse(
 ) {
     public static SubcategoryResponse from(
             Subcategory subcategory,
-            CategoryId categoryId
+            String categoryId
     ) {
         return new SubcategoryResponse(
                 subcategory.id().value().toString(),
                 subcategory.name().value(),
-                subcategory.description(),
-                categoryId.value().toString()
+                subcategory.description().value(),
+                categoryId
         );
 
     }

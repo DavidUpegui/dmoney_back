@@ -1,6 +1,7 @@
 package com.dmoney.dmoney.tracker.application.category;
 
 
+import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
 import com.dmoney.dmoney.tracker.domain.category.Category;
 import com.dmoney.dmoney.tracker.domain.category.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +15,13 @@ public class FindAllCategoriesUseCase {
 
     private final CategoryRepository categoryRepository;
 
-    public List<Category> execute(){
-        return this.categoryRepository.findAll();
+    public List<CategoryResult> execute(){
+
+        return this.categoryRepository.findAll()
+                .stream()
+                .map(CategoryResult::from)
+                .toList();
+
     }
 
 }

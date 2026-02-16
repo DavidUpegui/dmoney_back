@@ -11,14 +11,14 @@ public class CategoryMapper {
         CategoryEntity entity = new CategoryEntity(
                 category.id().value(),
                 category.name().value(),
-                category.description()
+                category.description().value()
         );
 
         category.subcategories().forEach(sub -> {
             SubcategoryEntity subcategoryEntity = new SubcategoryEntity(
                     sub.id().value(),
                     sub.name().value(),
-                    sub.description(),
+                    sub.description().value(),
                     entity
             );
             entity.getSubcategories().add(subcategoryEntity);
@@ -32,14 +32,14 @@ public class CategoryMapper {
                 .map(subEntity -> new Subcategory(
                         new SubcategoryId(subEntity.getId()),
                         new SubcategoryName(subEntity.getName()),
-                        subEntity.getDescription()
+                        new Description(subEntity.getDescription())
                 ))
                 .collect(Collectors.toSet());
 
         return new Category(
                 new CategoryId(entity.getId()),
                 new CategoryName(entity.getName()),
-                entity.getDescription(),
+                new Description(entity.getDescription()),
                 subcategorySet
         );
     }

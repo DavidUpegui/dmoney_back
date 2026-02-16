@@ -9,9 +9,9 @@ import java.util.Objects;
 public class Subcategory {
     private final SubcategoryId id;
     private SubcategoryName name;
-    private String description;
+    private Description description;
 
-    public Subcategory(SubcategoryId id, SubcategoryName name, String description){
+    public Subcategory(SubcategoryId id, SubcategoryName name, Description description){
         this.id = Objects.requireNonNull(id);
         this.name = Objects.requireNonNull(name);
         this.description = description;
@@ -21,17 +21,8 @@ public class Subcategory {
         this.name = Objects.requireNonNull(newName);
     }
 
-    public void changeDescription(String description) {
+    public void changeDescription(Description description) {
         this.description = description;
-    }
-
-    public void edit(SubcategoryName name, String description){
-        if(name != null){
-            this.name = name;
-        }
-        if(description != null){
-            this.description = description;
-        }
     }
 
     public SubcategoryName name(){
@@ -42,7 +33,7 @@ public class Subcategory {
         return id;
     }
 
-    public String description(){
+    public Description description(){
         return description;
     }
 }

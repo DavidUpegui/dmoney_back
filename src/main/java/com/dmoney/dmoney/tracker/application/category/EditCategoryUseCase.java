@@ -1,8 +1,9 @@
 package com.dmoney.dmoney.tracker.application.category;
 
 import com.dmoney.dmoney.tracker.application.category.commands.EditCategoryCommand;
-import com.dmoney.dmoney.tracker.domain.category.Category;
-import com.dmoney.dmoney.tracker.domain.category.CategoryRepository;
+import com.dmoney.dmoney.tracker.application.category.helpers.CategoryLoader;
+import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
+import com.dmoney.dmoney.tracker.domain.category.*;
 import com.dmoney.dmoney.tracker.exceptions.CategoryNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,17 +13,20 @@ import org.springframework.stereotype.Service;
 public class EditCategoryUseCase {
 
     private final CategoryRepository categoryRepository;
+    private final CategoryLoader categoryLoader;
 
-    public Category execute(EditCategoryCommand command){
+    public CategoryResult execute(EditCategoryCommand command){
 
-        Category category = categoryRepository.findById(command.id())
-                .orElseThrow(() -> new CategoryNotFoundException(
-                        "id",
-                        command.id().value().toString()
-                ));
+        CategoryId categoryId = CategoryId.from(command.id());
 
-        category.edit(command.name(), command.description());
+        Category category = categoryLoader.load(categoryId);
+        Description newDescription = command.description() == null ? null : Description.from(command.description());
+        CategoryName newName = command.name() == null ? null : CategoryName.from(command.name());
 
-        return categoryRepository.save(category);
+        category.edit(
+                newName,
+                newDescription);
+
+        return CategoryResult.from(categoryRepository.save(category));
     }
 }

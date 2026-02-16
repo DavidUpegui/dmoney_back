@@ -9,7 +9,7 @@ public class CategoryWebMapper {
         return new CategoryResponse(
                 cat.id().value().toString(),
                 cat.name().value(),
-                cat.description()
+                cat.description().value()
         );
     }
 }

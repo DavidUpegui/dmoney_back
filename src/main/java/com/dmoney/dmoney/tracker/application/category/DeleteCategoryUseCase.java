@@ -12,12 +12,13 @@ public class DeleteCategoryUseCase {
 
     private final CategoryRepository categoryRepository;
 
-    public void execute(CategoryId categoryId){
-        if(!categoryRepository.existsById(categoryId)){
-            throw new CategoryNotFoundException("id", categoryId.value().toString());
+    public void execute(String categoryId){
+        CategoryId catId = CategoryId.from(categoryId);
+        if(!categoryRepository.existsById(catId)){
+            throw new CategoryNotFoundException("id", catId.value().toString());
         }
 
-        categoryRepository.delete(categoryId);
+        categoryRepository.delete(catId);
     }
 
 }

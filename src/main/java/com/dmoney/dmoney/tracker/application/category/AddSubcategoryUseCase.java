@@ -1,30 +1,32 @@
 package com.dmoney.dmoney.tracker.application.category;
 
 import com.dmoney.dmoney.tracker.application.category.commands.AddSubcategoryCommand;
+import com.dmoney.dmoney.tracker.application.category.helpers.CategoryLoader;
+import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
+import com.dmoney.dmoney.tracker.application.category.result.SubcategoryResult;
 import com.dmoney.dmoney.tracker.domain.category.*;
 import com.dmoney.dmoney.tracker.exceptions.CategoryNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class AddSubcategoryUseCase {
 
     private final CategoryRepository categoryRepository;
+    private final CategoryLoader categoryLoader;
 
-    public Subcategory execute(AddSubcategoryCommand command) {
-        Category category = categoryRepository.findById(command.categoryId())
-                .orElseThrow(() -> new CategoryNotFoundException(
-                        "id",
-                        command.categoryId().value().toString()
-                ));
-
+    public SubcategoryResult execute(AddSubcategoryCommand command) {
+        CategoryId categoryId = CategoryId.from(command.categoryId());
+        Category category = categoryLoader.load(categoryId);
 
         Subcategory subcategoryAdded = category.addSubcategory(
-                command.name(),
-                command.description()
+                SubcategoryName.from(command.name()),
+                Description.fromNullable(command.description())
         );
         categoryRepository.save(category);
-        return subcategoryAdded;
+        return SubcategoryResult.from(subcategoryAdded, command.categoryId());
     }
 }

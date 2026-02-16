@@ -2,6 +2,8 @@ package com.dmoney.dmoney.tracker.infrastructure.controller.category;
 
 import com.dmoney.dmoney.tracker.application.category.*;
 import com.dmoney.dmoney.tracker.application.category.commands.*;
+import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
+import com.dmoney.dmoney.tracker.application.category.result.SubcategoryResult;
 import com.dmoney.dmoney.tracker.domain.category.*;
 import com.dmoney.dmoney.tracker.infrastructure.controller.category.dto.*;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +30,7 @@ public class CategoryController {
     private final DeleteSubcategoryUseCase deleteSubcategoryUseCase;
 
     @PostMapping
-    public ResponseEntity<CategoryResponse> createCategory(
+    public ResponseEntity<CategoryResult> createCategory(
             @RequestBody CreateCategoryRequest request
     ){
             CreateCategoryCommand command = new CreateCategoryCommand(
@@ -36,125 +38,101 @@ public class CategoryController {
                     request.description()
             );
 
-            Category categoryCreated = createCategoryUseCase.execute(command);
-            CategoryResponse response = CategoryWebMapper.toResponse(categoryCreated);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            CategoryResult categoryCreated = createCategoryUseCase.execute(command);
+            return ResponseEntity.status(HttpStatus.CREATED).body(categoryCreated);
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoryResponse>> findAllCategories(){
+    public ResponseEntity<List<CategoryResult>> findAllCategories(){
         return ResponseEntity
                 .ok()
-                .body(findAllCategoriesUseCase.execute()
-                        .stream()
-                        .map(CategoryWebMapper::toResponse)
-                        .toList());
+                .body(findAllCategoriesUseCase.execute());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryResponse> findCategoryById(@PathVariable String id){
-        CategoryId categoryId = new CategoryId(UUID.fromString(id));
+    public ResponseEntity<CategoryResult> findCategoryById(@PathVariable String id){
 
         return ResponseEntity
                 .ok()
-                .body(CategoryWebMapper.toResponse(
-                        findCategoryByIdUseCase.execute(categoryId)
-                ));
+                .body(
+                        findCategoryByIdUseCase.execute(id)
+                );
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable String id){
-        CategoryId categoryId = new CategoryId(UUID.fromString(id));
-        deleteCategoryUseCase.execute(categoryId);
+        deleteCategoryUseCase.execute(id);
 
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{categoryId}/subcategories")
-    public ResponseEntity<SubcategoryResponse> createSubcategory(
+    public ResponseEntity<SubcategoryResult> createSubcategory(
             @PathVariable String categoryId,
             @RequestBody CreateSubcategoryRequest request
     ){
-        CategoryId catId = new CategoryId(UUID.fromString(categoryId));
         AddSubcategoryCommand command = new AddSubcategoryCommand(
-                catId,
-                new SubcategoryName(request.name()),
+                categoryId,
+                request.name(),
                 request.description()
         );
 
-        Subcategory subcategory = addSubcategoryUseCase.execute(command);
+        SubcategoryResult subcategory = addSubcategoryUseCase.execute(command);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(SubcategoryResponse.from(subcategory, catId ));
+                .body(subcategory);
     }
 
     @PatchMapping("/{catIdParam}")
-    public ResponseEntity<CategoryResponse> editCategory(
+    public ResponseEntity<CategoryResult> editCategory(
             @PathVariable String catIdParam,
             @RequestBody EditCategoryRequest request
     ){
-        CategoryId categoryId = new CategoryId(UUID.fromString(catIdParam));
-        CategoryName categoryName = null;
-        if(request.name() != null){
-            categoryName = new CategoryName(request.name());
-        }
-        String description = request.description();
 
         EditCategoryCommand command =
-                new EditCategoryCommand(categoryId, categoryName, description);
+                new EditCategoryCommand(catIdParam, request.name(), request.description());
 
-        Category category = editCategoryUseCase.execute(command);
+        CategoryResult category = editCategoryUseCase.execute(command);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(CategoryWebMapper.toResponse(category));
+                .body(category);
 
     }
 
     @PatchMapping("/{categoryId}/subcategories/{subcategoryId}")
-    public ResponseEntity<SubcategoryResponse> editSubcategory(
+    public ResponseEntity<SubcategoryResult> editSubcategory(
             @PathVariable String categoryId,
             @PathVariable String subcategoryId,
             @RequestBody EditSubcategoryRequest request
     ){
-        SubcategoryName subcategoryName = null;
-
-        CategoryId catId = new CategoryId(UUID.fromString(categoryId));
-        SubcategoryId subcatId = new SubcategoryId(UUID.fromString(subcategoryId));
-
-        if(request.name() != null){
-            subcategoryName =  new SubcategoryName(request.name());
-        }
 
         EditSubcategoryCommand command = new EditSubcategoryCommand(
-            catId,
-            subcatId,
-            subcategoryName,
-            request.description()
+            categoryId,
+            subcategoryId,
+                request.name(),
+                request.description()
         );
 
-        Subcategory subcategory =  editSubcategoryUseCase.execute(command);
+        SubcategoryResult subcategory =  editSubcategoryUseCase.execute(command);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(SubcategoryResponse.from(subcategory, catId));
+                .body(subcategory);
     }
 
     @GetMapping("/{categoryId}/subcategories")
-    public ResponseEntity<List<SubcategoryResponse>> findAllSubcategoriesByCatId(
+    public ResponseEntity<List<SubcategoryResult>> findAllSubcategoriesByCatId(
             @PathVariable String categoryId
     ){
-        CategoryId catId = new CategoryId(UUID.fromString(categoryId));
 
-        Set<Subcategory> subcategories =
-                findAllSubcategoriesByCategoryIdUseCase.execute(catId);
+        List<SubcategoryResult> subcategories =
+                findAllSubcategoriesByCategoryIdUseCase.execute(categoryId);
 
         return ResponseEntity
                 .ok()
-                .body(subcategories.stream()
-                        .map((sc) ->SubcategoryResponse.from(sc, catId))
-                        .toList());
+                .body(subcategories);
     }
 
     @DeleteMapping("/{pathCategoryId}/subcategories/{pathSubcategoryId}")
@@ -162,12 +140,9 @@ public class CategoryController {
             @PathVariable String pathCategoryId,
             @PathVariable String pathSubcategoryId
     ){
-        CategoryId categoryId = new CategoryId(UUID.fromString(pathCategoryId));
-        SubcategoryId subcategoryId = new SubcategoryId(UUID.fromString(pathSubcategoryId));
-
         deleteSubcategoryUseCase.execute(new DeleteSubcategoryCommand(
-                categoryId,
-                subcategoryId
+                pathCategoryId,
+                pathSubcategoryId
         ));
 
         return ResponseEntity.noContent().build();

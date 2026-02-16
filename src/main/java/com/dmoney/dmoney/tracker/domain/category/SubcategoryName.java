@@ -7,4 +7,8 @@ public record SubcategoryName(String value) {
         }
         value = value.trim().toLowerCase();
     }
+
+    public static SubcategoryName from(String value){
+        return new SubcategoryName(value);
+    }
 }

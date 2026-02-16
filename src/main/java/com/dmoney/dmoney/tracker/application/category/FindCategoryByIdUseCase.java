@@ -1,5 +1,6 @@
 package com.dmoney.dmoney.tracker.application.category;
 
+import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
 import com.dmoney.dmoney.tracker.domain.category.Category;
 import com.dmoney.dmoney.tracker.domain.category.CategoryId;
 import com.dmoney.dmoney.tracker.domain.category.CategoryRepository;
@@ -13,8 +14,10 @@ public class FindCategoryByIdUseCase {
 
     private final CategoryRepository categoryRepository;
 
-    public Category execute(CategoryId id){
-        return categoryRepository.findById(id)
-                .orElseThrow(() -> new CategoryNotFoundException("id", id.value().toString()));
+    public CategoryResult execute(String id){
+        CategoryId catId = CategoryId.from(id);
+        Category category =  categoryRepository.findById(catId)
+                .orElseThrow(() -> new CategoryNotFoundException("id", catId.value().toString()));
+        return CategoryResult.from(category);
     }
 }

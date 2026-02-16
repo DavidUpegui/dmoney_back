@@ -8,4 +8,8 @@ public record CategoryName(String value) {
         }
         value = value.trim();
     }
+
+    public static CategoryName from(String value){
+        return new CategoryName(value);
+    }
 }
