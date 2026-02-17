@@ -66,6 +66,7 @@ public class Category {
 
 
     public Subcategory editSubcategory(SubcategoryId id, SubcategoryName newName, Description newDescription){
+        Objects.requireNonNull(id, "subcategory ID cannot be null in the edition");
         Subcategory subcategory = findSubcategory(id);
 
         if (newName != null) {

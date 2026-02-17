@@ -1,4 +1,4 @@
-package com.dmoney.dmoney.domain.category;
+package com.dmoney.dmoney.tracker.domain.category.domain;
 
 import com.dmoney.dmoney.tracker.domain.category.CategoryName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +18,15 @@ public class CategoryNameTest {
         CategoryName categoryName = new CategoryName("    FOOD   ");
 
         assertEquals("food", categoryName.value());
+    }
+
+    @Test
+    void shouldCreateNameFromString(){
+        String name = "food";
+
+        CategoryName categoryName = CategoryName.from(name);
+
+        assertEquals(name, categoryName.value());
     }
 
     @Test

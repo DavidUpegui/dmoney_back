@@ -1,4 +1,4 @@
-package com.dmoney.dmoney.domain.category;
+package com.dmoney.dmoney.tracker.domain.category.domain;
 
 import com.dmoney.dmoney.tracker.domain.category.CategoryId;
 import org.junit.jupiter.api.Test;
@@ -15,6 +15,16 @@ public class CategoryIdTest {
         UUID id = UUID.randomUUID();
         CategoryId categoryId = new CategoryId(id);
         assertEquals(id, categoryId.value());
+    }
+
+    @Test
+    void shouldCreateCategoryIdFromString(){
+        UUID uuid = UUID.randomUUID();
+        String stringId = uuid.toString();
+
+        CategoryId categoryId = CategoryId.from(stringId);
+
+        assertEquals(uuid, categoryId.value());
     }
 
     @Test

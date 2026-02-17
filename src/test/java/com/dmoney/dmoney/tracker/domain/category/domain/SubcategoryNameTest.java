@@ -1,4 +1,4 @@
-package com.dmoney.dmoney.domain.category;
+package com.dmoney.dmoney.tracker.domain.category.domain;
 
 
 import com.dmoney.dmoney.tracker.domain.category.SubcategoryName;
@@ -19,6 +19,15 @@ public class SubcategoryNameTest {
         SubcategoryName name = new SubcategoryName("   TRANSPORT   ");
 
         assertEquals("transport", name.value());
+    }
+
+    @Test
+    void shouldCreateNameFromValue(){
+        String name = "food";
+
+        SubcategoryName subcategoryName = SubcategoryName.from(name);
+
+        assertEquals(name, subcategoryName.value());
     }
 
     @Test

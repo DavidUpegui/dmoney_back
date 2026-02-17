@@ -1,4 +1,4 @@
-package com.dmoney.dmoney.domain.category;
+package com.dmoney.dmoney.tracker.domain.category.domain;
 
 import com.dmoney.dmoney.tracker.domain.category.SubcategoryId;
 import org.junit.jupiter.api.Test;
@@ -16,6 +16,17 @@ public class SubcategoryIdTest {
 
         assertEquals(id, subcategoryId.value());
     }
+
+    @Test
+    void shouldCreateSubcategoryIdFromString(){
+        UUID uuid = UUID.randomUUID();
+        String stringId = uuid.toString();
+
+        SubcategoryId subcategoryId = SubcategoryId.from(stringId);
+
+        assertEquals(uuid, subcategoryId.value());
+    }
+
 
     @Test
     void shouldThrowWhenUuidIsNull() {

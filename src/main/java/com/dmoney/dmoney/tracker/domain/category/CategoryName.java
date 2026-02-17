@@ -6,7 +6,7 @@ public record CategoryName(String value) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException("Category name cannot be empty");
         }
-        value = value.trim();
+        value = value.trim().toLowerCase();
     }
 
     public static CategoryName from(String value){
