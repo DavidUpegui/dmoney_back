@@ -106,7 +106,8 @@ public class Category {
 
     private boolean hasSubcategoryWithName(SubcategoryName name) {
         return subcategories.stream()
-                .anyMatch(sc -> sc.name().equals(name));
+                .anyMatch(sc ->
+                        sc.name().value().equalsIgnoreCase(name.value()));
     }
 
     public CategoryId id(){

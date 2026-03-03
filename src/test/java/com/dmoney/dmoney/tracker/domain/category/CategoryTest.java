@@ -1,6 +1,5 @@
-package com.dmoney.dmoney.tracker.domain.category.domain;
+package com.dmoney.dmoney.tracker.domain.category;
 
-import com.dmoney.dmoney.tracker.domain.category.*;
 import com.dmoney.dmoney.tracker.exceptions.SubcategoryAlreadyExistsException;
 import com.dmoney.dmoney.tracker.exceptions.SubcategoryNotFoundException;
 import org.junit.jupiter.api.BeforeEach;

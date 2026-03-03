@@ -1,5 +1,6 @@
 package com.dmoney.dmoney.tracker.application.category;
 
+import com.dmoney.dmoney.tracker.application.category.helpers.CategoryLoader;
 import com.dmoney.dmoney.tracker.application.category.result.SubcategoryResult;
 import com.dmoney.dmoney.tracker.domain.category.Category;
 import com.dmoney.dmoney.tracker.domain.category.CategoryId;
@@ -16,13 +17,12 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class FindAllSubcategoriesByCategoryIdUseCase {
 
-    private final CategoryRepository categoryRepository;
+    private final CategoryLoader categoryLoader;
 
 
     public List<SubcategoryResult> execute(String categoryId){
         CategoryId catId = CategoryId.from(categoryId);
-        Category category = categoryRepository.findById(catId)
-                .orElseThrow(() -> new CategoryNotFoundException("id", catId.value().toString()));
+        Category category = categoryLoader.load(catId);
 
         return category.subcategories()
                 .stream()

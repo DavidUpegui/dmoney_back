@@ -1,5 +1,6 @@
 package com.dmoney.dmoney.tracker.application.category;
 
+import com.dmoney.dmoney.tracker.application.category.helpers.CategoryLoader;
 import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
 import com.dmoney.dmoney.tracker.domain.category.Category;
 import com.dmoney.dmoney.tracker.domain.category.CategoryId;
@@ -11,13 +12,11 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class FindCategoryByIdUseCase {
-
-    private final CategoryRepository categoryRepository;
+    private final CategoryLoader categoryLoader;
 
     public CategoryResult execute(String id){
         CategoryId catId = CategoryId.from(id);
-        Category category =  categoryRepository.findById(catId)
-                .orElseThrow(() -> new CategoryNotFoundException("id", catId.value().toString()));
+        Category category =  categoryLoader.load(catId);
         return CategoryResult.from(category);
     }
 }

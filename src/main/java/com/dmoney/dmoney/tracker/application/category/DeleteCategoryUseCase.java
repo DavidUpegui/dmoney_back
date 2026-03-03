@@ -20,5 +20,4 @@ public class DeleteCategoryUseCase {
 
         categoryRepository.delete(catId);
     }
-
 }

@@ -5,8 +5,8 @@ import com.dmoney.dmoney.tracker.domain.category.Subcategory;
 public record SubcategoryResult(
         String categoryId,
         String subcategoryId,
-        String subcategoryDescription,
-        String subcategoryName
+        String subcategoryName,
+        String subcategoryDescription
 ) {
 
     public static SubcategoryResult from(Subcategory subcategoryDomain, String categoryId){

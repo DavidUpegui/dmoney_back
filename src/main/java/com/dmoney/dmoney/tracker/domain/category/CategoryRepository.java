@@ -8,6 +8,6 @@ public interface CategoryRepository {
     List<Category> findAll();
     Category save(Category category);
     boolean existsById(CategoryId id);
-    boolean existsByName(CategoryName name);
+    boolean existsByNameIgnoreCase(CategoryName name);
     void delete(CategoryId id);
 }

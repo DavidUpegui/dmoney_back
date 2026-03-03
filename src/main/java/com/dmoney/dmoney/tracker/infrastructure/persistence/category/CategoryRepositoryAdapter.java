@@ -42,7 +42,7 @@ public class CategoryRepositoryAdapter implements CategoryRepository {
     }
 
     @Override
-    public boolean existsByName(CategoryName name) {
+    public boolean existsByNameIgnoreCase(CategoryName name) {
         return jpaRepo.existsByNameIgnoreCase(name.value());
     }
 

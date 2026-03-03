@@ -5,7 +5,7 @@ public record SubcategoryName(String value) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException("Subcategory name cannot be blank");
         }
-        value = value.trim().toLowerCase();
+        value = value.trim();
     }
 
     public static SubcategoryName from(String value){

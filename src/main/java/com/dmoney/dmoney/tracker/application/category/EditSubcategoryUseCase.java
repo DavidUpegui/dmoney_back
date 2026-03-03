@@ -22,7 +22,7 @@ public class EditSubcategoryUseCase {
         SubcategoryName subcategoryName = command.subcategoryName() == null ?
                 null : SubcategoryName.from(command.subcategoryName());
         Description description = command.subcategoryDescription() == null ?
-                null : Description.from(command.subcategoryName());
+                null : Description.from(command.subcategoryDescription());
 
         Subcategory subcategory = category.editSubcategory(
                 SubcategoryId.from(command.subcategoryId()),

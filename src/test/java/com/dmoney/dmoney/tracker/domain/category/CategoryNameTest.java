@@ -1,6 +1,5 @@
-package com.dmoney.dmoney.tracker.domain.category.domain;
+package com.dmoney.dmoney.tracker.domain.category;
 
-import com.dmoney.dmoney.tracker.domain.category.CategoryName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,14 +9,14 @@ public class CategoryNameTest {
     @Test
     void shouldCreateValidCategoryName(){
         CategoryName categoryName = new CategoryName("Food");
-        assertEquals("food", categoryName.value());
+        assertEquals("Food", categoryName.value());
     }
 
     @Test
-    void shouldTrimAndLowerCaseValue(){
+    void shouldTrimValue(){
         CategoryName categoryName = new CategoryName("    FOOD   ");
 
-        assertEquals("food", categoryName.value());
+        assertEquals("FOOD", categoryName.value());
     }
 
     @Test

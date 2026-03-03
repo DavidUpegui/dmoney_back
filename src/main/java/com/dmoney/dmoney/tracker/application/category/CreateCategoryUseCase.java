@@ -16,7 +16,7 @@ public class CreateCategoryUseCase {
     public CategoryResult execute(CreateCategoryCommand command) {
         CategoryName name = CategoryName.from(command.name());
 
-        if (repository.existsByName(name)) {
+        if (repository.existsByNameIgnoreCase(name)) {
             throw new CategoryAlreadyExistsException("name", name.value());
         }
 
