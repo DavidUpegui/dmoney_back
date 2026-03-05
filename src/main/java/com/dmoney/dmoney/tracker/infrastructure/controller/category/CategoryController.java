@@ -6,6 +6,7 @@ import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
 import com.dmoney.dmoney.tracker.application.category.result.SubcategoryResult;
 import com.dmoney.dmoney.tracker.domain.category.*;
 import com.dmoney.dmoney.tracker.infrastructure.controller.category.dto.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<CategoryResult> createCategory(
-            @RequestBody CreateCategoryRequest request
+            @RequestBody @Valid CreateCategoryRequest request
     ){
             CreateCategoryCommand command = new CreateCategoryCommand(
                     request.name(),
@@ -69,7 +70,7 @@ public class CategoryController {
     @PostMapping("/{categoryId}/subcategories")
     public ResponseEntity<SubcategoryResult> createSubcategory(
             @PathVariable String categoryId,
-            @RequestBody CreateSubcategoryRequest request
+            @RequestBody @Valid CreateSubcategoryRequest request
     ){
         AddSubcategoryCommand command = new AddSubcategoryCommand(
                 categoryId,
@@ -87,7 +88,7 @@ public class CategoryController {
     @PatchMapping("/{catIdParam}")
     public ResponseEntity<CategoryResult> editCategory(
             @PathVariable String catIdParam,
-            @RequestBody EditCategoryRequest request
+            @RequestBody @Valid EditCategoryRequest request
     ){
 
         EditCategoryCommand command =
@@ -105,7 +106,7 @@ public class CategoryController {
     public ResponseEntity<SubcategoryResult> editSubcategory(
             @PathVariable String categoryId,
             @PathVariable String subcategoryId,
-            @RequestBody EditSubcategoryRequest request
+            @RequestBody @Valid EditSubcategoryRequest request
     ){
 
         EditSubcategoryCommand command = new EditSubcategoryCommand(

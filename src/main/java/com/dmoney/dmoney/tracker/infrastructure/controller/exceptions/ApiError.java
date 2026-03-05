@@ -6,14 +6,12 @@ import org.springframework.http.HttpStatus;
 
 import java.time.Instant;
 
-@Getter
-@AllArgsConstructor
-public class ApiError {
-
-    private final int status;
-    private final String error;
-    private final String message;
-    private final Instant timestamp;
+public record ApiError(
+        int status,
+        String error,
+        String message,
+        Instant timestamp
+) {
 
     public static ApiError of(HttpStatus status, String message) {
         return new ApiError(
