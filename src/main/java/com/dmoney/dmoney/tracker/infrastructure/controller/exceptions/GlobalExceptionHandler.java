@@ -2,8 +2,10 @@ package com.dmoney.dmoney.tracker.infrastructure.controller.exceptions;
 
 import com.dmoney.dmoney.tracker.exceptions.ResourceAlreadyExistsException;
 import com.dmoney.dmoney.tracker.exceptions.ResourceNotFoundException;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -26,10 +28,25 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiError> handleArgumentNotValid(MethodArgumentNotValidException ex){
+    public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex){
+
+        String message = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .findFirst()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .orElse("Validation error");
+
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ApiError.of(HttpStatus.BAD_REQUEST, ex.getMessage()));
+                .body(ApiError.of(HttpStatus.BAD_REQUEST, message));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiError> handleInvalidJson(HttpMessageNotReadableException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiError.of(HttpStatus.BAD_REQUEST, "Malformed JSON request"));
     }
 
     @ExceptionHandler(NullPointerException.class)
