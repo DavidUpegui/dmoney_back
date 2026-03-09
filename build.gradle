@@ -8,7 +8,7 @@ plugins {
 
 group = 'com.dmoney'
 version = '0.0.1-SNAPSHOT'
-description = 'Personal money traacker'
+description = 'Personal money tracker'
 
 java {
 	toolchain {
