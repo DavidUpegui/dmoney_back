@@ -4,8 +4,7 @@ package com.dmoney.dmoney.tracker.application.category;
 import com.dmoney.dmoney.tracker.application.category.commands.DeleteSubcategoryCommand;
 import com.dmoney.dmoney.tracker.application.category.helpers.CategoryLoader;
 import com.dmoney.dmoney.tracker.domain.category.*;
-import com.dmoney.dmoney.tracker.exceptions.CategoryNotFoundException;
-import com.dmoney.dmoney.tracker.exceptions.SubcategoryNotFoundException;
+import com.dmoney.dmoney.tracker.domain.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -79,9 +78,9 @@ class DeleteSubcategoryUseCaseTest {
                 );
 
         when(categoryLoader.load(notExistingId))
-                .thenThrow(new CategoryNotFoundException("id", notExistingId.value().toString()));
+                .thenThrow(new ResourceNotFoundException("Category", "id", notExistingId.value().toString()));
 
-        assertThrows(CategoryNotFoundException.class,
+        assertThrows(ResourceNotFoundException.class,
                 () -> useCase.execute(command));
 
         verify(categoryLoader).load(notExistingId);
@@ -103,7 +102,7 @@ class DeleteSubcategoryUseCaseTest {
         when(categoryLoader.load(categoryId))
                 .thenReturn(category);
 
-        assertThrows(SubcategoryNotFoundException.class,
+        assertThrows(ResourceNotFoundException.class,
                 () -> useCase.execute(command));
 
         verify(categoryLoader).load(categoryId);

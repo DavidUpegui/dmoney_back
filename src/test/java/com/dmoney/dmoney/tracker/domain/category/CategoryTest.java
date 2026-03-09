@@ -1,7 +1,7 @@
 package com.dmoney.dmoney.tracker.domain.category;
 
-import com.dmoney.dmoney.tracker.exceptions.SubcategoryAlreadyExistsException;
-import com.dmoney.dmoney.tracker.exceptions.SubcategoryNotFoundException;
+import com.dmoney.dmoney.tracker.domain.exceptions.ResourceAlreadyExistsException;
+import com.dmoney.dmoney.tracker.domain.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -137,7 +137,7 @@ class CategoryTest {
 
         Description sameDescription = Description.from(("subcategoryDescription"));
 
-        assertThrows(SubcategoryAlreadyExistsException.class,
+        assertThrows(ResourceAlreadyExistsException.class,
                 () -> category.addSubcategory(subcategoryName, sameDescription));
     }
 
@@ -214,7 +214,7 @@ class CategoryTest {
             Description newDescription = Description.from("newDescription");
 
 
-            assertThrows(SubcategoryNotFoundException.class,
+            assertThrows(ResourceNotFoundException.class,
                     () -> category.editSubcategory(
                             differentSubcategoryId,
                             newSubcategoryName,
@@ -230,7 +230,7 @@ class CategoryTest {
 
 
 
-            assertThrows(SubcategoryAlreadyExistsException.class,
+            assertThrows(ResourceAlreadyExistsException.class,
                     () -> category.editSubcategory(
                             subcategoryIdToEdit,
                             SubcategoryName.from(sameName),
@@ -272,7 +272,7 @@ class CategoryTest {
         void shouldThrowExceptionWhenSubcategoryIsNotFoundWhenDeleting(){
             SubcategoryId nonExistingSubcategoryId = SubcategoryId.newId();
 
-            assertThrows(SubcategoryNotFoundException.class,
+            assertThrows(ResourceNotFoundException.class,
                     () -> category.deleteSubcategory(nonExistingSubcategoryId));
         }
     }

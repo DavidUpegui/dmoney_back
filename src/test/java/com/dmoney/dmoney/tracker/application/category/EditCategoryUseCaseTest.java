@@ -5,7 +5,7 @@ import com.dmoney.dmoney.tracker.application.category.commands.EditCategoryComma
 import com.dmoney.dmoney.tracker.application.category.helpers.CategoryLoader;
 import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
 import com.dmoney.dmoney.tracker.domain.category.*;
-import com.dmoney.dmoney.tracker.exceptions.CategoryNotFoundException;
+import com.dmoney.dmoney.tracker.domain.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -148,12 +148,13 @@ class EditCategoryUseCaseTest {
         );
 
         when(categoryLoader.load(any()))
-                .thenThrow( new CategoryNotFoundException(
+                .thenThrow( new ResourceNotFoundException(
+                        "Category",
                         "id",
                         unexistingId.toString()
                 ));
 
-        assertThrows(CategoryNotFoundException.class,
+        assertThrows(ResourceNotFoundException.class,
                 () -> useCase.execute(command));
 
         verify(categoryLoader).load(unexistingId);

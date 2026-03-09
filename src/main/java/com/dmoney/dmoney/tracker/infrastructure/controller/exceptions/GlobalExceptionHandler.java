@@ -1,7 +1,7 @@
 package com.dmoney.dmoney.tracker.infrastructure.controller.exceptions;
 
-import com.dmoney.dmoney.tracker.exceptions.ResourceAlreadyExistsException;
-import com.dmoney.dmoney.tracker.exceptions.ResourceNotFoundException;
+import com.dmoney.dmoney.tracker.domain.exceptions.ResourceAlreadyExistsException;
+import com.dmoney.dmoney.tracker.domain.exceptions.ResourceNotFoundException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

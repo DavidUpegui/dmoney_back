@@ -2,7 +2,8 @@ package com.dmoney.dmoney.tracker.application.category;
 
 import com.dmoney.dmoney.tracker.domain.category.CategoryId;
 import com.dmoney.dmoney.tracker.domain.category.CategoryRepository;
-import com.dmoney.dmoney.tracker.exceptions.CategoryNotFoundException;
+import com.dmoney.dmoney.tracker.domain.exceptions.ResourceAlreadyExistsException;
+import com.dmoney.dmoney.tracker.domain.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ public class DeleteCategoryUseCase {
     public void execute(String categoryId){
         CategoryId catId = CategoryId.from(categoryId);
         if(!categoryRepository.existsById(catId)){
-            throw new CategoryNotFoundException("id", catId.value().toString());
+            throw new ResourceNotFoundException("Category", "id", catId.value().toString());
         }
 
         categoryRepository.delete(catId);

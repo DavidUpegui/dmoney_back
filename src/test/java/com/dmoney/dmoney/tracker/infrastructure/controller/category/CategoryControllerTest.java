@@ -3,10 +3,8 @@ package com.dmoney.dmoney.tracker.infrastructure.controller.category;
 import com.dmoney.dmoney.tracker.application.category.*;
 import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
 import com.dmoney.dmoney.tracker.application.category.result.SubcategoryResult;
-import com.dmoney.dmoney.tracker.exceptions.CategoryAlreadyExistsException;
-import com.dmoney.dmoney.tracker.exceptions.CategoryNotFoundException;
-import com.dmoney.dmoney.tracker.exceptions.SubcategoryAlreadyExistsException;
-import com.dmoney.dmoney.tracker.exceptions.SubcategoryNotFoundException;
+import com.dmoney.dmoney.tracker.domain.exceptions.ResourceAlreadyExistsException;
+import com.dmoney.dmoney.tracker.domain.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.Nested;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -137,7 +135,8 @@ class CategoryControllerTest {
                     """;
 
             when(createCategoryUseCase.execute(any()))
-                    .thenThrow(new CategoryAlreadyExistsException(
+                    .thenThrow(new ResourceAlreadyExistsException(
+                            "Category",
                             "Name",
                             "Books"
                     ));
@@ -233,7 +232,8 @@ class CategoryControllerTest {
         void should_return_404_if_category_not_found() throws Exception{
             String anyId = "123";
             when(findCategoryByIdUseCase.execute(anyId))
-                    .thenThrow(new CategoryNotFoundException(
+                    .thenThrow(new ResourceNotFoundException(
+                            "Category",
                             "id",
                             anyId
                     ));
@@ -254,7 +254,7 @@ class CategoryControllerTest {
         }
 
         void should_return_404_when_category_is_not_found() throws Exception{
-            doThrow(new CategoryNotFoundException("id", "1"))
+            doThrow(new ResourceNotFoundException("Category", "id", "1"))
                     .when(deleteCategoryUseCase)
                     .execute("1");
             mockMvc.perform(delete("/api/categories/1"))
@@ -350,7 +350,7 @@ class CategoryControllerTest {
                     """;
 
             when(addSubcategoryUseCase.execute(any()))
-                    .thenThrow(new CategoryNotFoundException("id", "1"));
+                    .thenThrow(new ResourceNotFoundException("Category", "id", "1"));
 
             mockMvc.perform(post("/api/categories/1/subcategories")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -374,7 +374,7 @@ class CategoryControllerTest {
                     """;
 
             when(addSubcategoryUseCase.execute(any()))
-                    .thenThrow(new SubcategoryAlreadyExistsException("id", "1"));
+                    .thenThrow(new ResourceAlreadyExistsException("Subcategory", "id", "1"));
 
             mockMvc.perform(post("/api/categories/1/subcategories")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -518,7 +518,7 @@ class CategoryControllerTest {
                     """;
 
              when(editCategoryUseCase.execute(any()))
-                     .thenThrow(new CategoryNotFoundException("id", "1"));
+                     .thenThrow(new ResourceNotFoundException("Category", "id", "1"));
 
              mockMvc.perform(patch("/api/categories/1")
                              .contentType(MediaType.APPLICATION_JSON)
@@ -542,7 +542,7 @@ class CategoryControllerTest {
                     """;
 
              when(editCategoryUseCase.execute(any()))
-                     .thenThrow(new CategoryAlreadyExistsException("id", "1"));
+                     .thenThrow(new ResourceAlreadyExistsException("Category", "id", "1"));
 
              mockMvc.perform(patch("/api/categories/1")
                              .contentType(MediaType.APPLICATION_JSON)
@@ -660,7 +660,7 @@ class CategoryControllerTest {
                     """;
 
              when(editSubcategoryUseCase.execute(any()))
-                     .thenThrow(new CategoryNotFoundException("id", "1"));
+                     .thenThrow(new ResourceNotFoundException("Category", "id", "1"));
 
              mockMvc.perform(patch("/api/categories/1/subcategories/2")
                              .contentType(MediaType.APPLICATION_JSON)
@@ -685,7 +685,7 @@ class CategoryControllerTest {
                     """;
 
              when(editSubcategoryUseCase.execute(any()))
-                     .thenThrow(new SubcategoryNotFoundException("id", "1"));
+                     .thenThrow(new ResourceNotFoundException("Subcategory", "id", "1"));
 
              mockMvc.perform(patch("/api/categories/1/subcategories/2")
                              .contentType(MediaType.APPLICATION_JSON)
@@ -710,7 +710,7 @@ class CategoryControllerTest {
                     """;
 
              when(editSubcategoryUseCase.execute(any()))
-                     .thenThrow(new SubcategoryAlreadyExistsException("id", "1"));
+                     .thenThrow(new ResourceAlreadyExistsException("Subcategory", "id", "1"));
 
              mockMvc.perform(patch("/api/categories/1/subcategories/2")
                              .contentType(MediaType.APPLICATION_JSON)
@@ -825,8 +825,6 @@ class CategoryControllerTest {
 
          @Test
          void should_return_500_when_unexpected_error() throws Exception{
-             List<SubcategoryResult> result = List.of();
-
              when(findAllSubcategoriesByCategoryIdUseCase.execute(any()))
                      .thenThrow(new RuntimeException("Unexpected error"));
 
@@ -852,7 +850,7 @@ class CategoryControllerTest {
 
         @Test
          void should_return_404_when_category_not_found() throws Exception{
-            doThrow(new CategoryNotFoundException("id", "1"))
+            doThrow(new ResourceNotFoundException("Category", "id", "1"))
                     .when(deleteSubcategoryUseCase)
                     .execute(argThat(command ->
                             command.categoryId().equals("1") &&
@@ -869,7 +867,7 @@ class CategoryControllerTest {
 
          @Test
          void should_return_404_when_subcategory_not_found() throws Exception{
-             doThrow(new SubcategoryNotFoundException("id", "1"))
+             doThrow(new ResourceNotFoundException("Subcategory", "id", "1"))
                      .when(deleteSubcategoryUseCase)
                      .execute(argThat(command ->
                              command.categoryId().equals("1") &&
