@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SubcategoryNameTest {
+class SubcategoryNameTest {
     @Test
     void shouldCreateValidSubcategoryName(){
         SubcategoryName name = new SubcategoryName("Food");

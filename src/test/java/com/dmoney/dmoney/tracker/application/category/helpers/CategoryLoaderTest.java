@@ -47,9 +47,6 @@ public class CategoryLoaderTest {
     @Test
     void should_propagate_category_not_found_exception(){
         CategoryId anyId = CategoryId.newId();
-        CategoryName categoryName = CategoryName.from("Category name");
-        Description categoryDescription =  Description.from("Category description");
-
 
         when(categoryRepository.findById(anyId))
                 .thenReturn(Optional.empty());

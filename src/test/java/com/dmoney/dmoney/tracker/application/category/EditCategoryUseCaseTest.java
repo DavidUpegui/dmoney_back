@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class EditCategoryUseCaseTest {
+class EditCategoryUseCaseTest {
 
     @Mock
     CategoryRepository categoryRepository;

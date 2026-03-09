@@ -5,7 +5,9 @@ import com.dmoney.dmoney.tracker.domain.category.*;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class CategoryMapper {
+public final class CategoryMapper {
+
+    private CategoryMapper(){}
 
     public static CategoryEntity toEntity(Category category){
         CategoryEntity entity = new CategoryEntity(

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.reflect.Constructor;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -15,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
-public class CategoryMapperTest {
+class CategoryMapperTest {
 
     @Test
     void should_map_category_to_category_entity(){
@@ -25,12 +26,12 @@ public class CategoryMapperTest {
                 Description.from("Category Description")
         );
 
-        Subcategory subcategoryDomain1 = categoryDomain.addSubcategory(
+        categoryDomain.addSubcategory(
                 SubcategoryName.from("Subcategory1 name"),
                 Description.from("Subcategory1 description")
         );
 
-        Subcategory subcategoryDomain2 = categoryDomain.addSubcategory(
+        categoryDomain.addSubcategory(
                 SubcategoryName.from("Subcategory2 name"),
                 Description.from("Subcategory2 description")
         );
@@ -111,11 +112,6 @@ public class CategoryMapperTest {
         assertEquals("Tech description", result.description().value());
 
         assertTrue(result.subcategories().isEmpty());
-
-
-
-
-
     }
 
     private static CategoryEntity getCategoryEntity(UUID categoryId, UUID subId1, UUID subId2) {
@@ -145,5 +141,16 @@ public class CategoryMapperTest {
 
         categoryEntity.setSubcategories(subcategories);
         return categoryEntity;
+    }
+
+    @Test
+    void shouldHavePrivateConstructor() throws Exception {
+        Constructor<CategoryMapper> constructor =
+                CategoryMapper.class.getDeclaredConstructor();
+
+        assertTrue(java.lang.reflect.Modifier.isPrivate(constructor.getModifiers()));
+
+        constructor.setAccessible(true);
+        constructor.newInstance();
     }
 }

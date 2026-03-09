@@ -14,12 +14,11 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class FindAllSubcategoriesByCategoryIdUseCaseTest {
+class FindAllSubcategoriesByCategoryIdUseCaseTest {
 
     @Mock
     CategoryLoader categoryLoader;
@@ -98,9 +97,9 @@ public class FindAllSubcategoriesByCategoryIdUseCaseTest {
                         "id",
                         categoryId.value().toString()
                 ));
-
+        String id = categoryId.value().toString();
         assertThrows(CategoryNotFoundException.class,
-                () -> useCase.execute(categoryId.value().toString()));
+                () -> useCase.execute(id));
 
         verify(categoryLoader).load(categoryId);
     }

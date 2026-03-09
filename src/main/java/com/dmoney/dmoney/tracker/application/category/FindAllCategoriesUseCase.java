@@ -2,7 +2,6 @@ package com.dmoney.dmoney.tracker.application.category;
 
 
 import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
-import com.dmoney.dmoney.tracker.domain.category.Category;
 import com.dmoney.dmoney.tracker.domain.category.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

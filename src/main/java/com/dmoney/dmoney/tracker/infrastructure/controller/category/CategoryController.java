@@ -4,7 +4,6 @@ import com.dmoney.dmoney.tracker.application.category.*;
 import com.dmoney.dmoney.tracker.application.category.commands.*;
 import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
 import com.dmoney.dmoney.tracker.application.category.result.SubcategoryResult;
-import com.dmoney.dmoney.tracker.domain.category.*;
 import com.dmoney.dmoney.tracker.infrastructure.controller.category.dto.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("api/categories")

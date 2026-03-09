@@ -1,13 +1,9 @@
 package com.dmoney.dmoney.tracker.application.category;
 
-import com.dmoney.dmoney.tracker.application.category.commands.AddSubcategoryCommand;
 import com.dmoney.dmoney.tracker.application.category.commands.CreateCategoryCommand;
-import com.dmoney.dmoney.tracker.application.category.helpers.CategoryLoader;
 import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
-import com.dmoney.dmoney.tracker.application.category.result.SubcategoryResult;
 import com.dmoney.dmoney.tracker.domain.category.*;
 import com.dmoney.dmoney.tracker.exceptions.CategoryAlreadyExistsException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,7 +16,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CreateCategoryUseCaseTest {
+class CreateCategoryUseCaseTest {
 
     @Mock
     private CategoryRepository repository;
