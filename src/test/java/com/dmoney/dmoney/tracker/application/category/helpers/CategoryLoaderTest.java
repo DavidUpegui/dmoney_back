@@ -1,7 +1,7 @@
 package com.dmoney.dmoney.tracker.application.category.helpers;
 
 import com.dmoney.dmoney.tracker.domain.category.*;
-import com.dmoney.dmoney.tracker.exceptions.CategoryNotFoundException;
+import com.dmoney.dmoney.tracker.domain.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -51,7 +51,7 @@ public class CategoryLoaderTest {
         when(categoryRepository.findById(anyId))
                 .thenReturn(Optional.empty());
 
-        assertThrows(CategoryNotFoundException.class,
+        assertThrows(ResourceNotFoundException.class,
                 () -> categoryLoader.load(anyId));
 
 

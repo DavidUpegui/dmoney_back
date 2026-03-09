@@ -1,7 +1,7 @@
 package com.dmoney.dmoney.tracker.domain.category;
 
-import com.dmoney.dmoney.tracker.exceptions.SubcategoryAlreadyExistsException;
-import com.dmoney.dmoney.tracker.exceptions.SubcategoryNotFoundException;
+import com.dmoney.dmoney.tracker.domain.exceptions.ResourceAlreadyExistsException;
+import com.dmoney.dmoney.tracker.domain.exceptions.ResourceNotFoundException;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -52,7 +52,7 @@ public class Category {
         Objects.requireNonNull(description);
 
         if(hasSubcategoryWithName(name)){
-            throw new SubcategoryAlreadyExistsException("name", name().value());
+            throw new ResourceAlreadyExistsException("Subcategory", "name", name().value());
         }
         Subcategory subcategory = new Subcategory(
                 SubcategoryId.newId(),
@@ -73,7 +73,7 @@ public class Category {
             if(subcategories.stream()
                     .anyMatch(sc -> !sc.id().equals(id)
                             && sc.name().equals(newName))){
-                throw new SubcategoryAlreadyExistsException("name", newName.value());
+                throw new ResourceAlreadyExistsException("Resource", "name", newName.value());
             }
             subcategory.rename(newName);
         }
@@ -90,7 +90,7 @@ public class Category {
         );
 
         if(!removed){
-            throw new SubcategoryNotFoundException("id", subcategoryId.value().toString());
+            throw new ResourceNotFoundException("Subcategory", "id", subcategoryId.value().toString());
         }
     }
 
@@ -99,7 +99,7 @@ public class Category {
                 .filter(sc -> sc.id().equals(id))
                 .findFirst()
                 .orElseThrow(() ->
-                        new SubcategoryNotFoundException("id", id.value().toString())
+                        new ResourceNotFoundException("Subcategory", "id", id.value().toString())
                 );
     }
 

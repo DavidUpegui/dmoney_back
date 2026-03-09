@@ -1,4 +1,4 @@
-package com.dmoney.dmoney.tracker.exceptions;
+package com.dmoney.dmoney.tracker.domain.exceptions;
 
 public class ResourceAlreadyExistsException extends DomainException{
     public ResourceAlreadyExistsException(String resource, String field, String value){

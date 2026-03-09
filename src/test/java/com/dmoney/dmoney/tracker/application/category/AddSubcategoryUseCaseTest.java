@@ -5,7 +5,7 @@ import com.dmoney.dmoney.tracker.application.category.commands.AddSubcategoryCom
 import com.dmoney.dmoney.tracker.application.category.helpers.CategoryLoader;
 import com.dmoney.dmoney.tracker.application.category.result.SubcategoryResult;
 import com.dmoney.dmoney.tracker.domain.category.*;
-import com.dmoney.dmoney.tracker.exceptions.CategoryNotFoundException;
+import com.dmoney.dmoney.tracker.domain.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -76,14 +76,15 @@ class AddSubcategoryUseCaseTest {
                 );
 
         when(categoryLoader.load(category.id()))
-                .thenThrow(new CategoryNotFoundException(
+                .thenThrow(new ResourceNotFoundException(
+                        "Category",
                         "id",
                         category.id().toString()
                 ));
 
 
 
-        assertThrows(CategoryNotFoundException.class,
+        assertThrows(ResourceNotFoundException.class,
                 () ->  useCase.execute(command));
 
         verify(categoryLoader).load(category.id());

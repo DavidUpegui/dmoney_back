@@ -4,8 +4,7 @@ import com.dmoney.dmoney.tracker.application.category.commands.EditSubcategoryCo
 import com.dmoney.dmoney.tracker.application.category.helpers.CategoryLoader;
 import com.dmoney.dmoney.tracker.application.category.result.SubcategoryResult;
 import com.dmoney.dmoney.tracker.domain.category.*;
-import com.dmoney.dmoney.tracker.exceptions.CategoryNotFoundException;
-import com.dmoney.dmoney.tracker.exceptions.SubcategoryNotFoundException;
+import com.dmoney.dmoney.tracker.domain.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -161,12 +160,13 @@ class EditSubcategoryUseCaseTest {
         );
 
         when(categoryLoader.load(any()))
-                .thenThrow(new CategoryNotFoundException(
+                .thenThrow(new ResourceNotFoundException(
+                        "Category",
                         "id",
                         anyId.value().toString()
                 ));
 
-        assertThrows(CategoryNotFoundException.class,
+        assertThrows(ResourceNotFoundException.class,
                 () -> editSubcategoryUseCase.execute(command));
 
         verify(categoryLoader).load(anyId);
@@ -191,7 +191,7 @@ class EditSubcategoryUseCaseTest {
         when(categoryLoader.load(any()))
                 .thenReturn(category);
 
-        assertThrows(SubcategoryNotFoundException.class,
+        assertThrows(ResourceNotFoundException.class,
                 () -> editSubcategoryUseCase.execute(command));
 
         verify(categoryLoader).load(categoryId);

@@ -3,7 +3,7 @@ package com.dmoney.dmoney.tracker.application.category;
 import com.dmoney.dmoney.tracker.application.category.helpers.CategoryLoader;
 import com.dmoney.dmoney.tracker.application.category.result.SubcategoryResult;
 import com.dmoney.dmoney.tracker.domain.category.*;
-import com.dmoney.dmoney.tracker.exceptions.CategoryNotFoundException;
+import com.dmoney.dmoney.tracker.domain.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -93,12 +93,13 @@ class FindAllSubcategoriesByCategoryIdUseCaseTest {
         );
 
         when(categoryLoader.load(categoryId))
-                .thenThrow(new CategoryNotFoundException(
+                .thenThrow(new ResourceNotFoundException(
+                        "Category",
                         "id",
                         categoryId.value().toString()
                 ));
         String id = categoryId.value().toString();
-        assertThrows(CategoryNotFoundException.class,
+        assertThrows(ResourceNotFoundException.class,
                 () -> useCase.execute(id));
 
         verify(categoryLoader).load(categoryId);

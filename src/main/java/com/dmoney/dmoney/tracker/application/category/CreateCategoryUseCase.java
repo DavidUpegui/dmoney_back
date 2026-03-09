@@ -3,7 +3,7 @@ package com.dmoney.dmoney.tracker.application.category;
 import com.dmoney.dmoney.tracker.application.category.commands.CreateCategoryCommand;
 import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
 import com.dmoney.dmoney.tracker.domain.category.*;
-import com.dmoney.dmoney.tracker.exceptions.CategoryAlreadyExistsException;
+import com.dmoney.dmoney.tracker.domain.exceptions.ResourceAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ public class CreateCategoryUseCase {
         CategoryName name = CategoryName.from(command.name());
 
         if (repository.existsByNameIgnoreCase(name)) {
-            throw new CategoryAlreadyExistsException("name", name.value());
+            throw new ResourceAlreadyExistsException("Category", "name", name.value());
         }
 
         Category category = new Category(
