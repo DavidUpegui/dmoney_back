@@ -13,7 +13,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CategoryTest {
+class CategoryTest {
 
     @Test
     void shouldCreateCategoryWithoutSubcategories(){
@@ -135,27 +135,6 @@ public class CategoryTest {
 
         category.addSubcategory(subcategoryName, description);
 
-        SubcategoryName sameName = SubcategoryName.from("subcategoryName");
-        Description sameDescription = Description.from(("subcategoryDescription"));
-
-        assertThrows(SubcategoryAlreadyExistsException.class,
-                () -> category.addSubcategory(subcategoryName, sameDescription));
-    }
-
-    @Test
-    void shouldEditSubcategory(){
-        Category category = new Category(
-                CategoryId.newId(),
-                CategoryName.from("name"),
-                Description.from("description")
-        );
-
-        SubcategoryName subcategoryName = SubcategoryName.from("subcategoryName");
-        Description description = Description.from(("subcategoryDescription"));
-
-        category.addSubcategory(subcategoryName, description);
-
-        SubcategoryName sameName = SubcategoryName.from("subcategoryName");
         Description sameDescription = Description.from(("subcategoryDescription"));
 
         assertThrows(SubcategoryAlreadyExistsException.class,
@@ -250,6 +229,7 @@ public class CategoryTest {
             SubcategoryId subcategoryIdToEdit = subcategory.id();
 
 
+
             assertThrows(SubcategoryAlreadyExistsException.class,
                     () -> category.editSubcategory(
                             subcategoryIdToEdit,
@@ -258,14 +238,14 @@ public class CategoryTest {
         }
 
         void shouldNotThrowExceptionWhenThereExistASubcategoryWithDifferentNameInTheEdition(){
-            Subcategory sc1 = subcategory; // del beforeEach
+            Subcategory sc1 = subcategory;
 
-            Subcategory sc2 = category.addSubcategory(
+            category.addSubcategory(
                     SubcategoryName.from("name1"),
                     Description.empty()
             );
 
-            Subcategory sc3 = category.addSubcategory(
+            category.addSubcategory(
                     SubcategoryName.from("name2"),
                     Description.empty()
             );

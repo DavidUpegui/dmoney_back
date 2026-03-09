@@ -5,6 +5,8 @@ import com.dmoney.dmoney.tracker.infrastructure.controller.category.dto.Category
 
 public class CategoryWebMapper {
 
+    public CategoryWebMapper(){}
+
     public static CategoryResponse toResponse(Category cat){
         return new CategoryResponse(
                 cat.id().value().toString(),

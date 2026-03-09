@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-public class DeleteCategoryUseCaseTest {
+class DeleteCategoryUseCaseTest {
 
     @Mock
     CategoryRepository repository;
@@ -44,8 +44,10 @@ public class DeleteCategoryUseCaseTest {
         when(repository.existsById(any()))
                 .thenReturn(false);
 
+        String id = CategoryId.newId().value().toString();
+
         assertThrows(CategoryNotFoundException.class,
-                ()-> useCase.execute(CategoryId.newId().value().toString()));
+                ()-> useCase.execute(id));
 
         verify(repository, never()).delete(any());
     }

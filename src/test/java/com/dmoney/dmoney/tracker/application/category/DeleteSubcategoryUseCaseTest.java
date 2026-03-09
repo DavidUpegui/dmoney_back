@@ -20,7 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class DeleteSubcategoryUseCaseTest {
+class DeleteSubcategoryUseCaseTest {
 
     @Mock
     CategoryLoader categoryLoader;
@@ -44,7 +44,6 @@ public class DeleteSubcategoryUseCaseTest {
 
     @Test
     void should_delete_subcategory_and_save_category(){
-        int originalLength = category.subcategories().toArray().length;
         Subcategory subcategory = category.addSubcategory(
                 SubcategoryName.from("Subcategory name"),
                 Description.from("Subcategory description")

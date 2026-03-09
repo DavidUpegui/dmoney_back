@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
-public class CategoryMapperTest {
+class CategoryMapperTest {
 
     @Test
     void should_map_category_to_category_entity(){
@@ -25,12 +25,12 @@ public class CategoryMapperTest {
                 Description.from("Category Description")
         );
 
-        Subcategory subcategoryDomain1 = categoryDomain.addSubcategory(
+        categoryDomain.addSubcategory(
                 SubcategoryName.from("Subcategory1 name"),
                 Description.from("Subcategory1 description")
         );
 
-        Subcategory subcategoryDomain2 = categoryDomain.addSubcategory(
+        categoryDomain.addSubcategory(
                 SubcategoryName.from("Subcategory2 name"),
                 Description.from("Subcategory2 description")
         );

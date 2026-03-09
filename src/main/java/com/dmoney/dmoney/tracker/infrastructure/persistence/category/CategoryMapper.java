@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 public class CategoryMapper {
 
+    private CategoryMapper(){}
+
     public static CategoryEntity toEntity(Category category){
         CategoryEntity entity = new CategoryEntity(
                 category.id().value(),

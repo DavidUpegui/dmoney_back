@@ -1,7 +1,6 @@
 package com.dmoney.dmoney.tracker.infrastructure.controller.category;
 
 
-import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
 import com.dmoney.dmoney.tracker.domain.category.Category;
 import com.dmoney.dmoney.tracker.domain.category.CategoryId;
 import com.dmoney.dmoney.tracker.domain.category.CategoryName;
@@ -11,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CategoryWebMapperTest {
+class CategoryWebMapperTest {
     @Test
     void should_transform_category_into_category_response(){
         Category domain  = new Category(

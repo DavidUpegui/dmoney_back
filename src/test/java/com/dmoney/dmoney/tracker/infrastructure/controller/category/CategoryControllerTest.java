@@ -7,7 +7,6 @@ import com.dmoney.dmoney.tracker.exceptions.CategoryAlreadyExistsException;
 import com.dmoney.dmoney.tracker.exceptions.CategoryNotFoundException;
 import com.dmoney.dmoney.tracker.exceptions.SubcategoryAlreadyExistsException;
 import com.dmoney.dmoney.tracker.exceptions.SubcategoryNotFoundException;
-import com.dmoney.dmoney.tracker.infrastructure.persistence.category.CategoryEntity;
 import org.junit.jupiter.api.Nested;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -27,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.mockito.ArgumentMatchers.any;
 
 @WebMvcTest(CategoryController.class)
-public class CategoryControllerTest {
+class CategoryControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -660,13 +659,6 @@ public class CategoryControllerTest {
                         }
                     """;
 
-             SubcategoryResult result = new SubcategoryResult(
-                     "1",
-                     "2",
-                     "Changed Name",
-                     "Changed Description"
-             );
-
              when(editSubcategoryUseCase.execute(any()))
                      .thenThrow(new CategoryNotFoundException("id", "1"));
 
@@ -692,13 +684,6 @@ public class CategoryControllerTest {
                         }
                     """;
 
-             SubcategoryResult result = new SubcategoryResult(
-                     "1",
-                     "2",
-                     "Changed Name",
-                     "Changed Description"
-             );
-
              when(editSubcategoryUseCase.execute(any()))
                      .thenThrow(new SubcategoryNotFoundException("id", "1"));
 
@@ -723,13 +708,6 @@ public class CategoryControllerTest {
                         "description": "Changed Description"
                         }
                     """;
-
-             SubcategoryResult result = new SubcategoryResult(
-                     "1",
-                     "2",
-                     "Changed Name",
-                     "Changed Description"
-             );
 
              when(editSubcategoryUseCase.execute(any()))
                      .thenThrow(new SubcategoryAlreadyExistsException("id", "1"));
@@ -766,7 +744,7 @@ public class CategoryControllerTest {
          void should_return_400_when_malformed_json() throws Exception{
              String json = """
                         {
-                        "name": "",
+                        "name": "Any name"
                         "description": "Changed Description"
                         }
                     """;
@@ -785,13 +763,6 @@ public class CategoryControllerTest {
                         "description": "Changed Description"
                         }
                     """;
-
-             SubcategoryResult result = new SubcategoryResult(
-                     "1",
-                     "2",
-                     "Changed Name",
-                     "Changed Description"
-             );
 
              when(editSubcategoryUseCase.execute(any()))
                      .thenThrow(new RuntimeException("Unexpected Error"));

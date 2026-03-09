@@ -16,7 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class FindCategoryByIdUseCaseTest {
+class FindCategoryByIdUseCaseTest {
 
     @Mock
     CategoryLoader categoryLoader;
@@ -46,20 +46,16 @@ public class FindCategoryByIdUseCaseTest {
 
     @Test
     void should_propagate_category_not_found_exception(){
-        CategoryName categoryName = CategoryName.from("Category name");
-        Description categoryDescription = Description.from("Category description");
         CategoryId categoryId = CategoryId.newId();
-
-        Category category = new Category(categoryId, categoryName, categoryDescription);
 
         when(categoryLoader.load(categoryId))
                 .thenThrow(new CategoryNotFoundException(
                         "id",
                         categoryId.value().toString()
                 ));
-
+        String id = categoryId.value().toString();
         assertThrows(CategoryNotFoundException.class,
-                () -> useCase.execute(categoryId.value().toString()));
+                () -> useCase.execute(id));
 
         verify(categoryLoader).load(categoryId);
     }
