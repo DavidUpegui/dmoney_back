@@ -27,6 +27,6 @@ jobs:
         run: ./gradlew clean build --info
 
       - name: Sonar Analysis
-        run: SonarSource/sonarqube-scan-action@v2
+        run: ./gradlew sonar -Dsonar.qualitygate.wait=true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
