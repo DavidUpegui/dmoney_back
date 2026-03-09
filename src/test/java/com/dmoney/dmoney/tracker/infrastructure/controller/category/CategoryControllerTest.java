@@ -825,8 +825,6 @@ class CategoryControllerTest {
 
          @Test
          void should_return_500_when_unexpected_error() throws Exception{
-             List<SubcategoryResult> result = List.of();
-
              when(findAllSubcategoriesByCategoryIdUseCase.execute(any()))
                      .thenThrow(new RuntimeException("Unexpected error"));
 
