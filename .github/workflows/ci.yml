@@ -14,11 +14,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '25'
+          java-version: '21'
           cache: 'gradle'
 
       - name: Make gradlew executable
@@ -28,6 +27,6 @@ jobs:
         run: ./gradlew clean build --info
 
       - name: Sonar Analysis
-        run: ./gradlew sonar -Dsonar.qualitygate.wait=true
+        run: SonarSource/sonarqube-scan-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
