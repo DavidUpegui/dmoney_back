@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.reflect.Constructor;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -111,11 +112,6 @@ class CategoryMapperTest {
         assertEquals("Tech description", result.description().value());
 
         assertTrue(result.subcategories().isEmpty());
-
-
-
-
-
     }
 
     private static CategoryEntity getCategoryEntity(UUID categoryId, UUID subId1, UUID subId2) {
@@ -145,5 +141,16 @@ class CategoryMapperTest {
 
         categoryEntity.setSubcategories(subcategories);
         return categoryEntity;
+    }
+
+    @Test
+    void shouldHavePrivateConstructor() throws Exception {
+        Constructor<CategoryMapper> constructor =
+                CategoryMapper.class.getDeclaredConstructor();
+
+        assertTrue(java.lang.reflect.Modifier.isPrivate(constructor.getModifiers()));
+
+        constructor.setAccessible(true);
+        constructor.newInstance();
     }
 }
