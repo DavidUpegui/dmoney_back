@@ -6,7 +6,6 @@ import com.dmoney.dmoney.tracker.domain.category.Category;
 import com.dmoney.dmoney.tracker.domain.category.CategoryId;
 import com.dmoney.dmoney.tracker.domain.category.CategoryRepository;
 import com.dmoney.dmoney.tracker.domain.category.SubcategoryId;
-import com.dmoney.dmoney.tracker.exceptions.SubcategoryNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

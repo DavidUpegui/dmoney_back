@@ -1,9 +1,6 @@
 package com.dmoney.dmoney.tracker.domain.category;
 
-import lombok.ToString;
-
 import java.util.Objects;
-
 
 public record Description(String value) {
 

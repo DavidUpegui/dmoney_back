@@ -1,6 +1,5 @@
 package com.dmoney.dmoney.tracker.infrastructure.controller.category.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
 public record  EditCategoryRequest(

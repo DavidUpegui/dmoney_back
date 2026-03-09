@@ -1,7 +1,5 @@
 package com.dmoney.dmoney.tracker.infrastructure.controller.exceptions;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 import java.time.Instant;
