@@ -2,6 +2,7 @@ package com.dmoney.dmoney.tracker.infrastructure.persistence.tag;
 
 import com.dmoney.dmoney.tracker.domain.tag.Tag;
 import com.dmoney.dmoney.tracker.domain.tag.TagId;
+import com.dmoney.dmoney.tracker.domain.tag.TagName;
 import com.dmoney.dmoney.tracker.domain.tag.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -31,5 +32,10 @@ public class TagRepositoryAdapter implements TagRepository {
     @Override
     public Optional<Tag> findById(TagId id) {
         return tagJpaRepository.findById(id.value()).map(TagPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public boolean existsByName(TagName name) {
+        return tagJpaRepository.existsByNameIgnoreCase(name.value());
     }
 }

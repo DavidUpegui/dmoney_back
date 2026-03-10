@@ -6,5 +6,6 @@ import java.util.Optional;
 public interface TagRepository {
     Tag create(Tag tag);
     List<Tag> findAll();
-    Optional<Tag> findById(TagId from);
+    Optional<Tag> findById(TagId id);
+    boolean existsByName(TagName name);
 }
