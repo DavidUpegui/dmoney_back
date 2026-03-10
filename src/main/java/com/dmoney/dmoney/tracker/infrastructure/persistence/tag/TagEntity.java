@@ -15,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "entity")
+@Table(name = "tag")
 public class TagEntity {
     @Id
     UUID id;
