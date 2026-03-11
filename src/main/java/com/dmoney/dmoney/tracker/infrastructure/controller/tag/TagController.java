@@ -1,5 +1,6 @@
 package com.dmoney.dmoney.tracker.infrastructure.controller.tag;
 
+import com.dmoney.dmoney.tracker.application.tag.delete.DeleteTagUseCase;
 import com.dmoney.dmoney.tracker.application.tag.edit.EditTagUseCase;
 import com.dmoney.dmoney.tracker.application.tag.edit.TagEditionCommand;
 import com.dmoney.dmoney.tracker.application.tag.findAll.FindAllTagsUseCase;
@@ -26,6 +27,7 @@ public class TagController {
     private final FindAllTagsUseCase findAllTagsUseCase;
     private final FindTagByIdUseCase findTagById;
     private final EditTagUseCase editTagUseCase;
+    private final DeleteTagUseCase deleteTagUseCase;
 
 
     @GetMapping
@@ -74,5 +76,11 @@ public class TagController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(editedTag);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTag(@PathVariable String id){
+        deleteTagUseCase.execute(id);
+        return ResponseEntity.noContent().build();
     }
 }

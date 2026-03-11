@@ -8,4 +8,5 @@ public interface TagRepository {
     List<Tag> findAll();
     Optional<Tag> findById(TagId id);
     boolean existsByName(TagName name);
+    void deleteById(TagId id);
 }

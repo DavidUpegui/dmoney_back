@@ -38,4 +38,9 @@ public class TagRepositoryAdapter implements TagRepository {
     public boolean existsByName(TagName name) {
         return tagJpaRepository.existsByNameIgnoreCase(name.value());
     }
+
+    @Override
+    public void deleteById(TagId id) {
+        tagJpaRepository.deleteById(id.value());
+    }
 }
