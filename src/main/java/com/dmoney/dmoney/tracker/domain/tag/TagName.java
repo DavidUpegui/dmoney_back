@@ -5,7 +5,7 @@ public record TagName(
 ) {
     public TagName(String value){
         if(value == null || value.isBlank()){
-            throw new IllegalArgumentException("Tag name cannot be null");
+            throw new IllegalArgumentException("Tag name cannot be null or blank");
         }
         this.value = value.trim();
     }

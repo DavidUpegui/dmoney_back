@@ -5,14 +5,15 @@ import java.util.Objects;
 public record TagDescription(
         String value
 ) {
-    private static final int MAX_LENGHT = 256;
+    private static final int MAX_LENGTH = 255;
 
     public TagDescription(String value){
         Objects.requireNonNull(value, "Tag description cannot be null");
-        if(value.length() > 256){
+        String normalized = value.trim();
+        if(value.length() > MAX_LENGTH){
             throw new IllegalArgumentException("Tag description is too long");
         }
-        this.value = value.trim();
+        this.value = normalized;
     }
 
     public static TagDescription from(String description){

@@ -7,7 +7,7 @@ public record TagId(
         UUID value
 ) {
     public TagId(UUID value){
-        this.value = Objects.requireNonNull(value);
+        this.value = Objects.requireNonNull(value, "Tag id cannot be null");
     }
 
     public static TagId from(String id){

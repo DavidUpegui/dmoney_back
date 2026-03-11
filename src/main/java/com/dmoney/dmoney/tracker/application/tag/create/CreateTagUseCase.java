@@ -22,7 +22,7 @@ public class CreateTagUseCase {
 
         Tag tag = Tag.create(
                 TagName.from(command.name()),
-                TagDescription.from(command.description()));
+                TagDescription.fromNullable(command.description()));
 
         Tag createdTag = tagRepo.create(tag);
 

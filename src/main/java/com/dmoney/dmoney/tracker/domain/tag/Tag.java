@@ -1,9 +1,9 @@
 package com.dmoney.dmoney.tracker.domain.tag;
 
 public class Tag {
-    TagId id;
-    TagName name;
-    TagDescription description;
+    private final TagId id;
+    private TagName name;
+    private TagDescription description;
 
     private Tag( TagId id, TagName name, TagDescription description){
         this.id = id;
@@ -38,7 +38,4 @@ public class Tag {
     public TagDescription description(){
         return this.description;
     }
-
-
-
 }
