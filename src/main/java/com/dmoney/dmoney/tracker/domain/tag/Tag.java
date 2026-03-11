@@ -19,6 +19,14 @@ public class Tag {
         return new Tag(TagId.newId(), name, description);
     }
 
+    public void changeName(TagName changedName) {
+        this.name = changedName;
+    }
+
+    public void changeDescription(TagDescription changedDescription) {
+        this.description = changedDescription;
+    }
+
     public TagId id(){
         return this.id;
     }
@@ -30,4 +38,7 @@ public class Tag {
     public TagDescription description(){
         return this.description;
     }
+
+
+
 }

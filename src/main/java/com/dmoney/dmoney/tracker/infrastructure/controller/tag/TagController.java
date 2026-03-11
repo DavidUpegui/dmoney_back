@@ -1,11 +1,14 @@
 package com.dmoney.dmoney.tracker.infrastructure.controller.tag;
 
+import com.dmoney.dmoney.tracker.application.tag.edit.EditTagUseCase;
+import com.dmoney.dmoney.tracker.application.tag.edit.TagEditionCommand;
 import com.dmoney.dmoney.tracker.application.tag.findAll.FindAllTagsUseCase;
 import com.dmoney.dmoney.tracker.application.tag.TagResponse;
 import com.dmoney.dmoney.tracker.application.tag.create.CreateTagCommand;
 import com.dmoney.dmoney.tracker.application.tag.create.CreateTagUseCase;
 import com.dmoney.dmoney.tracker.application.tag.findById.FindTagByIdUseCase;
 import com.dmoney.dmoney.tracker.infrastructure.controller.tag.dto.TagCreationRequest;
+import com.dmoney.dmoney.tracker.infrastructure.controller.tag.dto.TagEditionRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +25,7 @@ public class TagController {
     private final CreateTagUseCase createTagUseCase;
     private final FindAllTagsUseCase findAllTagsUseCase;
     private final FindTagByIdUseCase findTagById;
+    private final EditTagUseCase editTagUseCase;
 
 
     @GetMapping
@@ -52,5 +56,23 @@ public class TagController {
         return ResponseEntity.
                 status(HttpStatus.CREATED)
                 .body(created);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<TagResponse> editTag(
+            @PathVariable String id,
+            @RequestBody @Valid TagEditionRequest request
+    ){
+        TagResponse editedTag = editTagUseCase.execute(
+                new TagEditionCommand(
+                        id,
+                        request.name(),
+                        request.description()
+                )
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(editedTag);
     }
 }
