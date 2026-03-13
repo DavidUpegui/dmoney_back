@@ -14,8 +14,9 @@ public class DeleteTagUseCase {
 
     public void execute(String id){
         TagId tagId = TagId.from(id);
-        tagRepository.findById(tagId)
-                .orElseThrow( () -> new ResourceNotFoundException("Tag", "id", id));
+        if(!tagRepository.existsById(tagId)){
+            throw new ResourceNotFoundException("Tag", "id", id);
+        }
 
         tagRepository.deleteById(tagId);
     }

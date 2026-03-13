@@ -43,4 +43,9 @@ public class TagRepositoryAdapter implements TagRepository {
     public void deleteById(TagId id) {
         tagJpaRepository.deleteById(id.value());
     }
+
+    @Override
+    public boolean existsById(TagId id) {
+        return tagJpaRepository.existsById(id.value());
+    }
 }

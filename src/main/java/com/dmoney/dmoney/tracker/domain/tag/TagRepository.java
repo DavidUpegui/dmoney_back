@@ -9,4 +9,5 @@ public interface TagRepository {
     Optional<Tag> findById(TagId id);
     boolean existsByName(TagName name);
     void deleteById(TagId id);
+    boolean existsById(TagId id);
 }
