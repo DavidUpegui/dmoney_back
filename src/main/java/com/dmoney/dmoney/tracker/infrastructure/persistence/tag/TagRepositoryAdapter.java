@@ -17,7 +17,7 @@ public class TagRepositoryAdapter implements TagRepository {
     private final TagJpaRepository tagJpaRepository;
 
     @Override
-    public Tag create(Tag tag) {
+    public Tag save(Tag tag) {
         TagEntity toCreate = TagPersistenceMapper.toEntity(tag);
         TagEntity created = tagJpaRepository.save(toCreate);
         return TagPersistenceMapper.toDomain(created);

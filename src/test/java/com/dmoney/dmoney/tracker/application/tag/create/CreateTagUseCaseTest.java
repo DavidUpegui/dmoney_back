@@ -35,7 +35,7 @@ public class CreateTagUseCaseTest {
         when(tagRepository.existsByName(any()))
                 .thenReturn(false);
 
-        when(tagRepository.create(any(Tag.class)))
+        when(tagRepository.save(any(Tag.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         TagResponse result = useCase.execute(command);
@@ -45,7 +45,7 @@ public class CreateTagUseCaseTest {
         assertNotNull(result.id());
 
         verify(tagRepository).existsByName(TagName.from(name));
-        verify(tagRepository).create(any(Tag.class));
+        verify(tagRepository).save(any(Tag.class));
     }
 
     @Test
@@ -63,7 +63,7 @@ public class CreateTagUseCaseTest {
                 () -> useCase.execute(command));
 
         verify(tagRepository).existsByName(TagName.from(name));
-        verify(tagRepository, never()).create(any(Tag.class));
+        verify(tagRepository, never()).save(any(Tag.class));
     }
 
     @Test
@@ -74,7 +74,7 @@ public class CreateTagUseCaseTest {
         assertThrows(IllegalArgumentException.class,
                 () -> useCase.execute(command));
 
-        verify(tagRepository, never()).create(any(Tag.class));
+        verify(tagRepository, never()).save(any(Tag.class));
     }
 
     @Test
@@ -85,7 +85,7 @@ public class CreateTagUseCaseTest {
         when(tagRepository.existsByName(any()))
                 .thenReturn(false);
 
-        when(tagRepository.create(any(Tag.class)))
+        when(tagRepository.save(any(Tag.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         TagResponse result = useCase.execute(command);
@@ -95,6 +95,6 @@ public class CreateTagUseCaseTest {
         assertNotNull(result.id());
 
         verify(tagRepository).existsByName(TagName.from("Name"));
-        verify(tagRepository).create(any(Tag.class));
+        verify(tagRepository).save(any(Tag.class));
     }
 }

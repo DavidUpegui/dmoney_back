@@ -24,7 +24,7 @@ public class CreateTagUseCase {
                 TagName.from(command.name()),
                 TagDescription.fromNullable(command.description()));
 
-        Tag createdTag = tagRepo.create(tag);
+        Tag createdTag = tagRepo.save(tag);
 
         return TagResponse.from(createdTag);
     }

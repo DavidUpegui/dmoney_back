@@ -57,7 +57,7 @@ public class EditTagUseCaseTest {
         when(tagRepository.existsByName(TagName.from(changedName)))
                 .thenReturn(false);
 
-        when(tagRepository.create(any(Tag.class)))
+        when(tagRepository.save(any(Tag.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         TagResponse response = useCase.execute(command);
@@ -130,7 +130,7 @@ public class EditTagUseCaseTest {
         when(tagRepository.findById(tag.id()))
                 .thenReturn(Optional.of(tag));
 
-        when(tagRepository.create(any(Tag.class)))
+        when(tagRepository.save(any(Tag.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         TagResponse response = useCase.execute(command);
@@ -161,7 +161,7 @@ public class EditTagUseCaseTest {
         when(tagRepository.existsByName(TagName.from(changedName)))
                 .thenReturn(false);
 
-        when(tagRepository.create(any(Tag.class)))
+        when(tagRepository.save(any(Tag.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         TagResponse response = useCase.execute(command);
@@ -189,7 +189,7 @@ public class EditTagUseCaseTest {
         when(tagRepository.findById(tag.id()))
                 .thenReturn(Optional.of(tag));
 
-        when(tagRepository.create(any(Tag.class)))
+        when(tagRepository.save(any(Tag.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         TagResponse response = useCase.execute(command);

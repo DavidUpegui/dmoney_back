@@ -30,6 +30,6 @@ public class EditTagUseCase {
             tagToEdit.changeDescription(TagDescription.fromNullable(command.description()));
         }
 
-        return TagResponse.from(tagRepository.create(tagToEdit));
+        return TagResponse.from(tagRepository.save(tagToEdit));
     }
 }
