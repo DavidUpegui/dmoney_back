@@ -8,7 +8,7 @@ public class User {
     private UserName userName;
     private AuthProvider authProvider;
 
-    public User(
+    private User(
             UserId id,
             UserEmail email,
             PasswordHash password,
@@ -28,6 +28,21 @@ public class User {
                                 AuthProvider authProvider) {
         return new User(
                 UserId.newId(),
+                email,
+                hash,
+                name,
+                authProvider
+        );
+    }
+
+    public static User rehydrate(
+            UserId id,
+            UserEmail email,
+            PasswordHash hash,
+            UserName name,
+            AuthProvider authProvider){
+        return new User(
+                id,
                 email,
                 hash,
                 name,
