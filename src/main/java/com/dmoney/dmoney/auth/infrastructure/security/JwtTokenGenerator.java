@@ -15,7 +15,7 @@ public class JwtTokenGenerator implements JwtGenerator {
     private final SecretKey key =
             Keys.hmacShaKeyFor("super-secret-key-super-secret-key".getBytes());
 
-    private final long EXPIRATION = 86400000;
+    private final static long EXPIRATION = 86400000;
 
     @Override
     public String generate(UserId userId) {
