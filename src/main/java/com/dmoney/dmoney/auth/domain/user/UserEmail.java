@@ -20,6 +20,10 @@ public record UserEmail(String value) {
         }
     }
 
+    public static UserEmail from(String email){
+        return new UserEmail(email);
+    }
+
     @Override
     public String toString() {
         return value;

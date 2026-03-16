@@ -20,4 +20,34 @@ public class User {
         this.userName = name;
         this.authProvider = provider;
     }
+
+    public static User register(
+                                UserEmail email,
+                                PasswordHash hash,
+                                UserName name,
+                                AuthProvider authProvider) {
+        return new User(
+                UserId.newId(),
+                email,
+                hash,
+                name,
+                authProvider
+        );
+    }
+
+    public UserId userId(){
+        return userId;
+    }
+    public UserEmail email(){
+        return email;
+    }
+    public PasswordHash password(){
+        return password;
+    }
+    public UserName userName(){
+        return userName;
+    }
+    public AuthProvider authProvider(){
+        return authProvider;
+    }
 }
