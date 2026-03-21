@@ -2,6 +2,7 @@ package com.dmoney.dmoney.tracker.domain.category;
 
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
+import com.dmoney.dmoney.shared.domain.models.UserId;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -9,27 +10,32 @@ import java.util.Objects;
 import java.util.Set;
 
 public class Category {
+    private final UserId userId;
     private final CategoryId id;
     private CategoryName name;
     private CategoryDescription description;
     private final Set<Subcategory> subcategories = new HashSet<>();
 
     public Category(
+            UserId userId,
             CategoryId id,
             CategoryName name,
             CategoryDescription description
     ){
+        this.userId = Objects.requireNonNull(userId);
         this.id = Objects.requireNonNull(id);
         this.name = Objects.requireNonNull(name);
         this.description = Objects.requireNonNull(description);
     }
 
     public Category(
+            UserId userId,
             CategoryId id,
             CategoryName name,
             CategoryDescription description,
             Set<Subcategory> subcategories
     ) {
+        this.userId = Objects.requireNonNull(userId);
         this.id = Objects.requireNonNull(id);
         this.name = Objects.requireNonNull(name);
         this.description = Objects.requireNonNull(description);
