@@ -1,5 +1,6 @@
 package com.dmoney.dmoney.tracker.domain.category;
 
+import com.dmoney.dmoney.auth.domain.user.User;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
 import com.dmoney.dmoney.shared.domain.models.UserId;
@@ -16,7 +17,7 @@ public class Category {
     private CategoryDescription description;
     private final Set<Subcategory> subcategories = new HashSet<>();
 
-    public Category(
+    private Category(
             UserId userId,
             CategoryId id,
             CategoryName name,
@@ -28,7 +29,7 @@ public class Category {
         this.description = Objects.requireNonNull(description);
     }
 
-    public Category(
+    private Category(
             UserId userId,
             CategoryId id,
             CategoryName name,
@@ -41,6 +42,29 @@ public class Category {
         this.description = Objects.requireNonNull(description);
         this.subcategories.addAll(
                 Objects.requireNonNull(subcategories)
+        );
+    }
+
+    public Category create(UserId userId, CategoryName name, CategoryDescription description){
+        return new Category(
+                userId,
+                CategoryId.newId(),
+                name,
+                description
+        );
+    }
+
+    public Category rehydrate(UserId userId,
+                              CategoryId categoryId,
+                              CategoryName name,
+                              CategoryDescription description,
+                              Set<Subcategory> subcategories){
+        return new Category(
+                userId,
+                categoryId,
+                name,
+                description,
+                subcategories
         );
     }
 
