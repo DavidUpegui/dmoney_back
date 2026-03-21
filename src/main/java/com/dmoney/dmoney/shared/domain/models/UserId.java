@@ -1,4 +1,4 @@
-package com.dmoney.dmoney.auth.domain.user;
+package com.dmoney.dmoney.shared.domain.models;
 
 import java.util.Objects;
 import java.util.UUID;

@@ -1,14 +1,13 @@
 package com.dmoney.dmoney.auth.domain.user;
 
+import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
+
 import java.util.Objects;
 
 public record PasswordHash(String value) {
-    public PasswordHash{
-        Objects.requireNonNull(value, "Password hash cannot be null");
-
-        if(value.isBlank()){
-            throw new IllegalArgumentException("Password hash cannot be null");
-        }
+    public PasswordHash {
+        if (value == null || value.isBlank())
+            throw new ValidationException("Password hash cannot be null or blank");
     }
     public static PasswordHash from(String value){
         return new PasswordHash(value);

@@ -1,4 +1,4 @@
-package com.dmoney.dmoney.tracker.domain.exceptions;
+package com.dmoney.dmoney.shared.domain.exceptions;
 
 public class ResourceNotFoundException extends DomainException{
 

@@ -1,7 +1,7 @@
 package com.dmoney.dmoney.tracker.domain.category;
 
-import com.dmoney.dmoney.tracker.domain.exceptions.ResourceAlreadyExistsException;
-import com.dmoney.dmoney.tracker.domain.exceptions.ResourceNotFoundException;
+import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
+import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
 
 import java.util.Collections;
 import java.util.HashSet;

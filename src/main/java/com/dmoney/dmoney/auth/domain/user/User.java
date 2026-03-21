@@ -1,6 +1,8 @@
 package com.dmoney.dmoney.auth.domain.user;
 
 
+import com.dmoney.dmoney.shared.domain.models.UserId;
+
 public class User {
     private final UserId userId;
     private final UserEmail email;

@@ -2,7 +2,7 @@ package com.dmoney.dmoney.auth.infrastructure.persistence.user;
 
 import com.dmoney.dmoney.auth.domain.user.User;
 import com.dmoney.dmoney.auth.domain.user.UserEmail;
-import com.dmoney.dmoney.auth.domain.user.UserId;
+import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.auth.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

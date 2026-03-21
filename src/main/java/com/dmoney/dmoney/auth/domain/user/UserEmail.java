@@ -1,5 +1,7 @@
 package com.dmoney.dmoney.auth.domain.user;
 
+import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
+
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -7,17 +9,18 @@ public record UserEmail(String value) {
     private static final Pattern EMAIL_PATTERN =
             Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
 
-    public UserEmail{
+    public UserEmail(String value){
         Objects.requireNonNull(value);
-        value = value.trim().toLowerCase();
+        String normalized = value.trim().toLowerCase();
 
-        if(value().isBlank()){
-            throw new IllegalArgumentException("Email cannot be blank");
+        if(normalized.isBlank()){
+            throw new ValidationException("Email cannot be blank");
         }
 
-        if(!EMAIL_PATTERN.matcher(value).matches()){
-            throw new IllegalArgumentException("Email cannot be blank");
+        if(!EMAIL_PATTERN.matcher(normalized).matches()){
+            throw new ValidationException("Email doesn't match the correct format");
         }
+        this.value = normalized;
     }
 
     public static UserEmail from(String email){
@@ -28,5 +31,4 @@ public record UserEmail(String value) {
     public String toString() {
         return value;
     }
-
 }

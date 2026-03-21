@@ -3,7 +3,7 @@ package com.dmoney.dmoney.tracker.application.category.helpers;
 import com.dmoney.dmoney.tracker.domain.category.Category;
 import com.dmoney.dmoney.tracker.domain.category.CategoryId;
 import com.dmoney.dmoney.tracker.domain.category.CategoryRepository;
-import com.dmoney.dmoney.tracker.domain.exceptions.ResourceNotFoundException;
+import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Component;
 
 @Component

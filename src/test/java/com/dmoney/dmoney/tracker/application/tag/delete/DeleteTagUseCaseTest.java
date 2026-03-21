@@ -1,7 +1,7 @@
 package com.dmoney.dmoney.tracker.application.tag.delete;
 
 
-import com.dmoney.dmoney.tracker.domain.exceptions.ResourceNotFoundException;
+import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
 import com.dmoney.dmoney.tracker.domain.tag.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

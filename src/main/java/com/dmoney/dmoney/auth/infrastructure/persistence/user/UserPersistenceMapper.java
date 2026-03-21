@@ -1,6 +1,7 @@
 package com.dmoney.dmoney.auth.infrastructure.persistence.user;
 
 import com.dmoney.dmoney.auth.domain.user.*;
+import com.dmoney.dmoney.shared.domain.models.UserId;
 
 public class UserPersistenceMapper {
 

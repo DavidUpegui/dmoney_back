@@ -1,5 +1,7 @@
 package com.dmoney.dmoney.auth.domain.user;
 
+import com.dmoney.dmoney.shared.domain.models.UserId;
+
 import java.util.Optional;
 
 public interface UserRepository {

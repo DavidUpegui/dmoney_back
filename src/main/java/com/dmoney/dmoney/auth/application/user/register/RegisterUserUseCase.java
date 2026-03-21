@@ -2,7 +2,8 @@ package com.dmoney.dmoney.auth.application.user.register;
 
 import com.dmoney.dmoney.auth.application.user.ports.PasswordHasher;
 import com.dmoney.dmoney.auth.domain.user.*;
-import jakarta.validation.constraints.Email;
+import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
+import com.dmoney.dmoney.shared.domain.models.UserId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +15,10 @@ public class RegisterUserUseCase {
 
     public UserId execute(UserRegistrationCommand command){
         UserEmail email = new UserEmail(command.email());
+
         userRepository.findByEmail(email)
                 .ifPresent(user -> {
-                    throw new IllegalArgumentException("Email already in use");
+                    throw new ResourceAlreadyExistsException("Email", "value", command.email());
                 });
 
         String hash = passwordHasher.hash(command.password());

@@ -1,20 +1,20 @@
 package com.dmoney.dmoney.auth.domain.user;
 
+import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
+
 import java.util.Objects;
 
 public record UserName(String value) {
 
     private static final int MAX_LENGTH = 100;
 
-    public UserName{
-        Objects.requireNonNull(value);
-        value = value.trim();
-        if(value.isBlank()){
-            throw new IllegalArgumentException("User name cannot be blank");
-        }
-        if(value.length() > MAX_LENGTH){
-            throw new IllegalArgumentException("User name is too long");
-        }
+    public UserName(String value) {
+        if (value == null || value.isBlank())
+            throw new ValidationException("User name cannot be blank");
+        String trimmed = value.trim();
+        if (trimmed.length() > MAX_LENGTH)
+            throw new ValidationException("User name is too long");
+        this.value = trimmed;
     }
 
     public static UserName from(String name){

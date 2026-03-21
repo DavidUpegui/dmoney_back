@@ -1,8 +1,8 @@
 package com.dmoney.dmoney.tracker.application.tag.edit;
 
 import com.dmoney.dmoney.tracker.application.tag.TagResponse;
-import com.dmoney.dmoney.tracker.domain.exceptions.ResourceAlreadyExistsException;
-import com.dmoney.dmoney.tracker.domain.exceptions.ResourceNotFoundException;
+import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
+import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
 import com.dmoney.dmoney.tracker.domain.tag.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

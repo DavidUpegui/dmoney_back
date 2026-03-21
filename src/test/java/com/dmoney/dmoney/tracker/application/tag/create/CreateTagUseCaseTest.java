@@ -1,7 +1,7 @@
 package com.dmoney.dmoney.tracker.application.tag.create;
 
 import com.dmoney.dmoney.tracker.application.tag.TagResponse;
-import com.dmoney.dmoney.tracker.domain.exceptions.ResourceAlreadyExistsException;
+import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
 import com.dmoney.dmoney.tracker.domain.tag.Tag;
 import com.dmoney.dmoney.tracker.domain.tag.TagName;
 import com.dmoney.dmoney.tracker.domain.tag.TagRepository;

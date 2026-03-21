@@ -1,7 +1,7 @@
 package com.dmoney.dmoney.auth.infrastructure.security;
 
 import com.dmoney.dmoney.auth.application.user.ports.JwtGenerator;
-import com.dmoney.dmoney.auth.domain.user.UserId;
+import com.dmoney.dmoney.shared.domain.models.UserId;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;

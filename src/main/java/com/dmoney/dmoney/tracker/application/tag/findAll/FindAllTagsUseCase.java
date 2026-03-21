@@ -1,8 +1,9 @@
 package com.dmoney.dmoney.tracker.application.tag.findAll;
 
+import com.dmoney.dmoney.shared.domain.models.UserId;
+import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
 import com.dmoney.dmoney.tracker.application.tag.TagResponse;
 import com.dmoney.dmoney.tracker.domain.tag.TagRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +14,12 @@ import java.util.List;
 public class FindAllTagsUseCase {
 
     private final TagRepository tagRepository;
-
+    private final AuthenticatedUserProvider authProvider;
     public List<TagResponse> execute(){
-        return tagRepository.findAll()
+
+        UserId userId = authProvider.currentUserId();
+
+        return tagRepository.findAllByUserId(userId)
                 .stream()
                 .map(TagResponse::from)
                 .toList();

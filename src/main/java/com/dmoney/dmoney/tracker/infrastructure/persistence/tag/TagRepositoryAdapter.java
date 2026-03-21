@@ -1,5 +1,6 @@
 package com.dmoney.dmoney.tracker.infrastructure.persistence.tag;
 
+import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.domain.tag.Tag;
 import com.dmoney.dmoney.tracker.domain.tag.TagId;
 import com.dmoney.dmoney.tracker.domain.tag.TagName;
@@ -24,28 +25,28 @@ public class TagRepositoryAdapter implements TagRepository {
     }
 
     @Override
-    public List<Tag> findAll() {
-        List<TagEntity> found = tagJpaRepository.findAll();
+    public List<Tag> findAllByUserId(UserId userId) {
+        List<TagEntity> found = tagJpaRepository.findAllByUserId(userId.value());
         return found.stream().map(TagPersistenceMapper::toDomain).toList();
     }
 
     @Override
-    public Optional<Tag> findById(TagId id) {
-        return tagJpaRepository.findById(id.value()).map(TagPersistenceMapper::toDomain);
+    public Optional<Tag> findByUserIdAndId(UserId userId, TagId id) {
+        return tagJpaRepository.findByUserIdAndId(userId.value(), id.value()).map(TagPersistenceMapper::toDomain);
     }
 
     @Override
-    public boolean existsByName(TagName name) {
-        return tagJpaRepository.existsByNameIgnoreCase(name.value());
+    public boolean existsByUserIdAndName(UserId userId, TagName name) {
+        return tagJpaRepository.existsByUserIdAndNameIgnoreCase(userId.value(), name.value());
     }
 
     @Override
-    public void deleteById(TagId id) {
-        tagJpaRepository.deleteById(id.value());
-    }
+    public boolean deleteByUserIdAndId(UserId userId, TagId id) {
+        int deleted = tagJpaRepository.deleteByUserIdAndId(
+                userId.value(),
+                id.value()
+        );
 
-    @Override
-    public boolean existsById(TagId id) {
-        return tagJpaRepository.existsById(id.value());
+        return deleted > 0;
     }
 }

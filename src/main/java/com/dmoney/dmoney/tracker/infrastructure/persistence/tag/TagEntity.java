@@ -20,6 +20,9 @@ public class TagEntity {
     @Id
     UUID id;
 
+    @Column(name = "user_id", nullable = false)
+    UUID userId;
+
     @Column(nullable = false)
     String name;
 
