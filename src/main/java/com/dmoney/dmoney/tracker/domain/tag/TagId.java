@@ -1,13 +1,16 @@
 package com.dmoney.dmoney.tracker.domain.tag;
 
-import java.util.Objects;
+import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
+
 import java.util.UUID;
 
 public record TagId(
         UUID value
 ) {
-    public TagId(UUID value){
-        this.value = Objects.requireNonNull(value, "Tag id cannot be null");
+    public TagId{
+        if(value == null){
+            throw new ValidationException("Tag id cannot be null.");
+        }
     }
 
     public static TagId from(String id){

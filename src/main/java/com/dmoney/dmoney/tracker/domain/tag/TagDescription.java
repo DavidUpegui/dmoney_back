@@ -1,6 +1,6 @@
 package com.dmoney.dmoney.tracker.domain.tag;
 
-import java.util.Objects;
+import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
 
 public record TagDescription(
         String value
@@ -8,10 +8,9 @@ public record TagDescription(
     private static final int MAX_LENGTH = 255;
 
     public TagDescription(String value){
-        Objects.requireNonNull(value, "Tag description cannot be null");
-        String normalized = value.trim();
-        if(value.length() > MAX_LENGTH){
-            throw new IllegalArgumentException("Tag description is too long");
+        String normalized = value != null ? value.trim() : "";
+        if(normalized.length() > MAX_LENGTH){
+            throw new ValidationException("Tag description is too long");
         }
         this.value = normalized;
     }
