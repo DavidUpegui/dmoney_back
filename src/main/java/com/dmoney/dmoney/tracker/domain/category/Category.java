@@ -11,13 +11,13 @@ import java.util.Set;
 public class Category {
     private final CategoryId id;
     private CategoryName name;
-    private Description description;
+    private CategoryDescription description;
     private final Set<Subcategory> subcategories = new HashSet<>();
 
     public Category(
             CategoryId id,
             CategoryName name,
-            Description description
+            CategoryDescription description
     ){
         this.id = Objects.requireNonNull(id);
         this.name = Objects.requireNonNull(name);
@@ -27,7 +27,7 @@ public class Category {
     public Category(
             CategoryId id,
             CategoryName name,
-            Description description,
+            CategoryDescription description,
             Set<Subcategory> subcategories
     ) {
         this.id = Objects.requireNonNull(id);
@@ -38,7 +38,7 @@ public class Category {
         );
     }
 
-    public void edit(CategoryName name, Description description){
+    public void edit(CategoryName name, CategoryDescription description){
         if(name != null){
             this.name = name;
         }
@@ -47,7 +47,7 @@ public class Category {
         }
     }
 
-    public Subcategory addSubcategory(SubcategoryName name, Description description){
+    public Subcategory addSubcategory(SubcategoryName name, SubcategoryDescription description){
         Objects.requireNonNull(name);
         Objects.requireNonNull(description);
 
@@ -65,7 +65,7 @@ public class Category {
     }
 
 
-    public Subcategory editSubcategory(SubcategoryId id, SubcategoryName newName, Description newDescription){
+    public Subcategory editSubcategory(SubcategoryId id, SubcategoryName newName, SubcategoryDescription newDescription){
         Objects.requireNonNull(id, "subcategory ID cannot be null in the edition");
         Subcategory subcategory = findSubcategory(id);
 
@@ -116,7 +116,7 @@ public class Category {
     public CategoryName name(){
         return this.name;
     }
-    public Description description(){
+    public CategoryDescription description(){
         return this.description;
     }
     public Set<Subcategory> subcategories(){

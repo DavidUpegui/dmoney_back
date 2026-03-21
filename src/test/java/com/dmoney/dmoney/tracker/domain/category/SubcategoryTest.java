@@ -13,7 +13,7 @@ class SubcategoryTest {
     void shouldCreateValidSubcategory(){
         SubcategoryId id = new SubcategoryId(UUID.randomUUID());
         SubcategoryName name = SubcategoryName.from("food");
-        Description description = Description.from("description");
+        CategoryDescription description = CategoryDescription.from("description");
 
         Subcategory subcategory = new Subcategory(id, name, description);
 
@@ -25,7 +25,7 @@ class SubcategoryTest {
     @Test
     void shouldThrowWhenIdIsNull(){
         SubcategoryName name = SubcategoryName.from("food");
-        Description description = Description.from("description");
+        CategoryDescription description = CategoryDescription.from("description");
 
         assertThrows(NullPointerException.class,
                 () ->  new Subcategory(null, name, description)
@@ -35,7 +35,7 @@ class SubcategoryTest {
     @Test
     void shouldThrowWhenNameIsNull(){
         SubcategoryId id = new SubcategoryId(UUID.randomUUID());
-        Description description = Description.from("description");
+        CategoryDescription description = CategoryDescription.from("description");
 
         assertThrows(NullPointerException.class,
                 () ->  new Subcategory(id, null, description)
@@ -46,7 +46,7 @@ class SubcategoryTest {
     void shouldRename(){
         SubcategoryId id = new SubcategoryId(UUID.randomUUID());
         SubcategoryName name = SubcategoryName.from("food");
-        Description description = Description.from("description");
+        CategoryDescription description = CategoryDescription.from("description");
 
         Subcategory subcategory = new Subcategory(id, name, description);
         SubcategoryName newName = SubcategoryName.from("transport");
@@ -59,7 +59,7 @@ class SubcategoryTest {
     void shouldThrowWhenRenameWithValueNull(){
         SubcategoryId id = new SubcategoryId(UUID.randomUUID());
         SubcategoryName name = SubcategoryName.from("food");
-        Description description = Description.from("description");
+        CategoryDescription description = CategoryDescription.from("description");
 
         Subcategory subcategory = new Subcategory(id, name, description);
 
@@ -72,10 +72,10 @@ class SubcategoryTest {
     void shouldChangeDescription(){
         SubcategoryId id = new SubcategoryId(UUID.randomUUID());
         SubcategoryName name = SubcategoryName.from("food");
-        Description description = Description.from("description");
+        CategoryDescription description = CategoryDescription.from("description");
 
         Subcategory subcategory = new Subcategory(id, name, description);
-        Description newDescription = Description.from("newDescription");
+        CategoryDescription newDescription = CategoryDescription.from("newDescription");
         subcategory.changeDescription(newDescription);
 
         assertEquals(newDescription, subcategory.description());

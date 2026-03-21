@@ -27,7 +27,7 @@ class FindCategoryByIdUseCaseTest {
     @Test
     void should_return_category_by_id(){
         CategoryName categoryName = CategoryName.from("Category name");
-        Description categoryDescription = Description.from("Category description");
+        CategoryDescription categoryDescription = CategoryDescription.from("Category description");
         CategoryId categoryId = CategoryId.newId();
 
         Category category = new Category(categoryId, categoryName, categoryDescription);

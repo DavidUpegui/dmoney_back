@@ -30,13 +30,13 @@ class FindAllCategoriesUseCaseTest {
         Category category1 = new Category(
                 CategoryId.newId(),
                 CategoryName.from("Food"),
-                Description.from("Food category")
+                CategoryDescription.from("Food category")
         );
 
         Category category2 = new Category(
                 CategoryId.newId(),
                 CategoryName.from("Tech"),
-                Description.from("Tech category")
+                CategoryDescription.from("Tech category")
         );
 
         when(categoryRepository.findAll())

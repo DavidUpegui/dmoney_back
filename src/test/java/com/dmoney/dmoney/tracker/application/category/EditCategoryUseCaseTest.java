@@ -37,7 +37,7 @@ class EditCategoryUseCaseTest {
         category = new Category(
                 CategoryId.newId(),
                 CategoryName.from("Category name"),
-                Description.from("Category description")
+                CategoryDescription.from("Category description")
         );
     }
 

@@ -23,7 +23,7 @@ public class CreateCategoryUseCase {
         Category category = new Category(
                 CategoryId.newId(),
                 name,
-                Description.fromNullable(command.description())
+                CategoryDescription.fromNullable(command.description())
         );
         return CategoryResult.from(repository.save(category));
     }

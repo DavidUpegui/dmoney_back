@@ -19,7 +19,7 @@ class CategoryTest {
     void shouldCreateCategoryWithoutSubcategories(){
         CategoryId id = new CategoryId(UUID.randomUUID());
         CategoryName name = CategoryName.from("name");
-        Description description = Description.from("description");
+        CategoryDescription description = CategoryDescription.from("description");
 
         Category category = new Category(id, name, description);
 
@@ -35,14 +35,14 @@ class CategoryTest {
         Subcategory subcategory =  new Subcategory(
                 SubcategoryId.newId(),
                 SubcategoryName.from("subcategory name"),
-                Description.from("subcategory description")
+                CategoryDescription.from("subcategory description")
         );
         subcategories.add(subcategory);
 
         Category category = new Category(
                 CategoryId.newId(),
                 CategoryName.from("name"),
-                Description.from("description"),
+                CategoryDescription.from("description"),
                 subcategories
         );
 
@@ -54,7 +54,7 @@ class CategoryTest {
         Category category = new Category(
                 CategoryId.newId(),
                 CategoryName.from("name"),
-                Description.from("description")
+                CategoryDescription.from("description")
         );
         CategoryName newName = CategoryName.from("newName");
 
@@ -68,9 +68,9 @@ class CategoryTest {
         Category category = new Category(
                 CategoryId.newId(),
                 CategoryName.from("name"),
-                Description.from("description")
+                CategoryDescription.from("description")
         );
-        Description newDescription = Description.from("newDescription");
+        CategoryDescription newDescription = CategoryDescription.from("newDescription");
 
         category.edit(null, newDescription);
 
@@ -83,11 +83,11 @@ class CategoryTest {
         Category category = new Category(
                 CategoryId.newId(),
                 CategoryName.from("name"),
-                Description.from("description")
+                CategoryDescription.from("description")
         );
 
         SubcategoryName subcategoryName = SubcategoryName.from("subcategoryName");
-        Description description = Description.from(("subcategoryDescription"));
+        CategoryDescription description = CategoryDescription.from(("subcategoryDescription"));
 
         category.addSubcategory(subcategoryName, description);
 
@@ -100,10 +100,10 @@ class CategoryTest {
         Category category = new Category(
                 CategoryId.newId(),
                 CategoryName.from("name"),
-                Description.from("description")
+                CategoryDescription.from("description")
         );
 
-        Description description = Description.from(("subcategoryDescription"));
+        CategoryDescription description = CategoryDescription.from(("subcategoryDescription"));
 
         assertThrows(NullPointerException.class,
                 () -> category.addSubcategory(null, description));
@@ -113,7 +113,7 @@ class CategoryTest {
         Category category = new Category(
                 CategoryId.newId(),
                 CategoryName.from("name"),
-                Description.from("description")
+                CategoryDescription.from("description")
         );
 
         SubcategoryName subcategoryName = SubcategoryName.from("subcategoryName");
@@ -127,15 +127,15 @@ class CategoryTest {
         Category category = new Category(
                 CategoryId.newId(),
                 CategoryName.from("name"),
-                Description.from("description")
+                CategoryDescription.from("description")
         );
 
         SubcategoryName subcategoryName = SubcategoryName.from("subcategoryName");
-        Description description = Description.from(("subcategoryDescription"));
+        CategoryDescription description = CategoryDescription.from(("subcategoryDescription"));
 
         category.addSubcategory(subcategoryName, description);
 
-        Description sameDescription = Description.from(("subcategoryDescription"));
+        CategoryDescription sameDescription = CategoryDescription.from(("subcategoryDescription"));
 
         assertThrows(ResourceAlreadyExistsException.class,
                 () -> category.addSubcategory(subcategoryName, sameDescription));
@@ -152,12 +152,12 @@ class CategoryTest {
             category = new Category(
                     CategoryId.newId(),
                     CategoryName.from("name"),
-                    Description.from("description")
+                    CategoryDescription.from("description")
             );
 
             subcategory = category.addSubcategory(
                     SubcategoryName.from("subcategory name"),
-                    Description.from("subcategory description")
+                    CategoryDescription.from("subcategory description")
             );
         }
 
@@ -165,7 +165,7 @@ class CategoryTest {
         void shouldEditTheSubcategory(){
             SubcategoryId subcategoryId = subcategory.id();
             SubcategoryName newSubcategoryName = SubcategoryName.from("newName");
-            Description newSubcategoryDescription = Description.from("newDescription");
+            CategoryDescription newSubcategoryDescription = CategoryDescription.from("newDescription");
 
             category.editSubcategory(subcategoryId, newSubcategoryName, newSubcategoryDescription);
 
@@ -177,7 +177,7 @@ class CategoryTest {
         void shouldEditOnlyTheSubcategoryName(){
             SubcategoryId subcategoryId = subcategory.id();
             SubcategoryName newSubcategoryName = SubcategoryName.from("newName");
-            Description oldSubcategoryDescription = subcategory.description();
+            CategoryDescription oldSubcategoryDescription = subcategory.description();
 
             category.editSubcategory(subcategoryId, newSubcategoryName, null);
 
@@ -188,7 +188,7 @@ class CategoryTest {
         @Test
         void shouldEditOnlyTheSubcategoryDescription(){
             SubcategoryId subcategoryId = subcategory.id();
-            Description newDescription = Description.from("newDescription");
+            CategoryDescription newDescription = CategoryDescription.from("newDescription");
             SubcategoryName oldSubcategoryName = subcategory.name();
 
             category.editSubcategory(subcategoryId, null, newDescription);
@@ -200,7 +200,7 @@ class CategoryTest {
         @Test
         void shouldThrowExceptionWhenSubcategoryIdIsNullInTheEdition(){
             SubcategoryName newSubcategoryName = SubcategoryName.from("newName");
-            Description newDescription = Description.from("newDescription");
+            CategoryDescription newDescription = CategoryDescription.from("newDescription");
 
 
             assertThrows(NullPointerException.class,
@@ -211,7 +211,7 @@ class CategoryTest {
         void shouldThrowExceptionWhenSubcategoryIdWasNotFound(){
             SubcategoryId differentSubcategoryId = SubcategoryId.newId();
             SubcategoryName newSubcategoryName = SubcategoryName.from("newName");
-            Description newDescription = Description.from("newDescription");
+            CategoryDescription newDescription = CategoryDescription.from("newDescription");
 
 
             assertThrows(ResourceNotFoundException.class,
@@ -225,7 +225,7 @@ class CategoryTest {
         @Test
         void shouldThrowExceptionWhenThereExistASubcategoryWithSameNameInTheEdition(){
             String sameName = "sameName";
-            category.addSubcategory(SubcategoryName.from(sameName), Description.empty());
+            category.addSubcategory(SubcategoryName.from(sameName), CategoryDescription.empty());
             SubcategoryId subcategoryIdToEdit = subcategory.id();
 
 
@@ -242,12 +242,12 @@ class CategoryTest {
 
             category.addSubcategory(
                     SubcategoryName.from("name1"),
-                    Description.empty()
+                    CategoryDescription.empty()
             );
 
             category.addSubcategory(
                     SubcategoryName.from("name2"),
-                    Description.empty()
+                    CategoryDescription.empty()
             );
 
             SubcategoryName newName = SubcategoryName.from("another");

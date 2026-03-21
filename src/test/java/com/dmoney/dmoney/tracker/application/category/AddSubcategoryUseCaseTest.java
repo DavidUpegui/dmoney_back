@@ -35,7 +35,7 @@ class AddSubcategoryUseCaseTest {
         category = new Category(
                 CategoryId.newId(),
                 CategoryName.from("category"),
-                Description.from("description")
+                CategoryDescription.from("description")
         );
     }
 

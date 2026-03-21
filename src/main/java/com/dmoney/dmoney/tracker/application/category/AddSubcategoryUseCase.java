@@ -20,7 +20,7 @@ public class AddSubcategoryUseCase {
 
         Subcategory subcategoryAdded = category.addSubcategory(
                 SubcategoryName.from(command.name()),
-                Description.fromNullable(command.description())
+                SubcategoryDescription.fromNullable(command.description())
         );
         categoryRepository.save(category);
         return SubcategoryResult.from(subcategoryAdded, command.categoryId());

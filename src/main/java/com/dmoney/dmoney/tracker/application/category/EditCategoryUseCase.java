@@ -19,7 +19,7 @@ public class EditCategoryUseCase {
         CategoryId categoryId = CategoryId.from(command.id());
 
         Category category = categoryLoader.load(categoryId);
-        Description newDescription = command.description() == null ? null : Description.from(command.description());
+        CategoryDescription newDescription = command.description() == null ? null : CategoryDescription.from(command.description());
         CategoryName newName = command.name() == null ? null : CategoryName.from(command.name());
 
         category.edit(

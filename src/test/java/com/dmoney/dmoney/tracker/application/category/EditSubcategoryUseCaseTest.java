@@ -36,11 +36,11 @@ class EditSubcategoryUseCaseTest {
         category = new Category(
                 CategoryId.newId(),
                 CategoryName.from("Category name"),
-                Description.from("Category description")
+                CategoryDescription.from("Category description")
         );
         subcategory = category.addSubcategory(
                 SubcategoryName.from("Subcategory name"),
-                Description.from("Subcategory description")
+                CategoryDescription.from("Subcategory description")
         );
     }
 

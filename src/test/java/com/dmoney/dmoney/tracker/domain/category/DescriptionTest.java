@@ -9,14 +9,14 @@ class DescriptionTest {
 
     @Test
     void shouldCreateDescription(){
-        Description description = new Description("description");
+        CategoryDescription description = new CategoryDescription("description");
 
         assertEquals("description", description.value());
     }
 
     @Test
     void shouldCreateDescriptionFromValue(){
-        Description description = Description.from("description");
+        CategoryDescription description = CategoryDescription.from("description");
 
         assertEquals("description", description.value());
     }
@@ -24,7 +24,7 @@ class DescriptionTest {
     @Test
     void shouldThrowErrorWhenValueIsNull(){
         assertThrows(NullPointerException.class,
-                () -> new Description(null));
+                () -> new CategoryDescription(null));
     }
 
     @Test
@@ -33,7 +33,7 @@ class DescriptionTest {
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> new Description(tooLong)
+                () -> new CategoryDescription(tooLong)
         );
 
         assertEquals("Description is too long", exception.getMessage());
@@ -41,21 +41,21 @@ class DescriptionTest {
 
     @Test
     void shouldReturnEmptyWhenUseFromNullableWithNull(){
-        Description description = Description.fromNullable(null);
+        CategoryDescription description = CategoryDescription.fromNullable(null);
 
         assertEquals("", description.value());
     }
 
     @Test
     void shouldReturnValueWhenUseFromNullableWithValue(){
-        Description description = Description.fromNullable("any value");
+        CategoryDescription description = CategoryDescription.fromNullable("any value");
 
         assertEquals("any value", description.value());
     }
 
     @Test
     void shouldCreateEmptyDescription(){
-        Description description = Description.empty();
+        CategoryDescription description = CategoryDescription.empty();
 
         assertEquals("", description.value());
     }

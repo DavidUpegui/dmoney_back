@@ -37,7 +37,7 @@ class DeleteSubcategoryUseCaseTest {
         category = new Category(
                 CategoryId.newId(),
                 CategoryName.from("category name"),
-                Description.from("category description")
+                CategoryDescription.from("category description")
         );
     }
 
@@ -45,7 +45,7 @@ class DeleteSubcategoryUseCaseTest {
     void should_delete_subcategory_and_save_category(){
         Subcategory subcategory = category.addSubcategory(
                 SubcategoryName.from("Subcategory name"),
-                Description.from("Subcategory description")
+                CategoryDescription.from("Subcategory description")
         );
         CategoryId categoryId = category.id();
         SubcategoryId subcategoryId = subcategory.id();

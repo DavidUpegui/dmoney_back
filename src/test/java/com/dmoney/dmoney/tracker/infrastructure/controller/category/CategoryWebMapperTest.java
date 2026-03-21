@@ -4,7 +4,7 @@ package com.dmoney.dmoney.tracker.infrastructure.controller.category;
 import com.dmoney.dmoney.tracker.domain.category.Category;
 import com.dmoney.dmoney.tracker.domain.category.CategoryId;
 import com.dmoney.dmoney.tracker.domain.category.CategoryName;
-import com.dmoney.dmoney.tracker.domain.category.Description;
+import com.dmoney.dmoney.tracker.domain.category.CategoryDescription;
 import com.dmoney.dmoney.tracker.infrastructure.controller.category.dto.CategoryResponse;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +19,7 @@ class CategoryWebMapperTest {
         Category domain  = new Category(
                 CategoryId.newId(),
                 CategoryName.from("Name"),
-                Description.from("Description")
+                CategoryDescription.from("Description")
         );
 
         CategoryResponse result = CategoryWebMapper.toResponse(domain);

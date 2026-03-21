@@ -34,14 +34,14 @@ public final class CategoryMapper {
                 .map(subEntity -> new Subcategory(
                         new SubcategoryId(subEntity.getId()),
                         new SubcategoryName(subEntity.getName()),
-                        new Description(subEntity.getDescription())
+                        new SubcategoryDescription(subEntity.getDescription())
                 ))
                 .collect(Collectors.toSet());
 
         return new Category(
                 new CategoryId(entity.getId()),
                 new CategoryName(entity.getName()),
-                new Description(entity.getDescription()),
+                new CategoryDescription(entity.getDescription()),
                 subcategorySet
         );
     }

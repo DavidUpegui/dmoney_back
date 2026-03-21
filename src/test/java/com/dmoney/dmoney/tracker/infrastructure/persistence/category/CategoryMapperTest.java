@@ -23,17 +23,17 @@ class CategoryMapperTest {
         Category categoryDomain = new Category(
                 CategoryId.newId(),
                 CategoryName.from("Category name"),
-                Description.from("Category Description")
+                CategoryDescription.from("Category Description")
         );
 
         categoryDomain.addSubcategory(
                 SubcategoryName.from("Subcategory1 name"),
-                Description.from("Subcategory1 description")
+                CategoryDescription.from("Subcategory1 description")
         );
 
         categoryDomain.addSubcategory(
                 SubcategoryName.from("Subcategory2 name"),
-                Description.from("Subcategory2 description")
+                CategoryDescription.from("Subcategory2 description")
         );
 
         CategoryEntity categoryEntity = CategoryMapper.toEntity(categoryDomain);
@@ -56,7 +56,7 @@ class CategoryMapperTest {
         Category categoryDomain = new Category(
                 CategoryId.newId(),
                 CategoryName.from("Category name"),
-                Description.from("Category Description")
+                CategoryDescription.from("Category Description")
         );
 
 

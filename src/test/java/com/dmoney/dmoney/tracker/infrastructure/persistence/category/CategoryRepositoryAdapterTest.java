@@ -3,7 +3,7 @@ package com.dmoney.dmoney.tracker.infrastructure.persistence.category;
 import com.dmoney.dmoney.tracker.domain.category.Category;
 import com.dmoney.dmoney.tracker.domain.category.CategoryId;
 import com.dmoney.dmoney.tracker.domain.category.CategoryName;
-import com.dmoney.dmoney.tracker.domain.category.Description;
+import com.dmoney.dmoney.tracker.domain.category.CategoryDescription;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -37,7 +37,7 @@ class CategoryRepositoryAdapterTest {
             Category category = new Category(
                     CategoryId.newId(),
                     CategoryName.from("Food"),
-                    Description.from("Description")
+                    CategoryDescription.from("Description")
             );
 
             adapter.save(category);
@@ -54,7 +54,7 @@ class CategoryRepositoryAdapterTest {
             Category category = new Category(
                     CategoryId.newId(),
                     CategoryName.from("Food"),
-                    Description.from("Description")
+                    CategoryDescription.from("Description")
             );
 
             adapter.save(category);
@@ -73,12 +73,12 @@ class CategoryRepositoryAdapterTest {
             Category category1 = new Category(
                     CategoryId.newId(),
                     CategoryName.from("Food"),
-                    Description.from("Description")
+                    CategoryDescription.from("Description")
             );
             Category category2 = new Category(
                     CategoryId.newId(),
                     CategoryName.from("Transport"),
-                    Description.from("Description")
+                    CategoryDescription.from("Description")
             );
 
             adapter.save(category1);
@@ -111,7 +111,7 @@ class CategoryRepositoryAdapterTest {
             Category category = new Category(
                     CategoryId.newId(),
                     CategoryName.from("Food"),
-                    Description.from("Food description")
+                    CategoryDescription.from("Food description")
             );
 
             Category saved = adapter.save(category);
@@ -135,7 +135,7 @@ class CategoryRepositoryAdapterTest {
             Category category = new Category(
                     CategoryId.newId(),
                     CategoryName.from("Food"),
-                    Description.from("Food description")
+                    CategoryDescription.from("Food description")
             );
             CategoryId categoryId = category.id();
 
@@ -151,7 +151,7 @@ class CategoryRepositoryAdapterTest {
             Category category = new Category(
                     CategoryId.newId(),
                     CategoryName.from("Food"),
-                    Description.from("Food description")
+                    CategoryDescription.from("Food description")
             );
             CategoryId anyId = CategoryId.newId();
 
@@ -170,7 +170,7 @@ class CategoryRepositoryAdapterTest {
             Category category = new Category(
                     CategoryId.newId(),
                     CategoryName.from("Food"),
-                    Description.from("Food description")
+                    CategoryDescription.from("Food description")
             );
 
             adapter.save(category);
@@ -187,7 +187,7 @@ class CategoryRepositoryAdapterTest {
             Category category = new Category(
                     CategoryId.newId(),
                     CategoryName.from("Food"),
-                    Description.from("Food description")
+                    CategoryDescription.from("Food description")
             );
 
             adapter.save(category);
@@ -203,7 +203,7 @@ class CategoryRepositoryAdapterTest {
             Category category = new Category(
                     CategoryId.newId(),
                     CategoryName.from("Food"),
-                    Description.from("Food description")
+                    CategoryDescription.from("Food description")
             );
 
             adapter.save(category);
@@ -224,7 +224,7 @@ class CategoryRepositoryAdapterTest {
             Category category = new Category(
                     categoryId,
                     CategoryName.from("Food"),
-                    Description.from("Description")
+                    CategoryDescription.from("Description")
             );
 
             adapter.save(category);

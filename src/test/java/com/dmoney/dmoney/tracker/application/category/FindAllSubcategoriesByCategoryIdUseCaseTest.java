@@ -31,18 +31,18 @@ class FindAllSubcategoriesByCategoryIdUseCaseTest {
         Category category = new Category(
                 CategoryId.newId(),
                 CategoryName.from("category name"),
-                Description.from("category description")
+                CategoryDescription.from("category description")
         );
         CategoryId categoryId = category.id();
 
         category.addSubcategory(
                 SubcategoryName.from("Subcategory1 name"),
-                Description.from("Subcategory1 description")
+                CategoryDescription.from("Subcategory1 description")
         );
 
         category.addSubcategory(
                 SubcategoryName.from("Subcategory2 name"),
-                Description.from("Subcategory2 description")
+                CategoryDescription.from("Subcategory2 description")
         );
 
         when(categoryLoader.load(categoryId))
@@ -65,7 +65,7 @@ class FindAllSubcategoriesByCategoryIdUseCaseTest {
         Category category = new Category(
                 CategoryId.newId(),
                 CategoryName.from("category name"),
-                Description.from("category description")
+                CategoryDescription.from("category description")
         );
         CategoryId categoryId = category.id();
 
@@ -83,13 +83,13 @@ class FindAllSubcategoriesByCategoryIdUseCaseTest {
         Category category = new Category(
                 CategoryId.newId(),
                 CategoryName.from("category name"),
-                Description.from("category description")
+                CategoryDescription.from("category description")
         );
         CategoryId categoryId = category.id();
 
         category.addSubcategory(
                 SubcategoryName.from("Subcategory1 name"),
-                Description.from("Subcategory1 description")
+                CategoryDescription.from("Subcategory1 description")
         );
 
         when(categoryLoader.load(categoryId))

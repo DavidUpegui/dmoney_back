@@ -28,7 +28,7 @@ class CategoryLoaderTest {
     void should_return_a_category(){
         CategoryId categoryId = CategoryId.newId();
         CategoryName categoryName = CategoryName.from("Category name");
-        Description categoryDescription =  Description.from("Category description");
+        CategoryDescription categoryDescription =  CategoryDescription.from("Category description");
 
         Category category = new Category(categoryId, categoryName, categoryDescription);
 
