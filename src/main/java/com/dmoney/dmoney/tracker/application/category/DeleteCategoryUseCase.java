@@ -21,7 +21,7 @@ public class DeleteCategoryUseCase {
 
         boolean deleted = categoryRepository.deleteByUserIdAndId(userId, catId);
         if(!deleted){
-            throw new ResourceNotFoundException("Tag", "id", categoryId);
+            throw new ResourceNotFoundException("Category", "id", categoryId);
         }
     }
 }

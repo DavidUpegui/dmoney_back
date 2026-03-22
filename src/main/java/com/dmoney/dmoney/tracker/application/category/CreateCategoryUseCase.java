@@ -15,14 +15,13 @@ public class CreateCategoryUseCase {
 
     private final CategoryRepository repository;
     private final AuthenticatedUserProvider authenticatedProvider;
+    private final CategoryUniquenessChecker uniquenessChecker;
 
     public CategoryResult execute(CreateCategoryCommand command) {
         UserId userId = authenticatedProvider.currentUserId();
         CategoryName name = CategoryName.from(command.name());
 
-        if (repository.existsByUserIdAndNameIgnoreCase(userId, name)) {
-            throw new ResourceAlreadyExistsException("Category", "name", name.value());
-        }
+        uniquenessChecker.check(userId, name);
 
         Category category = Category.create(
                 userId,

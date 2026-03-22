@@ -1,7 +1,9 @@
 package com.dmoney.dmoney.tracker.application.category;
 
+import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.application.category.helpers.CategoryLoader;
 import com.dmoney.dmoney.tracker.application.category.result.SubcategoryResult;
+import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
 import com.dmoney.dmoney.tracker.domain.category.Category;
 import com.dmoney.dmoney.tracker.domain.category.CategoryId;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +17,13 @@ import java.util.Set;
 public class FindAllSubcategoriesByCategoryIdUseCase {
 
     private final CategoryLoader categoryLoader;
+    private final AuthenticatedUserProvider authProvider;
 
 
     public List<SubcategoryResult> execute(String categoryId){
+        UserId userId = authProvider.currentUserId();
         CategoryId catId = CategoryId.from(categoryId);
-        Category category = categoryLoader.load(catId);
+        Category category = categoryLoader.load(userId, catId);
 
         return category.subcategories()
                 .stream()

@@ -14,11 +14,13 @@ import org.springframework.stereotype.Service;
 public class AddSubcategoryUseCase {
 
     private final CategoryRepository categoryRepository;
+    private final AuthenticatedUserProvider authProvider;
     private final CategoryLoader categoryLoader;
 
     public SubcategoryResult execute(AddSubcategoryCommand command) {
+        UserId userId = authProvider.currentUserId();
         CategoryId categoryId = CategoryId.from(command.categoryId());
-        Category category = categoryLoader.load(categoryId);
+        Category category = categoryLoader.load(userId, categoryId);
 
         Subcategory subcategoryAdded = category.addSubcategory(
                 SubcategoryName.from(command.name()),

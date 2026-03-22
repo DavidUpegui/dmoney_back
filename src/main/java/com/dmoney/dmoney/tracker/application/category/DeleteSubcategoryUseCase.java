@@ -1,7 +1,9 @@
 package com.dmoney.dmoney.tracker.application.category;
 
+import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.application.category.commands.DeleteSubcategoryCommand;
 import com.dmoney.dmoney.tracker.application.category.helpers.CategoryLoader;
+import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
 import com.dmoney.dmoney.tracker.domain.category.Category;
 import com.dmoney.dmoney.tracker.domain.category.CategoryId;
 import com.dmoney.dmoney.tracker.domain.category.CategoryRepository;
@@ -17,12 +19,14 @@ public class DeleteSubcategoryUseCase {
 
     private final CategoryRepository categoryRepository;
     private final CategoryLoader categoryLoader;
+    private final AuthenticatedUserProvider authProvider;
 
     public void execute(DeleteSubcategoryCommand command){
-        CategoryId categoryId = new CategoryId(UUID.fromString(command.categoryId()));
-        Category category = categoryLoader.load(categoryId);
+        UserId userId = authProvider.currentUserId();
+        CategoryId categoryId = CategoryId.from(command.categoryId());
+        Category category = categoryLoader.load(userId, categoryId);
 
-        category.deleteSubcategory(new SubcategoryId(UUID.fromString(command.subcategoryId())));
+        category.deleteSubcategory(SubcategoryId.from(command.subcategoryId()));
 
         categoryRepository.save(category);
     }
