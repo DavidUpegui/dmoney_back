@@ -1,9 +1,9 @@
 package com.dmoney.dmoney.tracker.infrastructure.persistence.category;
 
-import com.dmoney.dmoney.tracker.domain.category.Category;
-import com.dmoney.dmoney.tracker.domain.category.CategoryId;
-import com.dmoney.dmoney.tracker.domain.category.CategoryName;
-import com.dmoney.dmoney.tracker.domain.category.CategoryDescription;
+import com.dmoney.dmoney.tracker.domain.category.model.Category;
+import com.dmoney.dmoney.tracker.domain.category.model.CategoryId;
+import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
+import com.dmoney.dmoney.tracker.domain.category.model.CategoryDescription;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;

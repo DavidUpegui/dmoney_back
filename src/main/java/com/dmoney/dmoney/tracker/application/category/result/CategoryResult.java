@@ -1,6 +1,6 @@
 package com.dmoney.dmoney.tracker.application.category.result;
 
-import com.dmoney.dmoney.tracker.domain.category.Category;
+import com.dmoney.dmoney.tracker.domain.category.model.Category;
 
 public record CategoryResult(
         String id,

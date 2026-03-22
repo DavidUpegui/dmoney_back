@@ -1,7 +1,12 @@
 package com.dmoney.dmoney.tracker.application.tag.findAll;
 
-import com.dmoney.dmoney.tracker.application.tag.TagResponse;
-import com.dmoney.dmoney.tracker.domain.tag.*;
+import com.dmoney.dmoney.tracker.application.tag.result.TagResponse;
+import com.dmoney.dmoney.tracker.application.tag.usecase.FindAllTagsUseCase;
+import com.dmoney.dmoney.tracker.domain.tag.model.Tag;
+import com.dmoney.dmoney.tracker.domain.tag.model.TagDescription;
+import com.dmoney.dmoney.tracker.domain.tag.model.TagId;
+import com.dmoney.dmoney.tracker.domain.tag.model.TagName;
+import com.dmoney.dmoney.tracker.domain.tag.repository.TagRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -1,6 +1,5 @@
 package com.dmoney.dmoney.tracker.infrastructure.persistence.tag;
 
-import com.dmoney.dmoney.tracker.domain.tag.Tag;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

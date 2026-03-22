@@ -1,10 +1,12 @@
 package com.dmoney.dmoney.tracker.application.tag.create;
 
-import com.dmoney.dmoney.tracker.application.tag.TagResponse;
+import com.dmoney.dmoney.tracker.application.tag.result.TagResponse;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
-import com.dmoney.dmoney.tracker.domain.tag.Tag;
-import com.dmoney.dmoney.tracker.domain.tag.TagName;
-import com.dmoney.dmoney.tracker.domain.tag.TagRepository;
+import com.dmoney.dmoney.tracker.application.tag.command.CreateTagCommand;
+import com.dmoney.dmoney.tracker.application.tag.usecase.CreateTagUseCase;
+import com.dmoney.dmoney.tracker.domain.tag.model.Tag;
+import com.dmoney.dmoney.tracker.domain.tag.model.TagName;
+import com.dmoney.dmoney.tracker.domain.tag.repository.TagRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

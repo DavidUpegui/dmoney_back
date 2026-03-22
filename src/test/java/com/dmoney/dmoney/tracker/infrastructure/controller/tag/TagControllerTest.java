@@ -1,11 +1,11 @@
 package com.dmoney.dmoney.tracker.infrastructure.controller.tag;
 
-import com.dmoney.dmoney.tracker.application.tag.TagResponse;
-import com.dmoney.dmoney.tracker.application.tag.create.CreateTagUseCase;
-import com.dmoney.dmoney.tracker.application.tag.delete.DeleteTagUseCase;
-import com.dmoney.dmoney.tracker.application.tag.edit.EditTagUseCase;
-import com.dmoney.dmoney.tracker.application.tag.findAll.FindAllTagsUseCase;
-import com.dmoney.dmoney.tracker.application.tag.findById.FindTagByIdUseCase;
+import com.dmoney.dmoney.tracker.application.tag.result.TagResponse;
+import com.dmoney.dmoney.tracker.application.tag.usecase.CreateTagUseCase;
+import com.dmoney.dmoney.tracker.application.tag.usecase.DeleteTagUseCase;
+import com.dmoney.dmoney.tracker.application.tag.command.EditTagUseCase;
+import com.dmoney.dmoney.tracker.application.tag.usecase.FindAllTagsUseCase;
+import com.dmoney.dmoney.tracker.application.tag.usecase.FindTagByIdUseCase;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.Nested;

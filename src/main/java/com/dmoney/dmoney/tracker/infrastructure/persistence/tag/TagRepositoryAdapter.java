@@ -1,10 +1,10 @@
 package com.dmoney.dmoney.tracker.infrastructure.persistence.tag;
 
 import com.dmoney.dmoney.shared.domain.models.UserId;
-import com.dmoney.dmoney.tracker.domain.tag.Tag;
-import com.dmoney.dmoney.tracker.domain.tag.TagId;
-import com.dmoney.dmoney.tracker.domain.tag.TagName;
-import com.dmoney.dmoney.tracker.domain.tag.TagRepository;
+import com.dmoney.dmoney.tracker.domain.tag.model.Tag;
+import com.dmoney.dmoney.tracker.domain.tag.model.TagId;
+import com.dmoney.dmoney.tracker.domain.tag.model.TagName;
+import com.dmoney.dmoney.tracker.domain.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

@@ -1,6 +1,5 @@
 package com.dmoney.dmoney.tracker.infrastructure.persistence.tag;
 
-import com.dmoney.dmoney.tracker.domain.tag.Tag;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

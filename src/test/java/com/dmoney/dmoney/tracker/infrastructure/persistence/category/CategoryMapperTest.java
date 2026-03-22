@@ -1,6 +1,6 @@
 package com.dmoney.dmoney.tracker.infrastructure.persistence.category;
 
-import com.dmoney.dmoney.tracker.domain.category.*;
+import com.dmoney.dmoney.tracker.domain.category.model.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,7 +1,11 @@
 package com.dmoney.dmoney.tracker.application.category.helpers;
 
-import com.dmoney.dmoney.tracker.domain.category.*;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
+import com.dmoney.dmoney.tracker.domain.category.model.Category;
+import com.dmoney.dmoney.tracker.domain.category.model.CategoryDescription;
+import com.dmoney.dmoney.tracker.domain.category.model.CategoryId;
+import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
+import com.dmoney.dmoney.tracker.domain.category.repository.CategoryRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -1,5 +1,6 @@
 package com.dmoney.dmoney.tracker.domain.tag;
 
+import com.dmoney.dmoney.tracker.domain.tag.model.TagName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

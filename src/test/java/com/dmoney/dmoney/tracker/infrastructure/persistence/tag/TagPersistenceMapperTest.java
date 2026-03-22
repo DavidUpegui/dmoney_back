@@ -1,14 +1,13 @@
 package com.dmoney.dmoney.tracker.infrastructure.persistence.tag;
 
-import com.dmoney.dmoney.tracker.domain.tag.Tag;
-import com.dmoney.dmoney.tracker.domain.tag.TagDescription;
-import com.dmoney.dmoney.tracker.domain.tag.TagId;
-import com.dmoney.dmoney.tracker.domain.tag.TagName;
+import com.dmoney.dmoney.tracker.domain.tag.model.Tag;
+import com.dmoney.dmoney.tracker.domain.tag.model.TagDescription;
+import com.dmoney.dmoney.tracker.domain.tag.model.TagId;
+import com.dmoney.dmoney.tracker.domain.tag.model.TagName;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
-import static org.assertj.core.api.FactoryBasedNavigableListAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TagPersistenceMapperTest {

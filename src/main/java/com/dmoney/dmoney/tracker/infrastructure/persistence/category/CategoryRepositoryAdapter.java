@@ -1,11 +1,10 @@
 package com.dmoney.dmoney.tracker.infrastructure.persistence.category;
 
-import com.dmoney.dmoney.auth.domain.user.User;
 import com.dmoney.dmoney.shared.domain.models.UserId;
-import com.dmoney.dmoney.tracker.domain.category.Category;
-import com.dmoney.dmoney.tracker.domain.category.CategoryId;
-import com.dmoney.dmoney.tracker.domain.category.CategoryName;
-import com.dmoney.dmoney.tracker.domain.category.CategoryRepository;
+import com.dmoney.dmoney.tracker.domain.category.model.Category;
+import com.dmoney.dmoney.tracker.domain.category.model.CategoryId;
+import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
+import com.dmoney.dmoney.tracker.domain.category.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

@@ -1,5 +1,6 @@
 package com.dmoney.dmoney.tracker.domain.tag;
 
+import com.dmoney.dmoney.tracker.domain.tag.model.TagId;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;

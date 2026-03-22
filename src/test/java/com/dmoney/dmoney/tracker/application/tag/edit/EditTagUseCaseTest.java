@@ -1,9 +1,15 @@
 package com.dmoney.dmoney.tracker.application.tag.edit;
 
-import com.dmoney.dmoney.tracker.application.tag.TagResponse;
+import com.dmoney.dmoney.tracker.application.tag.result.TagResponse;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
-import com.dmoney.dmoney.tracker.domain.tag.*;
+import com.dmoney.dmoney.tracker.application.tag.command.EditTagUseCase;
+import com.dmoney.dmoney.tracker.application.tag.usecase.TagEditionCommand;
+import com.dmoney.dmoney.tracker.domain.tag.model.Tag;
+import com.dmoney.dmoney.tracker.domain.tag.model.TagDescription;
+import com.dmoney.dmoney.tracker.domain.tag.model.TagId;
+import com.dmoney.dmoney.tracker.domain.tag.model.TagName;
+import com.dmoney.dmoney.tracker.domain.tag.repository.TagRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

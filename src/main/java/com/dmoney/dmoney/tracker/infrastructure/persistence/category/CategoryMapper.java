@@ -1,7 +1,7 @@
 package com.dmoney.dmoney.tracker.infrastructure.persistence.category;
 
 import com.dmoney.dmoney.shared.domain.models.UserId;
-import com.dmoney.dmoney.tracker.domain.category.*;
+import com.dmoney.dmoney.tracker.domain.category.model.*;
 
 import java.util.Set;
 import java.util.stream.Collectors;

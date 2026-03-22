@@ -1,5 +1,9 @@
 package com.dmoney.dmoney.tracker.domain.category;
 
+import com.dmoney.dmoney.tracker.domain.category.model.CategoryDescription;
+import com.dmoney.dmoney.tracker.domain.category.model.Subcategory;
+import com.dmoney.dmoney.tracker.domain.category.model.SubcategoryId;
+import com.dmoney.dmoney.tracker.domain.category.model.SubcategoryName;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
