@@ -1,5 +1,6 @@
 package com.dmoney.dmoney.tracker.infrastructure.persistence.category;
 
+import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.domain.category.*;
 
 import java.util.Set;
@@ -12,6 +13,7 @@ public final class CategoryMapper {
     public static CategoryEntity toEntity(Category category){
         CategoryEntity entity = new CategoryEntity(
                 category.id().value(),
+                category.userId().value(),
                 category.name().value(),
                 category.description().value()
         );
@@ -38,10 +40,11 @@ public final class CategoryMapper {
                 ))
                 .collect(Collectors.toSet());
 
-        return new Category(
-                new CategoryId(entity.getId()),
-                new CategoryName(entity.getName()),
-                new CategoryDescription(entity.getDescription()),
+        return Category.rehydrate(
+                UserId.fromUUID(entity.getUserId()),
+                CategoryId.from(entity.getId().toString()),
+                CategoryName.from(entity.getName()),
+                CategoryDescription.from(entity.getDescription()),
                 subcategorySet
         );
     }

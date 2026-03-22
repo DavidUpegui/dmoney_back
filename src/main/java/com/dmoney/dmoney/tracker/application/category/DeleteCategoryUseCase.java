@@ -1,5 +1,7 @@
 package com.dmoney.dmoney.tracker.application.category;
 
+import com.dmoney.dmoney.shared.domain.models.UserId;
+import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
 import com.dmoney.dmoney.tracker.domain.category.CategoryId;
 import com.dmoney.dmoney.tracker.domain.category.CategoryRepository;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
@@ -11,13 +13,15 @@ import org.springframework.stereotype.Service;
 public class DeleteCategoryUseCase {
 
     private final CategoryRepository categoryRepository;
+    private final AuthenticatedUserProvider authProvider;
 
     public void execute(String categoryId){
+        UserId userId = authProvider.currentUserId();
         CategoryId catId = CategoryId.from(categoryId);
-        if(!categoryRepository.existsById(catId)){
-            throw new ResourceNotFoundException("Category", "id", catId.value().toString());
-        }
 
-        categoryRepository.delete(catId);
+        boolean deleted = categoryRepository.deleteByUserIdAndId(userId, catId);
+        if(!deleted){
+            throw new ResourceNotFoundException("Tag", "id", categoryId);
+        }
     }
 }

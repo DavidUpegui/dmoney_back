@@ -45,7 +45,7 @@ public class Category {
         );
     }
 
-    public Category create(UserId userId, CategoryName name, CategoryDescription description){
+    public static Category create(UserId userId, CategoryName name, CategoryDescription description){
         return new Category(
                 userId,
                 CategoryId.newId(),
@@ -54,7 +54,7 @@ public class Category {
         );
     }
 
-    public Category rehydrate(UserId userId,
+    public static Category rehydrate(UserId userId,
                               CategoryId categoryId,
                               CategoryName name,
                               CategoryDescription description,
@@ -142,6 +142,9 @@ public class Category {
 
     public CategoryId id(){
         return this.id;
+    }
+    public UserId userId(){
+        return this.userId;
     }
     public CategoryName name(){
         return this.name;

@@ -1,5 +1,7 @@
 package com.dmoney.dmoney.tracker.infrastructure.persistence.category;
 
+import com.dmoney.dmoney.auth.domain.user.User;
+import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.domain.category.Category;
 import com.dmoney.dmoney.tracker.domain.category.CategoryId;
 import com.dmoney.dmoney.tracker.domain.category.CategoryName;
@@ -17,14 +19,14 @@ public class CategoryRepositoryAdapter implements CategoryRepository {
     private final CategoryJpaRepository jpaRepo;
 
     @Override
-    public Optional<Category> findById(CategoryId id) {
-        return jpaRepo.findById(id.value())
+    public Optional<Category> findByUserIdAndId(UserId userId, CategoryId id) {
+        return jpaRepo.findByUserIdAndId(userId.value(), id.value())
                 .map(CategoryMapper::toDomain);
     }
 
     @Override
-    public List<Category> findAll() {
-        return jpaRepo.findAll().stream()
+    public List<Category> findAllByUserId(UserId userId) {
+        return jpaRepo.findAllByUserId(userId.value()).stream()
                 .map(CategoryMapper::toDomain)
                 .toList();
     }
@@ -37,17 +39,13 @@ public class CategoryRepositoryAdapter implements CategoryRepository {
     }
 
     @Override
-    public boolean existsById(CategoryId id) {
-        return jpaRepo.existsById(id.value());
+    public boolean existsByUserIdAndNameIgnoreCase(UserId userId,CategoryName name) {
+        return jpaRepo.existsByUserIdAndNameIgnoreCase(userId.value(), name.value());
     }
 
     @Override
-    public boolean existsByNameIgnoreCase(CategoryName name) {
-        return jpaRepo.existsByNameIgnoreCase(name.value());
-    }
-
-    @Override
-    public void delete(CategoryId id) {
-        jpaRepo.deleteById(id.value());
+    public boolean deleteByUserIdAndId(UserId userId, CategoryId id) {
+        int deleted = jpaRepo.deleteByUserIdAndId(userId.value(), id.value());
+        return deleted > 0;
     }
 }
