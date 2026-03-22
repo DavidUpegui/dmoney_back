@@ -1,10 +1,12 @@
-package com.dmoney.dmoney.tracker.application.category;
+package com.dmoney.dmoney.tracker.application.category.usecase;
 
+import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.application.category.helpers.CategoryLoader;
 import com.dmoney.dmoney.tracker.application.category.result.SubcategoryResult;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
-import com.dmoney.dmoney.tracker.application.category.usecase.FindAllSubcategoriesByCategoryIdUseCase;
+import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
 import com.dmoney.dmoney.tracker.domain.category.model.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,15 +24,26 @@ import static org.mockito.Mockito.when;
 class FindAllSubcategoriesByCategoryIdUseCaseTest {
 
     @Mock
-    CategoryLoader categoryLoader;
+    private CategoryLoader categoryLoader;
+
+    @Mock
+    private AuthenticatedUserProvider authProvider;
 
     @InjectMocks
-    FindAllSubcategoriesByCategoryIdUseCase useCase;
+    private FindAllSubcategoriesByCategoryIdUseCase useCase;
+
+    private UserId userId;
+
+    @BeforeEach
+    void setUp(){
+        userId = UserId.newId();
+        when(authProvider.currentUserId()).thenReturn(userId);
+    }
 
     @Test
     void should_return_subcategories_from_category_id(){
-        Category category = new Category(
-                CategoryId.newId(),
+        Category category = Category.create(
+                userId,
                 CategoryName.from("category name"),
                 CategoryDescription.from("category description")
         );
@@ -38,20 +51,20 @@ class FindAllSubcategoriesByCategoryIdUseCaseTest {
 
         category.addSubcategory(
                 SubcategoryName.from("Subcategory1 name"),
-                CategoryDescription.from("Subcategory1 description")
+                SubcategoryDescription.from("Subcategory1 description")
         );
 
         category.addSubcategory(
                 SubcategoryName.from("Subcategory2 name"),
-                CategoryDescription.from("Subcategory2 description")
+                SubcategoryDescription.from("Subcategory2 description")
         );
 
-        when(categoryLoader.load(categoryId))
+        when(categoryLoader.load(userId, categoryId))
                 .thenReturn(category);
 
         List<SubcategoryResult> result = useCase.execute(categoryId.value().toString());
 
-        verify(categoryLoader).load(categoryId);
+        verify(categoryLoader).load(userId, categoryId);
         assertEquals(2, result.size());
         assertThat(result)
                 .extracting(SubcategoryResult::subcategoryName)
@@ -63,46 +76,36 @@ class FindAllSubcategoriesByCategoryIdUseCaseTest {
 
     @Test
     void should_return_void_when_no_subcategories_added(){
-        Category category = new Category(
-                CategoryId.newId(),
+        Category category = Category.create(
+                userId,
                 CategoryName.from("category name"),
                 CategoryDescription.from("category description")
         );
         CategoryId categoryId = category.id();
 
-        when(categoryLoader.load(categoryId))
+        when(categoryLoader.load(userId, categoryId))
                 .thenReturn(category);
 
         List<SubcategoryResult> result = useCase.execute(categoryId.value().toString());
 
         assertTrue(result.isEmpty());
-        verify(categoryLoader).load(categoryId);
+        verify(categoryLoader).load(userId, categoryId);
     }
 
     @Test
-    void should_propagate_category_not_found_exception(){
-        Category category = new Category(
-                CategoryId.newId(),
-                CategoryName.from("category name"),
-                CategoryDescription.from("category description")
-        );
-        CategoryId categoryId = category.id();
+    void should_propagate_category_not_found_exception() {
+        CategoryId unexistingId = CategoryId.newId();
 
-        category.addSubcategory(
-                SubcategoryName.from("Subcategory1 name"),
-                CategoryDescription.from("Subcategory1 description")
-        );
-
-        when(categoryLoader.load(categoryId))
+        when(categoryLoader.load(userId, unexistingId))
                 .thenThrow(new ResourceNotFoundException(
                         "Category",
                         "id",
-                        categoryId.value().toString()
+                        unexistingId.value().toString()
                 ));
-        String id = categoryId.value().toString();
-        assertThrows(ResourceNotFoundException.class,
-                () -> useCase.execute(id));
 
-        verify(categoryLoader).load(categoryId);
+        assertThrows(ResourceNotFoundException.class,
+                () -> useCase.execute(unexistingId.value().toString()));
+
+        verify(categoryLoader).load(userId, unexistingId);
     }
 }

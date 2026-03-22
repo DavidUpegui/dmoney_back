@@ -1,10 +1,11 @@
-package com.dmoney.dmoney.tracker.application.category;
+package com.dmoney.dmoney.tracker.application.category.usecase;
 
+import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.application.category.commands.EditSubcategoryCommand;
 import com.dmoney.dmoney.tracker.application.category.helpers.CategoryLoader;
 import com.dmoney.dmoney.tracker.application.category.result.SubcategoryResult;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
-import com.dmoney.dmoney.tracker.application.category.usecase.EditSubcategoryUseCase;
+import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
 import com.dmoney.dmoney.tracker.domain.category.model.*;
 import com.dmoney.dmoney.tracker.domain.category.repository.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,23 +28,29 @@ class EditSubcategoryUseCaseTest {
     @Mock
     private CategoryLoader categoryLoader;
 
+    @Mock
+    private AuthenticatedUserProvider authProvider;
+
     @InjectMocks
     private EditSubcategoryUseCase editSubcategoryUseCase;
 
+    private UserId userId;
     private Category category;
     private Subcategory subcategory;
 
     @BeforeEach
     void setUp(){
-        category = new Category(
-                CategoryId.newId(),
+        userId = UserId.newId();
+        category = Category.create(
+                userId,
                 CategoryName.from("Category name"),
                 CategoryDescription.from("Category description")
         );
         subcategory = category.addSubcategory(
                 SubcategoryName.from("Subcategory name"),
-                CategoryDescription.from("Subcategory description")
+                SubcategoryDescription.from("Subcategory description")
         );
+        when(authProvider.currentUserId()).thenReturn(userId);
     }
 
     @Test
@@ -61,7 +68,7 @@ class EditSubcategoryUseCaseTest {
                 newSubcategoryDescription
         );
 
-        when(categoryLoader.load(any()))
+        when(categoryLoader.load(userId, categoryId))
                 .thenReturn(category);
 
         when(categoryRepository.save(any()))
@@ -75,7 +82,7 @@ class EditSubcategoryUseCaseTest {
         assertEquals(newSubcategoryName, subcategoryResult.subcategoryName());
         assertEquals(newSubcategoryDescription, subcategoryResult.subcategoryDescription());
 
-        verify(categoryLoader).load(categoryId);
+        verify(categoryLoader).load(userId, categoryId);
         verify(categoryRepository).save(any(Category.class));
     }
 
@@ -95,7 +102,7 @@ class EditSubcategoryUseCaseTest {
                 null
         );
 
-        when(categoryLoader.load(any()))
+        when(categoryLoader.load(userId, categoryId))
                 .thenReturn(category);
 
         when(categoryRepository.save(any()))
@@ -109,7 +116,7 @@ class EditSubcategoryUseCaseTest {
         assertEquals(newSubcategoryName, subcategoryResult.subcategoryName());
         assertEquals(originalSubcategoryDescription, subcategoryResult.subcategoryDescription());
 
-        verify(categoryLoader).load(categoryId);
+        verify(categoryLoader).load(userId, categoryId);
         verify(categoryRepository).save(any(Category.class));
     }
 
@@ -128,7 +135,7 @@ class EditSubcategoryUseCaseTest {
                 newSubcategoryDescription
         );
 
-        when(categoryLoader.load(any()))
+        when(categoryLoader.load(userId, categoryId))
                 .thenReturn(category);
 
         when(categoryRepository.save(any()))
@@ -142,7 +149,7 @@ class EditSubcategoryUseCaseTest {
         assertEquals(originalSubcategoryName, subcategoryResult.subcategoryName());
         assertEquals(newSubcategoryDescription, subcategoryResult.subcategoryDescription());
 
-        verify(categoryLoader).load(categoryId);
+        verify(categoryLoader).load(userId, categoryId);
         verify(categoryRepository).save(any(Category.class));
     }
 
@@ -161,7 +168,7 @@ class EditSubcategoryUseCaseTest {
                 newSubcategoryDescription
         );
 
-        when(categoryLoader.load(any()))
+        when(categoryLoader.load(userId, anyId))
                 .thenThrow(new ResourceNotFoundException(
                         "Category",
                         "id",
@@ -171,7 +178,7 @@ class EditSubcategoryUseCaseTest {
         assertThrows(ResourceNotFoundException.class,
                 () -> editSubcategoryUseCase.execute(command));
 
-        verify(categoryLoader).load(anyId);
+        verify(categoryLoader).load(userId, anyId);
         verify(categoryRepository, never()).save(any());
     }
 
@@ -190,13 +197,13 @@ class EditSubcategoryUseCaseTest {
                 newSubcategoryDescription
         );
 
-        when(categoryLoader.load(any()))
+        when(categoryLoader.load(userId, categoryId))
                 .thenReturn(category);
 
         assertThrows(ResourceNotFoundException.class,
                 () -> editSubcategoryUseCase.execute(command));
 
-        verify(categoryLoader).load(categoryId);
+        verify(categoryLoader).load(userId, categoryId);
         verify(categoryRepository, never()).save(any());
     }
 }

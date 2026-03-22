@@ -38,7 +38,6 @@ public class EditCategoryUseCase {
         CategoryDescription newDescription =
                 command.description() == null ? null : CategoryDescription.from(command.description());
 
-
         category.edit(
                 newName,
                 newDescription);

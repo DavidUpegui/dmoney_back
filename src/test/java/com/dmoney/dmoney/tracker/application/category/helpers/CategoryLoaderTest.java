@@ -1,6 +1,7 @@
 package com.dmoney.dmoney.tracker.application.category.helpers;
 
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
+import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.domain.category.model.Category;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryDescription;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryId;
@@ -30,35 +31,36 @@ class CategoryLoaderTest {
 
     @Test
     void should_return_a_category(){
-        CategoryId categoryId = CategoryId.newId();
+        UserId userId = UserId.newId();
         CategoryName categoryName = CategoryName.from("Category name");
         CategoryDescription categoryDescription =  CategoryDescription.from("Category description");
 
-        Category category = new Category(categoryId, categoryName, categoryDescription);
-
-        when(categoryRepository.findById(categoryId))
+        Category category = Category.create(userId, categoryName, categoryDescription);
+        CategoryId categoryId = category.id();
+        when(categoryRepository.findByUserIdAndId(userId, categoryId))
                 .thenReturn(Optional.of(category));
 
-        Category result = categoryLoader.load(categoryId);
+        Category result = categoryLoader.load(userId, categoryId);
 
         assertEquals(categoryId, result.id());
         assertEquals(categoryName, result.name());
         assertEquals(categoryDescription, result.description());
 
-        verify(categoryRepository).findById(categoryId);
+        verify(categoryRepository).findByUserIdAndId(userId, categoryId);
     }
 
     @Test
     void should_propagate_category_not_found_exception(){
+        UserId userId = UserId.newId();
         CategoryId anyId = CategoryId.newId();
 
-        when(categoryRepository.findById(anyId))
+        when(categoryRepository.findByUserIdAndId(userId, anyId))
                 .thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class,
-                () -> categoryLoader.load(anyId));
+                () -> categoryLoader.load(userId, anyId));
 
 
-        verify(categoryRepository).findById(anyId);
+        verify(categoryRepository).findByUserIdAndId(userId, anyId);
     }
 }

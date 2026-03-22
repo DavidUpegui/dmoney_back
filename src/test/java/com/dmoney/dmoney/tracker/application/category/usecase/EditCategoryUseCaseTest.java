@@ -1,16 +1,19 @@
-package com.dmoney.dmoney.tracker.application.category;
+package com.dmoney.dmoney.tracker.application.category.usecase;
 
 
+import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
+import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.application.category.commands.EditCategoryCommand;
 import com.dmoney.dmoney.tracker.application.category.helpers.CategoryLoader;
 import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
-import com.dmoney.dmoney.tracker.application.category.usecase.EditCategoryUseCase;
+import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
 import com.dmoney.dmoney.tracker.domain.category.model.Category;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryDescription;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryId;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
 import com.dmoney.dmoney.tracker.domain.category.repository.CategoryRepository;
+import com.dmoney.dmoney.tracker.domain.category.service.CategoryUniquenessChecker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,23 +30,32 @@ import static org.mockito.Mockito.*;
 class EditCategoryUseCaseTest {
 
     @Mock
-    CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
 
     @Mock
-    CategoryLoader categoryLoader;
+    private CategoryLoader categoryLoader;
+
+    @Mock
+    private AuthenticatedUserProvider authProvider;
+
+    @Mock
+    private CategoryUniquenessChecker uniquenessChecker;
 
     @InjectMocks
     EditCategoryUseCase useCase;
 
+    UserId userId;
     Category category;
 
     @BeforeEach
     void setUp(){
-        category = new Category(
-                CategoryId.newId(),
+        userId = UserId.newId();
+        category = Category.create(
+                userId,
                 CategoryName.from("Category name"),
                 CategoryDescription.from("Category description")
         );
+        when(authProvider.currentUserId()).thenReturn(userId);
     }
 
     @Test
@@ -58,7 +70,8 @@ class EditCategoryUseCaseTest {
                 newDescription
         );
 
-        when(categoryLoader.load(any()))
+
+        when(categoryLoader.load(eq(userId), categoryId))
                 .thenReturn(category);
 
         when(categoryRepository.save(any()))
@@ -69,7 +82,7 @@ class EditCategoryUseCaseTest {
         CategoryResult editedCategory = useCase.execute(command);
 
 
-        verify(categoryLoader).load(categoryId);
+        verify(categoryLoader).load(userId, categoryId);
         verify(categoryRepository).save(any(Category.class));
         assertEquals(newName, editedCategory.name());
         assertEquals(newDescription, editedCategory.description());
@@ -87,7 +100,7 @@ class EditCategoryUseCaseTest {
                 null
         );
 
-        when(categoryLoader.load(any()))
+        when(categoryLoader.load(userId,categoryId))
                 .thenReturn(category);
 
         when(categoryRepository.save(any()))
@@ -98,7 +111,7 @@ class EditCategoryUseCaseTest {
         CategoryResult editedCategory = useCase.execute(command);
 
 
-        verify(categoryLoader).load(categoryId);
+        verify(categoryLoader).load(userId, categoryId);
         verify(categoryRepository).save(any(Category.class));
 
         assertEquals(newName, editedCategory.name());
@@ -121,7 +134,7 @@ class EditCategoryUseCaseTest {
                 newDescription
         );
 
-        when(categoryLoader.load(any()))
+        when(categoryLoader.load(userId, categoryId))
                 .thenReturn(category);
 
         when(categoryRepository.save(any()))
@@ -132,12 +145,34 @@ class EditCategoryUseCaseTest {
         CategoryResult editedCategory = useCase.execute(command);
 
 
-        verify(categoryLoader).load(categoryId);
+        verify(categoryLoader).load(userId, categoryId);
         verify(categoryRepository).save(any(Category.class));
 
         assertEquals(category.name().value(), editedCategory.name());
         assertEquals(newDescription, editedCategory.description());
         assertEquals(categoryId.value().toString(), editedCategory.id());
+    }
+
+    @Test
+    void should_throw_exception_when_name_already_exists(){
+        CategoryId categoryId = category.id();
+
+        EditCategoryCommand command = new EditCategoryCommand(
+                categoryId.value().toString(), "Existing name", null
+        );
+
+        when(categoryLoader.load(userId,categoryId)).thenReturn(category);
+        doThrow(new ResourceAlreadyExistsException("Category", "name", "Existing name"))
+                .when(uniquenessChecker).check(
+                        eq(userId),
+                        any(CategoryName.class),
+                        any(CategoryName.class)
+                );
+
+        assertThrows(ResourceNotFoundException.class,
+                () -> useCase.execute(command));
+
+        verify(categoryRepository, never()).save(any());
     }
 
     @Test
@@ -152,7 +187,7 @@ class EditCategoryUseCaseTest {
                 newDescription
         );
 
-        when(categoryLoader.load(any()))
+        when(categoryLoader.load(userId, unexistingId))
                 .thenThrow( new ResourceNotFoundException(
                         "Category",
                         "id",
@@ -162,7 +197,7 @@ class EditCategoryUseCaseTest {
         assertThrows(ResourceNotFoundException.class,
                 () -> useCase.execute(command));
 
-        verify(categoryLoader).load(unexistingId);
+        verify(categoryLoader).load(userId, unexistingId);
         verify(categoryRepository, never()).save(any());
     }
 }

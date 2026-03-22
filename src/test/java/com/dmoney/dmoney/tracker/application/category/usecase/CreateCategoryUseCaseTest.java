@@ -1,12 +1,15 @@
-package com.dmoney.dmoney.tracker.application.category;
+package com.dmoney.dmoney.tracker.application.category.usecase;
 
+import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.application.category.commands.CreateCategoryCommand;
 import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
-import com.dmoney.dmoney.tracker.application.category.usecase.CreateCategoryUseCase;
+import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
 import com.dmoney.dmoney.tracker.domain.category.model.Category;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
 import com.dmoney.dmoney.tracker.domain.category.repository.CategoryRepository;
+import com.dmoney.dmoney.tracker.domain.category.service.CategoryUniquenessChecker;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,8 +27,22 @@ class CreateCategoryUseCaseTest {
     @Mock
     private CategoryRepository repository;
 
+    @Mock
+    private AuthenticatedUserProvider authProvider;
+
+    @Mock
+    private CategoryUniquenessChecker uniquenessChecker;
+
     @InjectMocks
     private CreateCategoryUseCase useCase;
+
+    private UserId userId;
+
+    @BeforeEach
+    void setUp(){
+        userId = UserId.newId();
+        when(authProvider.currentUserId()).thenReturn(userId);
+    }
 
 
     @Test
@@ -37,9 +54,6 @@ class CreateCategoryUseCaseTest {
                         "desc"
                 );
 
-        when(repository.existsByNameIgnoreCase(any()))
-                .thenReturn(false);
-
         when(repository.save(any()))
                 .thenAnswer(invocation ->
                         invocation.getArgument(0)
@@ -47,10 +61,8 @@ class CreateCategoryUseCaseTest {
 
         CategoryResult result = useCase.execute(command);
 
-
-        verify(repository).existsByNameIgnoreCase(CategoryName.from("new category"));
+        verify(uniquenessChecker).check(userId, CategoryName.from("new category"));
         verify(repository).save(any(Category.class));
-
         assertEquals("new category", result.name());
     }
 
@@ -59,13 +71,12 @@ class CreateCategoryUseCaseTest {
         CreateCategoryCommand categoryCommand =
                 new CreateCategoryCommand("existing","desc");
 
-        when(repository.existsByNameIgnoreCase(any()))
-                .thenReturn(true);
+        doThrow(new ResourceAlreadyExistsException("Category", "name", "existing"))
+                .when(uniquenessChecker).check(userId, CategoryName.from("existing"));
 
         assertThrows(ResourceAlreadyExistsException.class,
                 () -> useCase.execute(categoryCommand));
 
         verify(repository, never()).save(any());
-        verify(repository).existsByNameIgnoreCase(CategoryName.from("existing"));
     }
 }

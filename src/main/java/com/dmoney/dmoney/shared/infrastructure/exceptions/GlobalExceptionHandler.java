@@ -1,4 +1,4 @@
-package com.dmoney.dmoney.tracker.infrastructure.controller.exceptions;
+package com.dmoney.dmoney.shared.infrastructure.exceptions;
 
 import
         com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;

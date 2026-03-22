@@ -1,14 +1,14 @@
-package com.dmoney.dmoney.tracker.application.category;
+package com.dmoney.dmoney.tracker.application.category.usecase;
 
 
+import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.application.category.commands.AddSubcategoryCommand;
 import com.dmoney.dmoney.tracker.application.category.helpers.CategoryLoader;
 import com.dmoney.dmoney.tracker.application.category.result.SubcategoryResult;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
-import com.dmoney.dmoney.tracker.application.category.usecase.AddSubcategoryUseCase;
+import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
 import com.dmoney.dmoney.tracker.domain.category.model.Category;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryDescription;
-import com.dmoney.dmoney.tracker.domain.category.model.CategoryId;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
 import com.dmoney.dmoney.tracker.domain.category.repository.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,15 +30,20 @@ class AddSubcategoryUseCaseTest {
     @Mock
     private CategoryLoader categoryLoader;
 
+    @Mock
+    AuthenticatedUserProvider authProvider;
+
     @InjectMocks
     private AddSubcategoryUseCase useCase;
 
+    private UserId userId;
     private Category category;
 
     @BeforeEach
     void setUp() {
-        category = new Category(
-                CategoryId.newId(),
+        userId = UserId.newId();
+        category = Category.create(
+                userId,
                 CategoryName.from("category"),
                 CategoryDescription.from("description")
         );
@@ -54,7 +59,9 @@ class AddSubcategoryUseCaseTest {
                         "desc"
                 );
 
-        when(categoryLoader.load(category.id()))
+        when(authProvider.currentUserId()).thenReturn(userId);
+
+        when(categoryLoader.load(userId, category.id()))
                 .thenReturn(category);
 
         SubcategoryResult result = useCase.execute(command);
@@ -67,7 +74,6 @@ class AddSubcategoryUseCaseTest {
                         .value());
 
         verify(categoryRepository).save(category);
-
         assertEquals("new subcategory", result.subcategoryName());
     }
 
@@ -79,20 +85,18 @@ class AddSubcategoryUseCaseTest {
                         "new subcategory",
                         "desc"
                 );
-
-        when(categoryLoader.load(category.id()))
+        when(authProvider.currentUserId()).thenReturn(userId);
+        when(categoryLoader.load(userId, category.id()))
                 .thenThrow(new ResourceNotFoundException(
                         "Category",
                         "id",
                         category.id().toString()
                 ));
 
-
-
         assertThrows(ResourceNotFoundException.class,
                 () ->  useCase.execute(command));
 
-        verify(categoryLoader).load(category.id());
+        verify(categoryLoader).load(userId, category.id());
         verify(categoryRepository, never()).save(category);
     }
 }

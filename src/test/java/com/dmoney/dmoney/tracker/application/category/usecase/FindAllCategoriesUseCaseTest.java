@@ -1,12 +1,13 @@
-package com.dmoney.dmoney.tracker.application.category;
+package com.dmoney.dmoney.tracker.application.category.usecase;
 
+import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
-import com.dmoney.dmoney.tracker.application.category.usecase.FindAllCategoriesUseCase;
+import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
 import com.dmoney.dmoney.tracker.domain.category.model.Category;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryDescription;
-import com.dmoney.dmoney.tracker.domain.category.model.CategoryId;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
 import com.dmoney.dmoney.tracker.domain.category.repository.CategoryRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,47 +25,56 @@ import static org.mockito.Mockito.when;
 class FindAllCategoriesUseCaseTest {
 
     @Mock
-    CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
+
+    @Mock
+    private AuthenticatedUserProvider authProvider;
 
     @InjectMocks
     FindAllCategoriesUseCase useCase;
 
+    private UserId userId;
+
+    @BeforeEach
+    void setUp(){
+        userId = UserId.newId();
+        when(authProvider.currentUserId()).thenReturn(userId);
+    }
+
     @Test
     void should_return_all_categories_mapped_to_result() {
         // Arrange
-        Category category1 = new Category(
-                CategoryId.newId(),
+        Category category1 = Category.create(
+                userId,
                 CategoryName.from("Food"),
                 CategoryDescription.from("Food category")
         );
 
-        Category category2 = new Category(
-                CategoryId.newId(),
+        Category category2 = Category.create(
+                userId,
                 CategoryName.from("Tech"),
                 CategoryDescription.from("Tech category")
         );
 
-        when(categoryRepository.findAll())
+        when(categoryRepository.findAllByUserId(userId))
                 .thenReturn(List.of(category1, category2));
 
-        // Act
         List<CategoryResult> result = useCase.execute();
 
-        // Assert
         assertEquals(2, result.size());
         assertEquals("Food", result.get(0).name());
         assertEquals("Tech", result.get(1).name());
 
-        verify(categoryRepository).findAll();
+        verify(categoryRepository).findAllByUserId(userId);
     }
     @Test
     void should_return_empty_list_when_no_categories_exist() {
-        when(categoryRepository.findAll())
+        when(categoryRepository.findAllByUserId(userId))
                 .thenReturn(List.of());
 
         List<CategoryResult> result = useCase.execute();
 
         assertTrue(result.isEmpty());
-        verify(categoryRepository).findAll();
+        verify(categoryRepository).findAllByUserId(userId);
     }
 }
