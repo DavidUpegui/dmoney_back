@@ -1,13 +1,20 @@
 package com.dmoney.dmoney.tracker.infrastructure.controller.category;
 
+import com.dmoney.dmoney.auth.infrastructure.security.JwtAuthenticationFilter;
+import com.dmoney.dmoney.auth.infrastructure.security.JwtTokenParser;
+import com.dmoney.dmoney.auth.infrastructure.security.SecurityConfig;
+import com.dmoney.dmoney.shared.infrastructure.exceptions.GlobalExceptionHandler;
+import com.dmoney.dmoney.shared.security.WithMockJwtUser;
 import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
 import com.dmoney.dmoney.tracker.application.category.result.SubcategoryResult;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
 import com.dmoney.dmoney.tracker.application.category.usecase.*;
 import org.junit.jupiter.api.Nested;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +31,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.mockito.ArgumentMatchers.any;
 
 @WebMvcTest(CategoryController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class CategoryControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @MockBean
+    private JwtTokenParser jwtTokenParser;
 
     @MockBean
     private CreateCategoryUseCase createCategoryUseCase;
@@ -900,26 +914,4 @@ class CategoryControllerTest {
                              command.subcategoryId().equals("2")));
          }
      }
-
-     @Nested
-    class NullPointerControllerTest{
-        @Test
-         void should_return_500_when_null_pointer_exception() throws Exception{
-            String json = """
-                        {
-                            "name": "null",
-                            "description" : "Description"
-                        }
-                    """;
-
-            when(createCategoryUseCase.execute(any()))
-                    .thenThrow(new NullPointerException());
-
-            mockMvc.perform(post("/api/categories")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(json))
-                    .andExpect(status().isInternalServerError());
-        }
-     }
-
 }

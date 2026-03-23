@@ -104,8 +104,8 @@ class CategoryMapperTest {
         UUID categoryId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
         CategoryEntity categoryEntity = new CategoryEntity(
-                userId,
                 categoryId,
+                userId,
                 "Tech",
                 "Tech description"
         );
@@ -122,8 +122,8 @@ class CategoryMapperTest {
     private static CategoryEntity getCategoryEntity(UUID categoryId, UUID subId1, UUID subId2) {
         UUID userId = UUID.randomUUID();
         CategoryEntity categoryEntity = new CategoryEntity(
-                userId,
                 categoryId,
+                userId,
                 "Tech",
                 "Tech description"
         );
