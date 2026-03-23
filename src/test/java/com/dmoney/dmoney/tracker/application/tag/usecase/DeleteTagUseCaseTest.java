@@ -58,6 +58,6 @@ public class DeleteTagUseCaseTest {
         assertThrows(ResourceNotFoundException.class,
                 () -> useCase.execute(anyId.value().toString()));
 
-        verify(tagRepository, never()).deleteByUserIdAndId(userId, anyId);
+        verify(tagRepository).deleteByUserIdAndId(userId, anyId);
     }
 }

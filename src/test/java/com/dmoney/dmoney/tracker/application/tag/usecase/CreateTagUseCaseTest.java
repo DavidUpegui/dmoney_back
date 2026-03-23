@@ -1,5 +1,6 @@
 package com.dmoney.dmoney.tracker.application.tag.usecase;
 
+import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
 import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
 import com.dmoney.dmoney.tracker.application.tag.result.TagResponse;
@@ -51,9 +52,6 @@ public class CreateTagUseCaseTest {
         CreateTagCommand command =
                 new CreateTagCommand(name, description);
 
-        when(tagRepository.existsByUserIdAndNameIgnoreCase(eq(userId),any(TagName.class)))
-                .thenReturn(false);
-
         when(tagRepository.save(any(Tag.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -63,7 +61,7 @@ public class CreateTagUseCaseTest {
         assertEquals(description, result.description());
         assertNotNull(result.id());
 
-        verify(tagRepository).existsByUserIdAndNameIgnoreCase(userId, TagName.from(name));
+        verify(uniquenessChecker).check(userId, TagName.from(name));
         verify(tagRepository).save(any(Tag.class));
     }
 
@@ -90,7 +88,7 @@ public class CreateTagUseCaseTest {
         CreateTagCommand command =
                 new CreateTagCommand(null, "description");
 
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(ValidationException.class,
                 () -> useCase.execute(command));
 
         verify(tagRepository, never()).save(any(Tag.class));
@@ -101,9 +99,6 @@ public class CreateTagUseCaseTest {
         CreateTagCommand command =
                 new CreateTagCommand("Name", null);
 
-        when(tagRepository.existsByUserIdAndNameIgnoreCase(eq(userId), any(TagName.class)))
-                .thenReturn(false);
-
         when(tagRepository.save(any(Tag.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -113,7 +108,7 @@ public class CreateTagUseCaseTest {
         assertEquals("", result.description());
         assertNotNull(result.id());
 
-        verify(tagRepository).existsByUserIdAndNameIgnoreCase(userId, TagName.from("Name"));
+        verify(uniquenessChecker).check(userId, TagName.from("Name"));
         verify(tagRepository).save(any(Tag.class));
     }
 }

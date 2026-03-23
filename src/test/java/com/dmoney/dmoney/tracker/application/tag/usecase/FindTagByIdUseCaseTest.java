@@ -44,14 +44,15 @@ public class FindTagByIdUseCaseTest {
     }
     @Test
     void should_found_by_id(){
-        TagId tagId = TagId.newId();
+        Tag tag = Tag.create(
+                userId,
+                TagName.from("Tag name"),
+                TagDescription.from("Tag Description")
+        );
+        TagId tagId = tag.id();
 
         when(tagRepository.findByUserIdAndId(userId,tagId))
-                .thenReturn(Optional.of(Tag.create(
-                        userId,
-                        TagName.from("Tag name"),
-                        TagDescription.from("Tag Description")
-                )));
+                .thenReturn(Optional.of(tag));
 
         TagResponse result = useCase.execute(tagId.value().toString());
 

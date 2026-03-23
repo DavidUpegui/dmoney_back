@@ -47,7 +47,7 @@ public class EditTagUseCaseTest {
 
     @BeforeEach
     void setUp(){
-        UserId.newId();
+        userId = UserId.newId();
         tag =  Tag.create(
                 userId,
                 TagName.from("Any name"),
@@ -61,6 +61,8 @@ public class EditTagUseCaseTest {
         String id = tag.id().value().toString();
         String changedName = "Changed name";
         String changedDescription = "Changed description";
+        TagName originalName = tag.name();
+
 
         TagEditionCommand command = new TagEditionCommand(
                 id,
@@ -81,7 +83,7 @@ public class EditTagUseCaseTest {
         assertEquals(id, response.id());
 
         verify(tagRepository).findByUserIdAndId(userId, tag.id());
-        verify(uniquenessChecker).check(userId, TagName.from(changedName), tag.name());
+        verify(uniquenessChecker).check(userId, TagName.from(changedName), originalName);
     }
 
     @Test
@@ -164,6 +166,8 @@ public class EditTagUseCaseTest {
         String id = tag.id().value().toString();
         String changedName = "Changed name";
         String sameDescription = tag.description().value();
+        TagName originalName = tag.name();
+
 
         TagEditionCommand command = new TagEditionCommand(
                 id,
@@ -185,7 +189,7 @@ public class EditTagUseCaseTest {
         assertEquals(id, response.id());
 
         verify(tagRepository).findByUserIdAndId(userId, tag.id());
-        verify(uniquenessChecker).check(userId, TagName.from(changedName), tag.name());
+        verify(uniquenessChecker).check(userId, TagName.from(changedName), originalName);
     }
 
     @Test
@@ -193,6 +197,8 @@ public class EditTagUseCaseTest {
         String id = tag.id().value().toString();
         String sameName = tag.name().value();
         String changedDescription = "Changed description";
+        TagName originalName = tag.name();
+
 
         TagEditionCommand command = new TagEditionCommand(
                 id,
@@ -213,6 +219,6 @@ public class EditTagUseCaseTest {
         assertEquals(id, response.id());
 
         verify(tagRepository).findByUserIdAndId(userId, tag.id());
-        verify(uniquenessChecker).check(userId, TagName.from(sameName), tag.name());
+        verify(uniquenessChecker, never()).check(userId, TagName.from(sameName), originalName);
     }
 }

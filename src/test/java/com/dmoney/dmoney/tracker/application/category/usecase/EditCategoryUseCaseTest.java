@@ -71,7 +71,7 @@ class EditCategoryUseCaseTest {
         );
 
 
-        when(categoryLoader.load(eq(userId), categoryId))
+        when(categoryLoader.load(userId, categoryId))
                 .thenReturn(category);
 
         when(categoryRepository.save(any()))
@@ -169,7 +169,7 @@ class EditCategoryUseCaseTest {
                         any(CategoryName.class)
                 );
 
-        assertThrows(ResourceNotFoundException.class,
+        assertThrows(ResourceAlreadyExistsException.class,
                 () -> useCase.execute(command));
 
         verify(categoryRepository, never()).save(any());

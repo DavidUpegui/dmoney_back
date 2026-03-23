@@ -44,8 +44,6 @@ public class FindAllTagsUseCaseTest {
 
     @Test
     void should_return_list_of_tags(){
-        TagId tagId1 = TagId.newId();
-        TagId tagId2 = TagId.newId();
         List<Tag> tagList = List.of(
                 Tag.create(
                         userId,
@@ -58,6 +56,9 @@ public class FindAllTagsUseCaseTest {
                         TagDescription.from("Tag2 Description")
                 )
         );
+        TagId tagId1 = tagList.getFirst().id();
+        TagId tagId2 = tagList.get(1).id();
+
 
         when(tagRepository.findAllByUserId(userId))
                 .thenReturn(tagList);

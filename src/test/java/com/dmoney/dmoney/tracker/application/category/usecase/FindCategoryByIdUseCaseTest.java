@@ -46,9 +46,9 @@ class FindCategoryByIdUseCaseTest {
     void should_return_category_by_id(){
         CategoryName categoryName = CategoryName.from("Category name");
         CategoryDescription categoryDescription = CategoryDescription.from("Category description");
-        CategoryId categoryId = CategoryId.newId();
 
         Category category = Category.create(userId, categoryName, categoryDescription);
+        CategoryId categoryId = category.id();
 
         when(categoryLoader.load(userId, categoryId))
                 .thenReturn(category);
