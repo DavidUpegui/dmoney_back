@@ -1,5 +1,6 @@
 package com.dmoney.dmoney.tracker.domain.tag;
 
+import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagName;
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +38,7 @@ public class TagNameTest {
 
     @Test
     void should_throw_illegal_argument_exception_when_null(){
-        IllegalArgumentException exception =  assertThrows(IllegalArgumentException.class,
+        ValidationException exception =  assertThrows(ValidationException.class,
                 () -> new TagName(null));
 
         assertEquals("Tag name cannot be null or blank", exception.getMessage());
@@ -45,7 +46,7 @@ public class TagNameTest {
 
     @Test
     void should_throw_illegal_argument_exception_when_value_is_blank(){
-        IllegalArgumentException exception =  assertThrows(IllegalArgumentException.class,
+        ValidationException exception =  assertThrows(ValidationException.class,
                 () -> new TagName(""));
 
         assertEquals("Tag name cannot be null or blank", exception.getMessage());

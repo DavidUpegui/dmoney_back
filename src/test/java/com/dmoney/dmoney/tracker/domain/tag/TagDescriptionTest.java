@@ -1,5 +1,6 @@
 package com.dmoney.dmoney.tracker.domain.tag;
 
+import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagDescription;
 import org.junit.jupiter.api.Test;
 
@@ -60,7 +61,7 @@ public class TagDescriptionTest {
 
     @Test
     void should_throw_null_pointer_exception_when_description_is_null(){
-        NullPointerException exception = assertThrows(NullPointerException.class,
+        ValidationException exception = assertThrows(ValidationException.class,
                 () -> new TagDescription(null));
 
         assertEquals("Tag description cannot be null", exception.getMessage());
@@ -70,7 +71,7 @@ public class TagDescriptionTest {
     void should_throw_illegal_argument_exception_when_description_is_too_large(){
         String tooLong = "a".repeat(256);
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+        ValidationException exception = assertThrows(ValidationException.class,
                 () -> new TagDescription(tooLong));
 
         assertEquals("Tag description is too long", exception.getMessage());

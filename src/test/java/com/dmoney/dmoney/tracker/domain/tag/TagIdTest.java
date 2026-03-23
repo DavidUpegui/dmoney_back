@@ -1,5 +1,6 @@
 package com.dmoney.dmoney.tracker.domain.tag;
 
+import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagId;
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +40,7 @@ public class TagIdTest {
 
     @Test
     void should_throw_null_pointer_exception_when_id_is_null(){
-        NullPointerException exception = assertThrows(NullPointerException.class,
+        ValidationException exception = assertThrows(ValidationException.class,
                 () -> new TagId(null));
 
         assertEquals("Tag id cannot be null", exception.getMessage());
