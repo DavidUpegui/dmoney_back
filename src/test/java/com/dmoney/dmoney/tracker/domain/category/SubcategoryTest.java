@@ -1,9 +1,7 @@
 package com.dmoney.dmoney.tracker.domain.category;
 
-import com.dmoney.dmoney.tracker.domain.category.model.CategoryDescription;
-import com.dmoney.dmoney.tracker.domain.category.model.Subcategory;
-import com.dmoney.dmoney.tracker.domain.category.model.SubcategoryId;
-import com.dmoney.dmoney.tracker.domain.category.model.SubcategoryName;
+import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
+import com.dmoney.dmoney.tracker.domain.category.model.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
@@ -17,7 +15,7 @@ class SubcategoryTest {
     void shouldCreateValidSubcategory(){
         SubcategoryId id = new SubcategoryId(UUID.randomUUID());
         SubcategoryName name = SubcategoryName.from("food");
-        CategoryDescription description = CategoryDescription.from("description");
+        SubcategoryDescription description = SubcategoryDescription.from("description");
 
         Subcategory subcategory = new Subcategory(id, name, description);
 
@@ -29,9 +27,9 @@ class SubcategoryTest {
     @Test
     void shouldThrowWhenIdIsNull(){
         SubcategoryName name = SubcategoryName.from("food");
-        CategoryDescription description = CategoryDescription.from("description");
+        SubcategoryDescription description = SubcategoryDescription.from("description");
 
-        assertThrows(NullPointerException.class,
+        assertThrows(ValidationException.class,
                 () ->  new Subcategory(null, name, description)
         );
     }
@@ -39,9 +37,9 @@ class SubcategoryTest {
     @Test
     void shouldThrowWhenNameIsNull(){
         SubcategoryId id = new SubcategoryId(UUID.randomUUID());
-        CategoryDescription description = CategoryDescription.from("description");
+        SubcategoryDescription description = SubcategoryDescription.from("description");
 
-        assertThrows(NullPointerException.class,
+        assertThrows(ValidationException.class,
                 () ->  new Subcategory(id, null, description)
         );
     }
@@ -50,7 +48,7 @@ class SubcategoryTest {
     void shouldRename(){
         SubcategoryId id = new SubcategoryId(UUID.randomUUID());
         SubcategoryName name = SubcategoryName.from("food");
-        CategoryDescription description = CategoryDescription.from("description");
+        SubcategoryDescription description = SubcategoryDescription.from("description");
 
         Subcategory subcategory = new Subcategory(id, name, description);
         SubcategoryName newName = SubcategoryName.from("transport");
@@ -63,7 +61,7 @@ class SubcategoryTest {
     void shouldThrowWhenRenameWithValueNull(){
         SubcategoryId id = new SubcategoryId(UUID.randomUUID());
         SubcategoryName name = SubcategoryName.from("food");
-        CategoryDescription description = CategoryDescription.from("description");
+        SubcategoryDescription description = SubcategoryDescription.from("description");
 
         Subcategory subcategory = new Subcategory(id, name, description);
 
@@ -76,10 +74,10 @@ class SubcategoryTest {
     void shouldChangeDescription(){
         SubcategoryId id = new SubcategoryId(UUID.randomUUID());
         SubcategoryName name = SubcategoryName.from("food");
-        CategoryDescription description = CategoryDescription.from("description");
+        SubcategoryDescription description = SubcategoryDescription.from("description");
 
         Subcategory subcategory = new Subcategory(id, name, description);
-        CategoryDescription newDescription = CategoryDescription.from("newDescription");
+        SubcategoryDescription newDescription = SubcategoryDescription.from("newDescription");
         subcategory.changeDescription(newDescription);
 
         assertEquals(newDescription, subcategory.description());

@@ -1,5 +1,6 @@
 package com.dmoney.dmoney.tracker.domain.category;
 
+import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
 import com.dmoney.dmoney.tracker.domain.category.model.SubcategoryId;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +31,7 @@ class SubcategoryIdTest {
 
     @Test
     void shouldThrowWhenUuidIsNull() {
-        assertThrows(NullPointerException.class, () -> {
+        assertThrows(ValidationException.class, () -> {
             new SubcategoryId(null);
         });
     }

@@ -1,5 +1,6 @@
 package com.dmoney.dmoney.tracker.domain.category;
 
+import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
 import org.junit.jupiter.api.Test;
 
@@ -31,11 +32,11 @@ class CategoryNameTest {
 
     @Test
     void shouldThrowExceptionWhenValueIsNull(){
-        assertThrows(IllegalArgumentException.class, () -> new CategoryName(null));
+        assertThrows(ValidationException.class, () -> new CategoryName(null));
     }
 
     @Test
     void shouldThrowExceptionWhenValueIsBlank(){
-        assertThrows(IllegalArgumentException.class, () -> new CategoryName("   "));
+        assertThrows(ValidationException.class, () -> new CategoryName("   "));
     }
 }

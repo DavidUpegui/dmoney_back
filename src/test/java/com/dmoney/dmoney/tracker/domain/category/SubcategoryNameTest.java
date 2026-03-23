@@ -1,6 +1,7 @@
 package com.dmoney.dmoney.tracker.domain.category;
 
 
+import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
 import com.dmoney.dmoney.tracker.domain.category.model.SubcategoryName;
 import org.junit.jupiter.api.Test;
 
@@ -32,12 +33,12 @@ class SubcategoryNameTest {
 
     @Test
     void shouldThrowExceptionWhenValueIsNull(){
-         assertThrows(IllegalArgumentException.class, () -> new SubcategoryName(null));
+         assertThrows(ValidationException.class, () -> new SubcategoryName(null));
     }
 
     @Test
     void shouldThrowExceptionWhenValueIsBlank(){
-        assertThrows(IllegalArgumentException.class, () -> new SubcategoryName("   "));
+        assertThrows(ValidationException.class, () -> new SubcategoryName("   "));
     }
 
 }
