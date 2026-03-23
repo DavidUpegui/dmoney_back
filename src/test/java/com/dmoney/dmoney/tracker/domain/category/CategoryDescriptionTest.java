@@ -1,6 +1,8 @@
 package com.dmoney.dmoney.tracker.domain.category;
 
+import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryDescription;
+import com.dmoney.dmoney.tracker.domain.category.model.SubcategoryDescription;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,21 +25,21 @@ class CategoryDescriptionTest {
     }
 
     @Test
-    void shouldThrowErrorWhenValueIsNull(){
-        assertThrows(NullPointerException.class,
-                () -> new CategoryDescription(null));
+    void shouldCreateEmptyDescriptionWhenConstructprValueIsNull(){
+        SubcategoryDescription description = new SubcategoryDescription(null);
+        assertEquals("", description.value());
     }
 
     @Test
     void shouldThrowErrorIfValueIsGreater(){
         String tooLong = "a".repeat(256);
 
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        ValidationException exception = assertThrows(
+                ValidationException.class,
                 () -> new CategoryDescription(tooLong)
         );
 
-        assertEquals("Description is too long", exception.getMessage());
+        assertEquals("Category Description is too long", exception.getMessage());
     }
 
     @Test

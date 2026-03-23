@@ -206,10 +206,11 @@ class CategoryRepositoryAdapterTest {
 
             adapter.save(category);
 
-            adapter.deleteByUserIdAndId(userId,categoryId);
+            boolean deleted = adapter.deleteByUserIdAndId(userId,categoryId);
 
             Optional<Category> found = adapter.findByUserIdAndId(userId,categoryId);
 
+            assertThat(deleted).isTrue();
             assertThat(found).isEmpty();
         }
     }

@@ -1,5 +1,6 @@
 package com.dmoney.dmoney.tracker.infrastructure.persistence.tag;
 
+import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.domain.tag.model.Tag;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagDescription;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagId;
@@ -34,8 +35,8 @@ public class TagRepositoryAdapterTest {
     class CreateTagRepositoryAdapterTest{
         @Test
         void should_persist_tag_and_return_mapped_domain(){
-            Tag toCreate = Tag.from(
-                    TagId.newId(),
+            Tag toCreate = Tag.create(
+                    UserId.newId(),
                     TagName.from("Name"),
                     TagDescription.from("Description")
             );
@@ -55,33 +56,24 @@ public class TagRepositoryAdapterTest {
     @Nested
     class FindAllTagRepositoryAdapterTest{
         @Test
-        void should_find_a_tag_by_it_id(){
-            Tag toFound1 = Tag.from(
-                    TagId.newId(),
-                    TagName.from("Name"),
-                    TagDescription.from("Description")
-            );
-            Tag toFound2 = Tag.from(
-                    TagId.newId(),
-                    TagName.from("Name"),
-                    TagDescription.from("Description")
-            );
+        void should_find_only_tags_belonging_to_user() {
+            UserId userId = UserId.newId();
+            Tag toFound1 = Tag.create(userId, TagName.from("Name1"), TagDescription.from("Description"));
+            Tag toFound2 = Tag.create(UserId.newId(), TagName.from("Name2"), TagDescription.from("Description")); // ← usuario diferente
+
             adapter.save(toFound1);
             adapter.save(toFound2);
 
-            List<Tag> found = adapter.findAll();
+            List<Tag> found = adapter.findAllByUserId(userId);
 
-            assertEquals(toFound1.id(), found.getFirst().id());
-            assertEquals(toFound1.name(), found.getFirst().name());
-            assertEquals(toFound1.description(), found.getFirst().description());
-            assertEquals(toFound2.id(), found.get(1).id());
-            assertEquals(toFound2.name(), found.get(1).name());
-            assertEquals(toFound2.description(), found.get(1).description());
+            assertThat(found.size()).isEqualTo(1);
+            assertThat(found.getFirst().id()).isEqualTo(toFound1.id());
         }
 
         @Test
         void should_return_empty_list_when_no_tags_found(){
-            List<Tag> found = adapter.findAll();
+            UserId userId = UserId.newId();
+            List<Tag> found = adapter.findAllByUserId(userId);
 
             assertTrue(found.isEmpty());
         }
@@ -91,15 +83,16 @@ public class TagRepositoryAdapterTest {
     class FindByIdTagRepositoryAdapterTest{
         @Test
         void should_find_a_tag_by_id(){
-            TagId id = TagId.newId();
-            Tag toFound = Tag.from(
-                    id,
+            UserId userId = UserId.newId();
+            Tag toFound = Tag.create(
+                    userId,
                     TagName.from("Name"),
                     TagDescription.from("Description")
             );
+            TagId id = toFound.id();
             adapter.save(toFound);
 
-            Optional<Tag> found = adapter.findById(id);
+            Optional<Tag> found = adapter.findByUserIdAndId(userId, id);
 
             assertThat(found).isPresent();
             assertThat(id).isEqualTo(found.get().id());
@@ -110,8 +103,9 @@ public class TagRepositoryAdapterTest {
         @Test
         void should_return_empty_if_tag_is_not_found(){
             TagId id = TagId.newId();
+            UserId userId = UserId.newId();
 
-            Optional<Tag> found = adapter.findById(id);
+            Optional<Tag> found = adapter.findByUserIdAndId(userId, id);
 
             assertThat(found).isNotPresent();
         }
@@ -121,15 +115,16 @@ public class TagRepositoryAdapterTest {
     class ExistByNameTagRepositoryAdapterTest{
         @Test
         void should_return_true_if_name_exist(){
+            UserId userId = UserId.newId();
             TagName name =  TagName.from("Name");
-            Tag toFoundByName = Tag.from(
-                    TagId.newId(),
+            Tag toFoundByName = Tag.create(
+                    userId,
                     name,
                     TagDescription.from("Description")
             );
             adapter.save(toFoundByName);
 
-            boolean doExists = adapter.existsByName(name);
+            boolean doExists = adapter.existsByUserIdAndNameIgnoreCase(userId, name);
 
             assertThat(doExists).isTrue();
         }
@@ -137,8 +132,9 @@ public class TagRepositoryAdapterTest {
         @Test
         void should_return_false_if_name_does_not_exist(){
             TagName name =  TagName.from("Name");
+            UserId userId = UserId.newId();
 
-            boolean doExists = adapter.existsByName(name);
+            boolean doExists = adapter.existsByUserIdAndNameIgnoreCase(userId,name);
 
             assertThat(doExists).isFalse();
         }
@@ -148,21 +144,22 @@ public class TagRepositoryAdapterTest {
     class DeleteByIdTagRepositoryAdapterTest{
         @Test
         void should_delete_tag_by_id(){
-            TagId id = TagId.newId();
-            Tag toDelete = Tag.from(
-                    id,
+            UserId userId = UserId.newId();
+            Tag toDelete = Tag.create(
+                    userId,
                     TagName.from("Name"),
                     TagDescription.from("Description")
             );
+            TagId id = toDelete.id();
             adapter.save(toDelete);
 
-            adapter.deleteById(id);
+            boolean deleted = adapter.deleteByUserIdAndId(userId,id);
 
-            boolean doExist = adapter.existsById(id);
+            Optional<Tag> doExist = adapter.findByUserIdAndId(userId, id);
 
-            assertThat(doExist).isFalse();
+            assertThat(deleted).isTrue();
+            assertThat(doExist).isEmpty();
 
         }
     }
-
 }
