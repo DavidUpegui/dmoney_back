@@ -1,6 +1,5 @@
 package com.dmoney.dmoney.auth.infrastructure.persistence.user;
 
-import com.dmoney.dmoney.auth.domain.user.UserEmail;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

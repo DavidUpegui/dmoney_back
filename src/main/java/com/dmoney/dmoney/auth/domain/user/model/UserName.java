@@ -1,8 +1,6 @@
-package com.dmoney.dmoney.auth.domain.user;
+package com.dmoney.dmoney.auth.domain.user.model;
 
 import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
-
-import java.util.Objects;
 
 public record UserName(String value) {
 

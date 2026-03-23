@@ -1,4 +1,4 @@
-package com.dmoney.dmoney.auth.domain.user;
+package com.dmoney.dmoney.auth.domain.user.model;
 
 import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
 
@@ -10,15 +10,17 @@ public record UserEmail(String value) {
             Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
 
     public UserEmail(String value){
-        Objects.requireNonNull(value);
+        if(value == null){
+            throw new ValidationException("Email cannot be null.");
+        }
         String normalized = value.trim().toLowerCase();
 
         if(normalized.isBlank()){
-            throw new ValidationException("Email cannot be blank");
+            throw new ValidationException("Email cannot be blank.");
         }
 
         if(!EMAIL_PATTERN.matcher(normalized).matches()){
-            throw new ValidationException("Email doesn't match the correct format");
+            throw new ValidationException("Email doesn't match the correct format.");
         }
         this.value = normalized;
     }

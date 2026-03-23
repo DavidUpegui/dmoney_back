@@ -1,5 +1,7 @@
-package com.dmoney.dmoney.auth.domain.user;
+package com.dmoney.dmoney.auth.domain.user.repository;
 
+import com.dmoney.dmoney.auth.domain.user.model.User;
+import com.dmoney.dmoney.auth.domain.user.model.UserEmail;
 import com.dmoney.dmoney.shared.domain.models.UserId;
 
 import java.util.Optional;

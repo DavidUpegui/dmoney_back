@@ -1,7 +1,8 @@
 package com.dmoney.dmoney.auth.application.user.register;
 
 import com.dmoney.dmoney.auth.application.user.ports.PasswordHasher;
-import com.dmoney.dmoney.auth.domain.user.*;
+import com.dmoney.dmoney.auth.domain.user.model.*;
+import com.dmoney.dmoney.auth.domain.user.repository.UserRepository;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
 import com.dmoney.dmoney.shared.domain.models.UserId;
 import lombok.RequiredArgsConstructor;

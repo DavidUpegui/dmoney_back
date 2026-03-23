@@ -2,9 +2,9 @@ package com.dmoney.dmoney.auth.application.user.login;
 
 import com.dmoney.dmoney.auth.application.user.ports.JwtGenerator;
 import com.dmoney.dmoney.auth.application.user.ports.PasswordHasher;
-import com.dmoney.dmoney.auth.domain.user.User;
-import com.dmoney.dmoney.auth.domain.user.UserEmail;
-import com.dmoney.dmoney.auth.domain.user.UserRepository;
+import com.dmoney.dmoney.auth.domain.user.model.User;
+import com.dmoney.dmoney.auth.domain.user.model.UserEmail;
+import com.dmoney.dmoney.auth.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
