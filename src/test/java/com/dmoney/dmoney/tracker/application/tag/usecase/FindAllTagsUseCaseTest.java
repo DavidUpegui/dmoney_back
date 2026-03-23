@@ -1,12 +1,14 @@
-package com.dmoney.dmoney.tracker.application.tag.findAll;
+package com.dmoney.dmoney.tracker.application.tag.usecase;
 
+import com.dmoney.dmoney.shared.domain.models.UserId;
+import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
 import com.dmoney.dmoney.tracker.application.tag.result.TagResponse;
-import com.dmoney.dmoney.tracker.application.tag.usecase.FindAllTagsUseCase;
 import com.dmoney.dmoney.tracker.domain.tag.model.Tag;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagDescription;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagId;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagName;
 import com.dmoney.dmoney.tracker.domain.tag.repository.TagRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,27 +28,38 @@ public class FindAllTagsUseCaseTest {
     @Mock
     private TagRepository tagRepository;
 
+    @Mock
+    private AuthenticatedUserProvider authProvider;
+
     @InjectMocks
     private FindAllTagsUseCase useCase;
+
+    private UserId userId;
+
+    @BeforeEach
+    void setUp(){
+        userId = UserId.newId();
+        when(authProvider.currentUserId()).thenReturn(userId);
+    }
 
     @Test
     void should_return_list_of_tags(){
         TagId tagId1 = TagId.newId();
         TagId tagId2 = TagId.newId();
         List<Tag> tagList = List.of(
-                Tag.from(
-                        tagId1,
+                Tag.create(
+                        userId,
                         TagName.from("Tag1 name"),
                         TagDescription.from("Tag1 Description")
                 ),
-                Tag.from(
-                        tagId2,
+                Tag.create(
+                        userId,
                         TagName.from("Tag2 name"),
                         TagDescription.from("Tag2 Description")
                 )
         );
 
-        when(tagRepository.findAll())
+        when(tagRepository.findAllByUserId(userId))
                 .thenReturn(tagList);
 
         List<TagResponse> result = useCase.execute();
@@ -57,20 +70,20 @@ public class FindAllTagsUseCaseTest {
         assertEquals(tagId2.value().toString(), result.get(1).id());
         assertEquals("Tag2 name", result.get(1).name());
 
-        verify(tagRepository).findAll();
+        verify(tagRepository).findAllByUserId(userId);
     }
 
     @Test
     void should_return_empty_array_if_not_found(){
         List<Tag> emptyList = List.of();
 
-        when(tagRepository.findAll())
+        when(tagRepository.findAllByUserId(userId))
                 .thenReturn(emptyList);
 
         List<TagResponse> result = useCase.execute();
 
         assertTrue(result.isEmpty());
 
-        verify(tagRepository).findAll();
+        verify(tagRepository).findAllByUserId(userId);
     }
 }

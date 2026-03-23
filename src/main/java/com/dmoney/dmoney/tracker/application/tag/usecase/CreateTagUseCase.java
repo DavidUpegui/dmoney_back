@@ -9,6 +9,7 @@ import com.dmoney.dmoney.tracker.domain.tag.model.Tag;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagDescription;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagName;
 import com.dmoney.dmoney.tracker.domain.tag.repository.TagRepository;
+import com.dmoney.dmoney.tracker.domain.tag.service.TagUniquenessChecker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,15 +19,15 @@ public class CreateTagUseCase {
 
     private final TagRepository tagRepo;
     private final AuthenticatedUserProvider authProvider;
+    private final TagUniquenessChecker uniquenessChecker;
 
     public TagResponse execute(CreateTagCommand command){
 
         UserId userId = authProvider.currentUserId();
         TagName tagName = TagName.from(command.name());
 
-        if(tagRepo.existsByUserIdAndName(userId, tagName)){
-            throw new ResourceAlreadyExistsException("Tag", "name", command.name());
-        }
+
+        uniquenessChecker.check(userId, tagName);
 
         Tag tag = Tag.create(
                 userId,

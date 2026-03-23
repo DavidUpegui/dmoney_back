@@ -1,12 +1,15 @@
-package com.dmoney.dmoney.tracker.application.tag.create;
+package com.dmoney.dmoney.tracker.application.tag.usecase;
 
+import com.dmoney.dmoney.shared.domain.models.UserId;
+import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
 import com.dmoney.dmoney.tracker.application.tag.result.TagResponse;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
 import com.dmoney.dmoney.tracker.application.tag.command.CreateTagCommand;
-import com.dmoney.dmoney.tracker.application.tag.usecase.CreateTagUseCase;
 import com.dmoney.dmoney.tracker.domain.tag.model.Tag;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagName;
 import com.dmoney.dmoney.tracker.domain.tag.repository.TagRepository;
+import com.dmoney.dmoney.tracker.domain.tag.service.TagUniquenessChecker;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,8 +26,22 @@ public class CreateTagUseCaseTest {
     @Mock
     private TagRepository tagRepository;
 
+    @Mock
+    private AuthenticatedUserProvider authProvider;
+
+    @Mock
+    private TagUniquenessChecker uniquenessChecker;
+
     @InjectMocks
     private CreateTagUseCase useCase;
+
+    private UserId userId;
+
+    @BeforeEach
+    void setUp(){
+        userId = UserId.newId();
+        when(authProvider.currentUserId()).thenReturn(userId);
+    }
 
     @Test
     void should_create_a_tag_and_save(){
@@ -34,7 +51,7 @@ public class CreateTagUseCaseTest {
         CreateTagCommand command =
                 new CreateTagCommand(name, description);
 
-        when(tagRepository.existsByName(any()))
+        when(tagRepository.existsByUserIdAndNameIgnoreCase(eq(userId),any(TagName.class)))
                 .thenReturn(false);
 
         when(tagRepository.save(any(Tag.class)))
@@ -46,7 +63,7 @@ public class CreateTagUseCaseTest {
         assertEquals(description, result.description());
         assertNotNull(result.id());
 
-        verify(tagRepository).existsByName(TagName.from(name));
+        verify(tagRepository).existsByUserIdAndNameIgnoreCase(userId, TagName.from(name));
         verify(tagRepository).save(any(Tag.class));
     }
 
@@ -58,13 +75,13 @@ public class CreateTagUseCaseTest {
         CreateTagCommand command =
                 new CreateTagCommand(name, description);
 
-        when(tagRepository.existsByName(any()))
-                .thenReturn(true);
+        doThrow(new ResourceAlreadyExistsException("Tag", "name", name))
+                .when(uniquenessChecker).check(userId, TagName.from(name));
 
         assertThrows(ResourceAlreadyExistsException.class,
                 () -> useCase.execute(command));
 
-        verify(tagRepository).existsByName(TagName.from(name));
+        verify(uniquenessChecker).check(userId, TagName.from(name));
         verify(tagRepository, never()).save(any(Tag.class));
     }
 
@@ -84,7 +101,7 @@ public class CreateTagUseCaseTest {
         CreateTagCommand command =
                 new CreateTagCommand("Name", null);
 
-        when(tagRepository.existsByName(any()))
+        when(tagRepository.existsByUserIdAndNameIgnoreCase(eq(userId), any(TagName.class)))
                 .thenReturn(false);
 
         when(tagRepository.save(any(Tag.class)))
@@ -96,7 +113,7 @@ public class CreateTagUseCaseTest {
         assertEquals("", result.description());
         assertNotNull(result.id());
 
-        verify(tagRepository).existsByName(TagName.from("Name"));
+        verify(tagRepository).existsByUserIdAndNameIgnoreCase(userId, TagName.from("Name"));
         verify(tagRepository).save(any(Tag.class));
     }
 }

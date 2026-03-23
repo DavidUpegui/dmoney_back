@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface TagRepository {
     boolean deleteByUserIdAndId(UserId userId, TagId id);
-    boolean existsByUserIdAndName(UserId userId, TagName tagName);
+    boolean existsByUserIdAndNameIgnoreCase(UserId userId, TagName tagName);
     Optional<Tag> findByUserIdAndId(UserId userId, TagId id);
     Tag save(Tag tag);
     List<Tag> findAllByUserId(UserId userId);

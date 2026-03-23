@@ -1,13 +1,15 @@
-package com.dmoney.dmoney.tracker.application.tag.findById;
+package com.dmoney.dmoney.tracker.application.tag.usecase;
 
+import com.dmoney.dmoney.shared.domain.models.UserId;
+import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
 import com.dmoney.dmoney.tracker.application.tag.result.TagResponse;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
-import com.dmoney.dmoney.tracker.application.tag.usecase.FindTagByIdUseCase;
 import com.dmoney.dmoney.tracker.domain.tag.model.Tag;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagDescription;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagId;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagName;
 import com.dmoney.dmoney.tracker.domain.tag.repository.TagRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,16 +29,26 @@ public class FindTagByIdUseCaseTest {
     @Mock
     private TagRepository tagRepository;
 
+    @Mock
+    private AuthenticatedUserProvider authProvider;
+
     @InjectMocks
     private FindTagByIdUseCase useCase;
 
+    private UserId userId;
+
+    @BeforeEach
+    void setUp(){
+        userId = UserId.newId();
+        when(authProvider.currentUserId()).thenReturn(userId);
+    }
     @Test
     void should_found_by_id(){
         TagId tagId = TagId.newId();
 
-        when(tagRepository.findById(tagId))
-                .thenReturn(Optional.of(Tag.from(
-                        tagId,
+        when(tagRepository.findByUserIdAndId(userId,tagId))
+                .thenReturn(Optional.of(Tag.create(
+                        userId,
                         TagName.from("Tag name"),
                         TagDescription.from("Tag Description")
                 )));
@@ -47,20 +59,20 @@ public class FindTagByIdUseCaseTest {
         assertEquals("Tag name", result.name());
         assertEquals("Tag Description", result.description());
 
-        verify(tagRepository).findById(tagId);
+        verify(tagRepository).findByUserIdAndId(userId, tagId);
     }
 
     @Test
     void should_throw_exception_when_not_found(){
         TagId tagId = TagId.newId();
 
-        when(tagRepository.findById(tagId))
+        when(tagRepository.findByUserIdAndId(userId,tagId))
                 .thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class,
                 () -> useCase.execute(tagId.value().toString())
         );
 
-        verify(tagRepository).findById(tagId);
+        verify(tagRepository).findByUserIdAndId(userId, tagId);
     }
 }

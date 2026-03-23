@@ -1,15 +1,17 @@
-package com.dmoney.dmoney.tracker.application.tag.edit;
+package com.dmoney.dmoney.tracker.application.tag.usecase;
 
+import com.dmoney.dmoney.shared.domain.models.UserId;
+import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
+import com.dmoney.dmoney.tracker.application.tag.command.TagEditionCommand;
 import com.dmoney.dmoney.tracker.application.tag.result.TagResponse;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
-import com.dmoney.dmoney.tracker.application.tag.command.EditTagUseCase;
-import com.dmoney.dmoney.tracker.application.tag.usecase.TagEditionCommand;
 import com.dmoney.dmoney.tracker.domain.tag.model.Tag;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagDescription;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagId;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagName;
 import com.dmoney.dmoney.tracker.domain.tag.repository.TagRepository;
+import com.dmoney.dmoney.tracker.domain.tag.service.TagUniquenessChecker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,18 +33,27 @@ public class EditTagUseCaseTest {
     @Mock
     private TagRepository tagRepository;
 
+    @Mock
+    private AuthenticatedUserProvider authProvider;
+
+    @Mock
+    private TagUniquenessChecker uniquenessChecker;
+
     @InjectMocks
     private EditTagUseCase useCase;
 
+    private UserId userId;
     private Tag tag;
 
     @BeforeEach
     void setUp(){
-        tag =  Tag.from(
-                TagId.newId(),
+        UserId.newId();
+        tag =  Tag.create(
+                userId,
                 TagName.from("Any name"),
                 TagDescription.from("Any description")
         );
+        when(authProvider.currentUserId()).thenReturn(userId);
     }
 
     @Test
@@ -57,11 +68,8 @@ public class EditTagUseCaseTest {
                 changedDescription
         );
 
-        when(tagRepository.findById(tag.id()))
+        when(tagRepository.findByUserIdAndId(userId,tag.id()))
                 .thenReturn(Optional.of(tag));
-
-        when(tagRepository.existsByName(TagName.from(changedName)))
-                .thenReturn(false);
 
         when(tagRepository.save(any(Tag.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
@@ -72,8 +80,8 @@ public class EditTagUseCaseTest {
         assertEquals(changedDescription, response.description());
         assertEquals(id, response.id());
 
-        verify(tagRepository).findById(tag.id());
-        verify(tagRepository).existsByName(TagName.from(changedName));
+        verify(tagRepository).findByUserIdAndId(userId, tag.id());
+        verify(uniquenessChecker).check(userId, TagName.from(changedName), tag.name());
     }
 
     @Test
@@ -88,13 +96,14 @@ public class EditTagUseCaseTest {
                 changedDescription
         );
 
-        when(tagRepository.findById(TagId.from(anyId)))
+        when(tagRepository.findByUserIdAndId(userId, TagId.from(anyId)))
                 .thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class,
                 () -> useCase.execute(command));
 
-        verify(tagRepository).findById(any(TagId.class));
+        verify(tagRepository).findByUserIdAndId(eq(userId), any(TagId.class));
+        verify(uniquenessChecker, never()).check(eq(userId), any(TagName.class));
     }
 
     @Test
@@ -109,16 +118,17 @@ public class EditTagUseCaseTest {
                 changedDescription
         );
 
-        when(tagRepository.findById(tag.id()))
+        when(tagRepository.findByUserIdAndId(userId, tag.id()))
                 .thenReturn(Optional.of(tag));
 
-        when(tagRepository.existsByName(TagName.from(existingName)))
-                .thenReturn(true);
+        doThrow(new ResourceAlreadyExistsException("Tag", "name", existingName))
+                .when(uniquenessChecker).check(userId, TagName.from(existingName), tag.name());
 
         assertThrows(ResourceAlreadyExistsException.class,
                 () -> useCase.execute(command));
 
-        verify(tagRepository).findById(any(TagId.class));
+        verify(tagRepository).findByUserIdAndId(eq(userId), any(TagId.class));
+        verify(uniquenessChecker).check(userId, TagName.from(existingName), tag.name());
     }
 
     @Test
@@ -133,7 +143,7 @@ public class EditTagUseCaseTest {
                 changedDescription
         );
 
-        when(tagRepository.findById(tag.id()))
+        when(tagRepository.findByUserIdAndId(userId, tag.id()))
                 .thenReturn(Optional.of(tag));
 
         when(tagRepository.save(any(Tag.class)))
@@ -145,8 +155,8 @@ public class EditTagUseCaseTest {
         assertEquals(changedDescription, response.description());
         assertEquals(id, response.id());
 
-        verify(tagRepository).findById(tag.id());
-        verify(tagRepository, never()).existsByName(any());
+        verify(tagRepository).findByUserIdAndId(userId, tag.id());
+        verify(uniquenessChecker).check(userId, TagName.from(sameName), tag.name());
     }
 
     @Test
@@ -161,11 +171,9 @@ public class EditTagUseCaseTest {
                 null
         );
 
-        when(tagRepository.findById(tag.id()))
+        when(tagRepository.findByUserIdAndId(userId, tag.id()))
                 .thenReturn(Optional.of(tag));
 
-        when(tagRepository.existsByName(TagName.from(changedName)))
-                .thenReturn(false);
 
         when(tagRepository.save(any(Tag.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
@@ -176,8 +184,8 @@ public class EditTagUseCaseTest {
         assertEquals(sameDescription, response.description());
         assertEquals(id, response.id());
 
-        verify(tagRepository).findById(tag.id());
-        verify(tagRepository).existsByName(TagName.from(changedName));
+        verify(tagRepository).findByUserIdAndId(userId, tag.id());
+        verify(uniquenessChecker).check(userId, TagName.from(changedName), tag.name());
     }
 
     @Test
@@ -192,7 +200,7 @@ public class EditTagUseCaseTest {
                 changedDescription
         );
 
-        when(tagRepository.findById(tag.id()))
+        when(tagRepository.findByUserIdAndId(userId, tag.id()))
                 .thenReturn(Optional.of(tag));
 
         when(tagRepository.save(any(Tag.class)))
@@ -204,7 +212,7 @@ public class EditTagUseCaseTest {
         assertEquals(changedDescription, response.description());
         assertEquals(id, response.id());
 
-        verify(tagRepository).findById(tag.id());
-        verify(tagRepository, never()).existsByName(any());
+        verify(tagRepository).findByUserIdAndId(userId, tag.id());
+        verify(uniquenessChecker).check(userId, TagName.from(sameName), tag.name());
     }
 }

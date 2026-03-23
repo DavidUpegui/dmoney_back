@@ -1,16 +1,16 @@
-package com.dmoney.dmoney.tracker.application.tag.command;
+package com.dmoney.dmoney.tracker.application.tag.usecase;
 
 import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
+import com.dmoney.dmoney.tracker.application.tag.command.TagEditionCommand;
 import com.dmoney.dmoney.tracker.application.tag.result.TagResponse;
-import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
-import com.dmoney.dmoney.tracker.application.tag.usecase.TagEditionCommand;
 import com.dmoney.dmoney.tracker.domain.tag.model.Tag;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagDescription;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagId;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagName;
 import com.dmoney.dmoney.tracker.domain.tag.repository.TagRepository;
+import com.dmoney.dmoney.tracker.domain.tag.service.TagUniquenessChecker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +20,7 @@ public class EditTagUseCase {
 
     private final TagRepository tagRepository;
     private final AuthenticatedUserProvider authProvider;
+    private final TagUniquenessChecker uniquenessChecker;
 
     public TagResponse execute(TagEditionCommand command){
 
@@ -30,11 +31,7 @@ public class EditTagUseCase {
 
         if(command.name() != null){
             TagName newName = TagName.from(command.name());
-            if(!tagToEdit.name().equals(newName)
-            && tagRepository.existsByUserIdAndName(userId, newName)){
-                throw new ResourceAlreadyExistsException("Tag", "name", newName.value());
-            }
-
+            uniquenessChecker.check(userId, newName,tagToEdit.name());
             tagToEdit.changeName(TagName.from(command.name()));
         }
         if(command.description() != null){
