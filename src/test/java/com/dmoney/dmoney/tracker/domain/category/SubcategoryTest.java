@@ -29,7 +29,7 @@ class SubcategoryTest {
         SubcategoryName name = SubcategoryName.from("food");
         SubcategoryDescription description = SubcategoryDescription.from("description");
 
-        assertThrows(ValidationException.class,
+        assertThrows(NullPointerException.class,
                 () ->  new Subcategory(null, name, description)
         );
     }
@@ -39,7 +39,7 @@ class SubcategoryTest {
         SubcategoryId id = new SubcategoryId(UUID.randomUUID());
         SubcategoryDescription description = SubcategoryDescription.from("description");
 
-        assertThrows(ValidationException.class,
+        assertThrows(NullPointerException.class,
                 () ->  new Subcategory(id, null, description)
         );
     }

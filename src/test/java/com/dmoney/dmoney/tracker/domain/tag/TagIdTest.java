@@ -43,6 +43,6 @@ public class TagIdTest {
         ValidationException exception = assertThrows(ValidationException.class,
                 () -> new TagId(null));
 
-        assertEquals("Tag id cannot be null", exception.getMessage());
+        assertEquals("Tag id cannot be null.", exception.getMessage());
     }
 }

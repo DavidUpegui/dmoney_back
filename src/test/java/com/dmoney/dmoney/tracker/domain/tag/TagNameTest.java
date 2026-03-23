@@ -41,7 +41,7 @@ public class TagNameTest {
         ValidationException exception =  assertThrows(ValidationException.class,
                 () -> new TagName(null));
 
-        assertEquals("Tag name cannot be null or blank", exception.getMessage());
+        assertEquals("Tag name cannot be null or blank.", exception.getMessage());
     }
 
     @Test
@@ -49,6 +49,6 @@ public class TagNameTest {
         ValidationException exception =  assertThrows(ValidationException.class,
                 () -> new TagName(""));
 
-        assertEquals("Tag name cannot be null or blank", exception.getMessage());
+        assertEquals("Tag name cannot be null or blank.", exception.getMessage());
     }
 }

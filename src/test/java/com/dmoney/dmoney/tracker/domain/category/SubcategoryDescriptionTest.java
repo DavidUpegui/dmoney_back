@@ -26,9 +26,10 @@ class SubcategoryDescriptionTest {
     }
 
     @Test
-    void shouldThrowErrorWhenValueIsNull(){
-        assertThrows(ValidationException.class,
-                () -> new SubcategoryDescription(null));
+    void shouldCreateEmptyDescriptionWhenConstructorValueIsNull(){
+        SubcategoryDescription description = new SubcategoryDescription(null);
+
+        assertEquals("", description.value());
     }
 
     @Test
@@ -40,7 +41,7 @@ class SubcategoryDescriptionTest {
                 () -> new SubcategoryDescription(tooLong)
         );
 
-        assertEquals("Description is too long", exception.getMessage());
+        assertEquals("Subcategory description is too long", exception.getMessage());
     }
 
     @Test

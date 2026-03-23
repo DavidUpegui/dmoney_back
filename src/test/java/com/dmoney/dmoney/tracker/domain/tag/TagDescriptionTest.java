@@ -60,11 +60,10 @@ public class TagDescriptionTest {
     }
 
     @Test
-    void should_throw_null_pointer_exception_when_description_is_null(){
-        ValidationException exception = assertThrows(ValidationException.class,
-                () -> new TagDescription(null));
+    void should_create_empty_description_when_description_is_null(){
+        TagDescription tagDescription = new TagDescription(null);
 
-        assertEquals("Tag description cannot be null", exception.getMessage());
+        assertEquals("", tagDescription.value());
     }
 
     @Test

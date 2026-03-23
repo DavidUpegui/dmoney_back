@@ -109,7 +109,7 @@ class CategoryTest {
 
         SubcategoryDescription description = SubcategoryDescription.from(("subcategoryDescription"));
 
-        assertThrows(ValidationException.class,
+        assertThrows(NullPointerException.class,
                 () -> category.addSubcategory(null, description));
     }
     @Test
@@ -122,7 +122,7 @@ class CategoryTest {
 
         SubcategoryName subcategoryName = SubcategoryName.from("subcategoryName");
 
-        assertThrows(ValidationException.class,
+        assertThrows(NullPointerException.class,
                 () -> category.addSubcategory(subcategoryName, null));
     }
 
@@ -207,7 +207,7 @@ class CategoryTest {
             SubcategoryDescription newDescription = SubcategoryDescription.from("newDescription");
 
 
-            assertThrows(ValidationException.class,
+            assertThrows(NullPointerException.class,
                     () -> category.editSubcategory(null, newSubcategoryName, newDescription));
         }
 

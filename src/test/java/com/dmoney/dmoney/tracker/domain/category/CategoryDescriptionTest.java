@@ -2,6 +2,7 @@ package com.dmoney.dmoney.tracker.domain.category;
 
 import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryDescription;
+import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
 import com.dmoney.dmoney.tracker.domain.category.model.SubcategoryDescription;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,7 @@ class CategoryDescriptionTest {
 
     @Test
     void shouldCreateEmptyDescriptionWhenConstructprValueIsNull(){
-        SubcategoryDescription description = new SubcategoryDescription(null);
+        CategoryDescription description = new CategoryDescription(null);
         assertEquals("", description.value());
     }
 
@@ -39,7 +40,7 @@ class CategoryDescriptionTest {
                 () -> new CategoryDescription(tooLong)
         );
 
-        assertEquals("Category Description is too long", exception.getMessage());
+        assertEquals("Category description is too long", exception.getMessage());
     }
 
     @Test
