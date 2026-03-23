@@ -1,5 +1,6 @@
 package com.dmoney.dmoney.tracker.infrastructure.persistence.category;
 
+import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.domain.category.model.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -20,24 +21,26 @@ class CategoryMapperTest {
 
     @Test
     void should_map_category_to_category_entity(){
-        Category categoryDomain = new Category(
-                CategoryId.newId(),
+        UserId userId = UserId.newId();
+        Category categoryDomain = Category.create(
+                userId,
                 CategoryName.from("Category name"),
                 CategoryDescription.from("Category Description")
         );
 
         categoryDomain.addSubcategory(
                 SubcategoryName.from("Subcategory1 name"),
-                CategoryDescription.from("Subcategory1 description")
+                SubcategoryDescription.from("Subcategory1 description")
         );
 
         categoryDomain.addSubcategory(
                 SubcategoryName.from("Subcategory2 name"),
-                CategoryDescription.from("Subcategory2 description")
+                SubcategoryDescription.from("Subcategory2 description")
         );
 
         CategoryEntity categoryEntity = CategoryMapper.toEntity(categoryDomain);
 
+        assertEquals(categoryDomain.userId().value(), categoryEntity.getUserId());
         assertEquals(categoryDomain.name().value(), categoryEntity.getName());
         assertEquals(categoryDomain.id().value(), categoryEntity.getId());
         assertEquals(categoryDomain.description().value(), categoryEntity.getDescription());
@@ -52,9 +55,10 @@ class CategoryMapperTest {
     }
 
     @Test
-    void should_map_category_to_category_entity_with_sibcategories_empty(){
-        Category categoryDomain = new Category(
-                CategoryId.newId(),
+    void should_map_category_to_category_entity_with_subcategories_empty(){
+        UserId userId = UserId.newId();
+        Category categoryDomain = Category.create(
+                userId,
                 CategoryName.from("Category name"),
                 CategoryDescription.from("Category Description")
         );
@@ -62,6 +66,7 @@ class CategoryMapperTest {
 
         CategoryEntity categoryEntity = CategoryMapper.toEntity(categoryDomain);
 
+        assertEquals(categoryDomain.userId().value(), categoryEntity.getUserId());
         assertEquals(categoryDomain.name().value(), categoryEntity.getName());
         assertEquals(categoryDomain.id().value(), categoryEntity.getId());
         assertTrue(categoryEntity.getSubcategories().isEmpty());
@@ -97,9 +102,9 @@ class CategoryMapperTest {
     @Test
     void should_map_category_entity_to_category_with_empty_subcategories(){
         UUID categoryId = UUID.randomUUID();
-
-
+        UUID userId = UUID.randomUUID();
         CategoryEntity categoryEntity = new CategoryEntity(
+                userId,
                 categoryId,
                 "Tech",
                 "Tech description"
@@ -115,7 +120,9 @@ class CategoryMapperTest {
     }
 
     private static CategoryEntity getCategoryEntity(UUID categoryId, UUID subId1, UUID subId2) {
+        UUID userId = UUID.randomUUID();
         CategoryEntity categoryEntity = new CategoryEntity(
+                userId,
                 categoryId,
                 "Tech",
                 "Tech description"
