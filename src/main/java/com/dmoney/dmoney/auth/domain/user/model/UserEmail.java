@@ -2,7 +2,6 @@ package com.dmoney.dmoney.auth.domain.user.model;
 
 import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
 
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 public record UserEmail(String value) {

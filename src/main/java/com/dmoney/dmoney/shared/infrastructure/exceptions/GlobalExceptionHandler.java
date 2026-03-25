@@ -1,7 +1,6 @@
 package com.dmoney.dmoney.shared.infrastructure.exceptions;
 
-import
-        com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
+import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
 import com.dmoney.dmoney.shared.domain.exceptions.UnauthenticatedException;
 import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;

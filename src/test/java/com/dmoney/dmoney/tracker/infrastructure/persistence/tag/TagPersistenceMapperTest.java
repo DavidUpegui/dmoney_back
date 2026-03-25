@@ -1,6 +1,5 @@
 package com.dmoney.dmoney.tracker.infrastructure.persistence.tag;
 
-import com.dmoney.dmoney.auth.infrastructure.persistence.user.UserPersistenceMapper;
 import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.domain.tag.model.Tag;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagDescription;

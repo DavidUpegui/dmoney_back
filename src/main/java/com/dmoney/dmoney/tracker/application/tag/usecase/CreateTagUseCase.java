@@ -3,7 +3,6 @@ package com.dmoney.dmoney.tracker.application.tag.usecase;
 import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
 import com.dmoney.dmoney.tracker.application.tag.result.TagResponse;
-import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
 import com.dmoney.dmoney.tracker.application.tag.command.CreateTagCommand;
 import com.dmoney.dmoney.tracker.domain.tag.model.Tag;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagDescription;
