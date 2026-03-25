@@ -9,6 +9,7 @@ import com.dmoney.dmoney.auth.infrastructure.restapi.dto.LoginRequest;
 import com.dmoney.dmoney.auth.infrastructure.restapi.dto.LoginResponse;
 import com.dmoney.dmoney.auth.infrastructure.restapi.dto.RegisterRequest;
 import com.dmoney.dmoney.auth.infrastructure.restapi.dto.RegisterResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(
-            @RequestBody RegisterRequest request
+            @RequestBody @Valid RegisterRequest request
     ){
         UserRegistrationCommand command = new UserRegistrationCommand(
                 request.email(),
@@ -43,13 +44,13 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public LoginResponse login(
-            @RequestBody LoginRequest request
+    public ResponseEntity<LoginResponse> login(
+            @RequestBody @Valid LoginRequest request
     ){
         String token = loginUserUseCase.execute(
                 new LoginCommand(request.email(), request.password())
         );
 
-        return new LoginResponse(token);
+        return ResponseEntity.ok(new LoginResponse(token));
     }
 }
