@@ -1,17 +1,19 @@
 package com.dmoney.dmoney.tracker.infrastructure.controller.tag;
 
-import com.dmoney.dmoney.tracker.application.tag.TagResponse;
-import com.dmoney.dmoney.tracker.application.tag.create.CreateTagUseCase;
-import com.dmoney.dmoney.tracker.application.tag.delete.DeleteTagUseCase;
-import com.dmoney.dmoney.tracker.application.tag.edit.EditTagUseCase;
-import com.dmoney.dmoney.tracker.application.tag.findAll.FindAllTagsUseCase;
-import com.dmoney.dmoney.tracker.application.tag.findById.FindTagByIdUseCase;
-import com.dmoney.dmoney.tracker.domain.exceptions.ResourceAlreadyExistsException;
-import com.dmoney.dmoney.tracker.domain.exceptions.ResourceNotFoundException;
+import com.dmoney.dmoney.auth.infrastructure.security.JwtAuthenticationFilter;
+import com.dmoney.dmoney.auth.infrastructure.security.JwtTokenParser;
+import com.dmoney.dmoney.tracker.application.tag.result.TagResponse;
+import com.dmoney.dmoney.tracker.application.tag.usecase.CreateTagUseCase;
+import com.dmoney.dmoney.tracker.application.tag.usecase.DeleteTagUseCase;
+import com.dmoney.dmoney.tracker.application.tag.usecase.EditTagUseCase;
+import com.dmoney.dmoney.tracker.application.tag.usecase.FindAllTagsUseCase;
+import com.dmoney.dmoney.tracker.application.tag.usecase.FindTagByIdUseCase;
+import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
+import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -28,10 +30,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(TagController.class)
+@AutoConfigureMockMvc(addFilters = false)
+
 public class TagControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @MockBean
+    private JwtTokenParser jwtTokenParser;
 
     @MockBean
     private  CreateTagUseCase createTagUseCase;

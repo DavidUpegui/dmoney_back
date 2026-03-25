@@ -1,9 +1,10 @@
 package com.dmoney.dmoney.tracker.infrastructure.persistence.category;
 
-import com.dmoney.dmoney.tracker.domain.category.Category;
-import com.dmoney.dmoney.tracker.domain.category.CategoryId;
-import com.dmoney.dmoney.tracker.domain.category.CategoryName;
-import com.dmoney.dmoney.tracker.domain.category.Description;
+import com.dmoney.dmoney.shared.domain.models.UserId;
+import com.dmoney.dmoney.tracker.domain.category.model.Category;
+import com.dmoney.dmoney.tracker.domain.category.model.CategoryId;
+import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
+import com.dmoney.dmoney.tracker.domain.category.model.CategoryDescription;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -34,16 +35,17 @@ class CategoryRepositoryAdapterTest {
     class FindById{
         @Test
         void should_save_and_find_category(){
-            Category category = new Category(
-                    CategoryId.newId(),
+            UserId userId = UserId.newId();
+            Category category = Category.create(
+                    userId,
                     CategoryName.from("Food"),
-                    Description.from("Description")
+                    CategoryDescription.from("Description")
             );
 
             adapter.save(category);
 
             Optional<Category> found =
-                    adapter.findById(category.id());
+                    adapter.findByUserIdAndId(userId, category.id());
 
             assertThat(found).isPresent();
             assertThat(found.get().name().value()).isEqualTo("Food");
@@ -51,16 +53,17 @@ class CategoryRepositoryAdapterTest {
 
         @Test
         void should_return_empty_when_no_category_found(){
-            Category category = new Category(
-                    CategoryId.newId(),
+            UserId userId = UserId.newId();
+            Category category = Category.create(
+                    userId,
                     CategoryName.from("Food"),
-                    Description.from("Description")
+                    CategoryDescription.from("Description")
             );
 
             adapter.save(category);
             CategoryId anyId = CategoryId.newId();
             Optional<Category> found =
-                    adapter.findById(anyId);
+                    adapter.findByUserIdAndId(userId, anyId);
 
             assertThat(found).isEmpty();
         }
@@ -70,21 +73,22 @@ class CategoryRepositoryAdapterTest {
     class FindAll{
         @Test
         void should_return_the_categories(){
-            Category category1 = new Category(
-                    CategoryId.newId(),
+            UserId userId = UserId.newId();
+            Category category1 = Category.create(
+                    userId,
                     CategoryName.from("Food"),
-                    Description.from("Description")
+                    CategoryDescription.from("Description")
             );
-            Category category2 = new Category(
-                    CategoryId.newId(),
+            Category category2 = Category.create(
+                    userId,
                     CategoryName.from("Transport"),
-                    Description.from("Description")
+                    CategoryDescription.from("Description")
             );
 
             adapter.save(category1);
             adapter.save(category2);
 
-            List<Category> categoryList = adapter.findAll();
+            List<Category> categoryList = adapter.findAllByUserId(userId);
 
             Assertions.assertThat(categoryList)
                     .hasSize(2)
@@ -98,7 +102,7 @@ class CategoryRepositoryAdapterTest {
         @Test
         void should_return_void_when_no_categories(){
 
-            List<Category> categoryList = adapter.findAll();
+            List<Category> categoryList = adapter.findAllByUserId(UserId.newId());
             assertTrue(categoryList.isEmpty());
         }
     }
@@ -108,10 +112,11 @@ class CategoryRepositoryAdapterTest {
 
         @Test
         void should_persist_category_and_return_mapped_domain() {
-            Category category = new Category(
-                    CategoryId.newId(),
+            UserId userId = UserId.newId();
+            Category category = Category.create(
+                    userId,
                     CategoryName.from("Food"),
-                    Description.from("Food description")
+                    CategoryDescription.from("Food description")
             );
 
             Category saved = adapter.save(category);
@@ -122,60 +127,27 @@ class CategoryRepositoryAdapterTest {
                     .isEqualTo("Food description");
 
             Optional<Category> found =
-                    adapter.findById(category.id());
+                    adapter.findByUserIdAndId(userId, category.id());
 
             assertThat(found).isPresent();
         }
     }
 
     @Nested
-    class ExistById{
-        @Test
-        void should_return_true_when_category_exists_by_id(){
-            Category category = new Category(
-                    CategoryId.newId(),
-                    CategoryName.from("Food"),
-                    Description.from("Food description")
-            );
-            CategoryId categoryId = category.id();
-
-            adapter.save(category);
-
-            boolean exists = adapter.existsById(categoryId);
-
-            assertTrue(exists);
-        }
-
-        @Test
-        void should_return_false_when_category_does_not_exists_by_id(){
-            Category category = new Category(
-                    CategoryId.newId(),
-                    CategoryName.from("Food"),
-                    Description.from("Food description")
-            );
-            CategoryId anyId = CategoryId.newId();
-
-            adapter.save(category);
-
-            boolean exists = adapter.existsById(anyId);
-
-            assertFalse(exists);
-        }
-    }
-
-    @Nested
-    class existsByNameIgnoreCase{
+    class existsByUserIdAndNameIgnoreCase{
         @Test
          void should_return_true_if_exists(){
-            Category category = new Category(
-                    CategoryId.newId(),
+            UserId userId = UserId.newId();
+            Category category = Category.create(
+                    userId,
                     CategoryName.from("Food"),
-                    Description.from("Food description")
+                    CategoryDescription.from("Food description")
             );
 
             adapter.save(category);
 
-            boolean exists = adapter.existsByNameIgnoreCase(
+            boolean exists = adapter.existsByUserIdAndNameIgnoreCase(
+                    userId,
                     CategoryName.from("Food")
             );
 
@@ -184,15 +156,17 @@ class CategoryRepositoryAdapterTest {
 
         @Test
         void should_return_true_if_exists_and_ignore_case(){
-            Category category = new Category(
-                    CategoryId.newId(),
+            UserId userId = UserId.newId();
+            Category category = Category.create(
+                    userId,
                     CategoryName.from("Food"),
-                    Description.from("Food description")
+                    CategoryDescription.from("Food description")
             );
 
             adapter.save(category);
 
-            boolean exists = adapter.existsByNameIgnoreCase(
+            boolean exists = adapter.existsByUserIdAndNameIgnoreCase(
+                    userId,
                     CategoryName.from("fooD")
             );
 
@@ -200,15 +174,17 @@ class CategoryRepositoryAdapterTest {
         }
         @Test
         void should_return_false_if_does_not_exists(){
-            Category category = new Category(
-                    CategoryId.newId(),
+            UserId userId = UserId.newId();
+            Category category = Category.create(
+                    userId,
                     CategoryName.from("Food"),
-                    Description.from("Food description")
+                    CategoryDescription.from("Food description")
             );
 
             adapter.save(category);
 
-            boolean exists = adapter.existsByNameIgnoreCase(
+            boolean exists = adapter.existsByUserIdAndNameIgnoreCase(
+                    userId,
                     CategoryName.from("Any name")
             );
 
@@ -220,20 +196,32 @@ class CategoryRepositoryAdapterTest {
     class Delete{
         @Test
         void should_delete_by_id(){
-            CategoryId categoryId = CategoryId.newId();
-            Category category = new Category(
-                    categoryId,
+            UserId userId = UserId.newId();
+            Category category = Category.create(
+                    userId,
                     CategoryName.from("Food"),
-                    Description.from("Description")
+                    CategoryDescription.from("Description")
             );
+            CategoryId categoryId = category.id();
 
             adapter.save(category);
 
-            adapter.delete(categoryId);
+            boolean deleted = adapter.deleteByUserIdAndId(userId,categoryId);
 
-            boolean found = adapter.existsById(categoryId);
+            Optional<Category> found = adapter.findByUserIdAndId(userId,categoryId);
 
-            assertFalse(found);
+            assertThat(deleted).isTrue();
+            assertThat(found).isEmpty();
+        }
+
+        @Test
+        void should_return_false_if_not_deleted(){
+            UserId userId = UserId.newId();
+            CategoryId anyCategoryId = CategoryId.newId();
+
+            boolean deleted = adapter.deleteByUserIdAndId(userId,anyCategoryId);
+
+            assertThat(deleted).isFalse();
         }
     }
 }

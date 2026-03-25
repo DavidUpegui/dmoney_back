@@ -1,4 +1,6 @@
 spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
   datasource:
     url: jdbc:postgresql://localhost:5432/dmoney
     username: postgres
@@ -10,3 +12,5 @@ spring:
     properties:
       hibernate:
         format_sql: true
+jwt:
+  secret: ${JWT_SECRET}
