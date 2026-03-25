@@ -5,6 +5,8 @@ import com.dmoney.dmoney.shared.domain.models.UserId;
 
 public class UserPersistenceMapper {
 
+    private UserPersistenceMapper() {}
+
     public static UserEntity toEntity(User domain){
         return new UserEntity(
                 domain.userId().value(),
