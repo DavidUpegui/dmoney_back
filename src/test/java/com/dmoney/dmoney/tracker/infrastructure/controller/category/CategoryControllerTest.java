@@ -2,6 +2,7 @@ package com.dmoney.dmoney.tracker.infrastructure.controller.category;
 
 import com.dmoney.dmoney.auth.infrastructure.security.JwtAuthenticationFilter;
 import com.dmoney.dmoney.auth.infrastructure.security.JwtTokenParser;
+import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
 import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
 import com.dmoney.dmoney.tracker.application.category.result.SubcategoryResult;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
@@ -910,4 +911,20 @@ class CategoryControllerTest {
                              command.subcategoryId().equals("2")));
          }
      }
+    @Test
+    void should_return_400_when_validation_exception() throws Exception {
+        when(createCategoryUseCase.execute(any()))
+                .thenThrow(new ValidationException("Invalid data"));
+
+        mockMvc.perform(post("/api/categories")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                        {
+                            "name": "Tech",
+                            "description": "desc"
+                        }
+                    """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Invalid data"));
+    }
 }

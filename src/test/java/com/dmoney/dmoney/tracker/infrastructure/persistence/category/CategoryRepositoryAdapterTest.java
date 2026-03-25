@@ -213,5 +213,15 @@ class CategoryRepositoryAdapterTest {
             assertThat(deleted).isTrue();
             assertThat(found).isEmpty();
         }
+
+        @Test
+        void should_return_false_if_not_deleted(){
+            UserId userId = UserId.newId();
+            CategoryId anyCategoryId = CategoryId.newId();
+
+            boolean deleted = adapter.deleteByUserIdAndId(userId,anyCategoryId);
+
+            assertThat(deleted).isFalse();
+        }
     }
 }

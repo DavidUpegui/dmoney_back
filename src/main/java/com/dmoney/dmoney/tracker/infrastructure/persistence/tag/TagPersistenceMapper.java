@@ -8,6 +8,8 @@ import com.dmoney.dmoney.tracker.domain.tag.model.TagName;
 
 public class TagPersistenceMapper {
 
+    private TagPersistenceMapper(){}
+
     public static TagEntity toEntity(Tag tag){
         return new TagEntity(
                 tag.id().value(),

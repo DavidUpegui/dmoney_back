@@ -159,7 +159,17 @@ public class TagRepositoryAdapterTest {
 
             assertThat(deleted).isTrue();
             assertThat(doExist).isEmpty();
+        }
 
+        @Test
+        void should_return_false_if_not_deleted(){
+            UserId userId = UserId.newId();
+            TagId anyTagId = TagId.newId();
+
+            boolean deleted = adapter.deleteByUserIdAndId(userId,anyTagId);
+
+
+            assertThat(deleted).isFalse();
         }
     }
 }
