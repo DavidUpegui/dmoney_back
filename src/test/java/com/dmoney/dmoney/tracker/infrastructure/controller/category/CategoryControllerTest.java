@@ -2,9 +2,6 @@ package com.dmoney.dmoney.tracker.infrastructure.controller.category;
 
 import com.dmoney.dmoney.auth.infrastructure.security.JwtAuthenticationFilter;
 import com.dmoney.dmoney.auth.infrastructure.security.JwtTokenParser;
-import com.dmoney.dmoney.auth.infrastructure.security.SecurityConfig;
-import com.dmoney.dmoney.shared.infrastructure.exceptions.GlobalExceptionHandler;
-import com.dmoney.dmoney.shared.security.WithMockJwtUser;
 import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
 import com.dmoney.dmoney.tracker.application.category.result.SubcategoryResult;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
@@ -14,7 +11,6 @@ import org.junit.jupiter.api.Nested;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
