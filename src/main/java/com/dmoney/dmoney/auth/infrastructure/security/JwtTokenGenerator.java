@@ -4,6 +4,7 @@ import com.dmoney.dmoney.auth.application.user.ports.JwtGenerator;
 import com.dmoney.dmoney.shared.domain.models.UserId;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -12,10 +13,12 @@ import java.util.Date;
 @Component
 public class JwtTokenGenerator implements JwtGenerator {
 
-    private final SecretKey key =
-            Keys.hmacShaKeyFor("super-secret-key-super-secret-key".getBytes());
+    private final SecretKey key;
+    private static final long EXPIRATION = 86400000;
 
-    private final static long EXPIRATION = 86400000;
+    public JwtTokenGenerator(@Value("${jwt.secret}") String secret) {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+    }
 
     @Override
     public String generate(UserId userId) {

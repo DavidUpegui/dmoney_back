@@ -9,8 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JwtTokenGeneratorTest {
-    private final JwtTokenGenerator generator = new JwtTokenGenerator();
-    private final JwtTokenParser parser = new JwtTokenParser();
+    private final String secret = "test-secret-key-test-secret-key-test";
+    private final JwtTokenGenerator generator = new JwtTokenGenerator(secret);
+    private final JwtTokenParser parser = new JwtTokenParser(secret);
 
     @Test
     void should_generate_and_parse_token() {
