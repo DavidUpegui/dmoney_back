@@ -1,33 +1,31 @@
-package com.dmoney.dmoney.tracker.domain.category;
+package com.dmoney.dmoney.tracker.domain.category.model;
 
 import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
-import com.dmoney.dmoney.tracker.domain.category.model.CategoryDescription;
-import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
-import com.dmoney.dmoney.tracker.domain.category.model.SubcategoryDescription;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class CategoryDescriptionTest {
+class SubcategoryDescriptionTest {
 
     @Test
     void shouldCreateDescription(){
-        CategoryDescription description = new CategoryDescription("description");
+        SubcategoryDescription description = new SubcategoryDescription("description");
 
         assertEquals("description", description.value());
     }
 
     @Test
     void shouldCreateDescriptionFromValue(){
-        CategoryDescription description = CategoryDescription.from("description");
+        SubcategoryDescription description = SubcategoryDescription.from("description");
 
         assertEquals("description", description.value());
     }
 
     @Test
-    void shouldCreateEmptyDescriptionWhenConstructprValueIsNull(){
-        CategoryDescription description = new CategoryDescription(null);
+    void shouldCreateEmptyDescriptionWhenConstructorValueIsNull(){
+        SubcategoryDescription description = new SubcategoryDescription(null);
+
         assertEquals("", description.value());
     }
 
@@ -37,29 +35,29 @@ class CategoryDescriptionTest {
 
         ValidationException exception = assertThrows(
                 ValidationException.class,
-                () -> new CategoryDescription(tooLong)
+                () -> new SubcategoryDescription(tooLong)
         );
 
-        assertEquals("Category description is too long", exception.getMessage());
+        assertEquals("Subcategory description is too long", exception.getMessage());
     }
 
     @Test
     void shouldReturnEmptyWhenUseFromNullableWithNull(){
-        CategoryDescription description = CategoryDescription.fromNullable(null);
+        SubcategoryDescription description = SubcategoryDescription.fromNullable(null);
 
         assertEquals("", description.value());
     }
 
     @Test
     void shouldReturnValueWhenUseFromNullableWithValue(){
-        CategoryDescription description = CategoryDescription.fromNullable("any value");
+        SubcategoryDescription description = SubcategoryDescription.fromNullable("any value");
 
         assertEquals("any value", description.value());
     }
 
     @Test
     void shouldCreateEmptyDescription(){
-        CategoryDescription description = CategoryDescription.empty();
+        SubcategoryDescription description = SubcategoryDescription.empty();
 
         assertEquals("", description.value());
     }

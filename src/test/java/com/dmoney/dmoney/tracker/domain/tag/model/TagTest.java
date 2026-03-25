@@ -1,13 +1,7 @@
-package com.dmoney.dmoney.tracker.domain.tag;
+package com.dmoney.dmoney.tracker.domain.tag.model;
 
 import com.dmoney.dmoney.shared.domain.models.UserId;
-import com.dmoney.dmoney.tracker.domain.tag.model.Tag;
-import com.dmoney.dmoney.tracker.domain.tag.model.TagDescription;
-import com.dmoney.dmoney.tracker.domain.tag.model.TagId;
-import com.dmoney.dmoney.tracker.domain.tag.model.TagName;
 import org.junit.jupiter.api.Test;
-
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 

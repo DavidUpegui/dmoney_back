@@ -1,7 +1,6 @@
-package com.dmoney.dmoney.tracker.domain.tag;
+package com.dmoney.dmoney.tracker.domain.tag.model;
 
 import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
-import com.dmoney.dmoney.tracker.domain.tag.model.TagId;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
