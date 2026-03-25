@@ -1,4 +1,4 @@
-package com.dmoney.dmoney.auth.application.user.login;
+package com.dmoney.dmoney.auth.application.user.command;
 
 public record LoginCommand(
         String email,

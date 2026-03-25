@@ -15,7 +15,7 @@ public class SpringSecurityAuthProvider implements AuthenticatedUserProvider {
     public UserId currentUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated()) {
-            throw new UnauthenticatedException();
+            throw new UnauthenticatedException("User not authenticated");
         }
         return UserId.fromUUID((UUID) auth.getPrincipal());
     }

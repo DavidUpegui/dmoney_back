@@ -1,6 +1,7 @@
-package com.dmoney.dmoney.auth.application.user.register;
+package com.dmoney.dmoney.auth.application.user.usecase;
 
 import com.dmoney.dmoney.auth.application.user.ports.PasswordHasher;
+import com.dmoney.dmoney.auth.application.user.command.UserRegistrationCommand;
 import com.dmoney.dmoney.auth.domain.user.model.*;
 import com.dmoney.dmoney.auth.domain.user.repository.UserRepository;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
@@ -31,8 +32,8 @@ public class RegisterUserUseCase {
                 AuthProvider.LOCAL
         );
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
-        return user.userId();
+        return savedUser.userId();
     }
 }

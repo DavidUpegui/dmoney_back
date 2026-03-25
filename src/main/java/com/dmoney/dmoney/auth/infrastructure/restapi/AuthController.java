@@ -1,9 +1,9 @@
 package com.dmoney.dmoney.auth.infrastructure.restapi;
 
-import com.dmoney.dmoney.auth.application.user.login.LoginCommand;
-import com.dmoney.dmoney.auth.application.user.login.LoginUserUseCase;
-import com.dmoney.dmoney.auth.application.user.register.RegisterUserUseCase;
-import com.dmoney.dmoney.auth.application.user.register.UserRegistrationCommand;
+import com.dmoney.dmoney.auth.application.user.command.LoginCommand;
+import com.dmoney.dmoney.auth.application.user.usecase.LoginUserUseCase;
+import com.dmoney.dmoney.auth.application.user.usecase.RegisterUserUseCase;
+import com.dmoney.dmoney.auth.application.user.command.UserRegistrationCommand;
 import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.auth.infrastructure.restapi.dto.LoginRequest;
 import com.dmoney.dmoney.auth.infrastructure.restapi.dto.LoginResponse;

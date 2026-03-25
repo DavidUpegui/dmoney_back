@@ -16,8 +16,9 @@ public class UserRepositoryAdapter implements UserRepository {
     private final UserJpaRepository jpaRepository;
 
     @Override
-    public void save(User user) {
-        jpaRepository.save(UserPersistenceMapper.toEntity(user));
+    public User save(User user) {
+        UserEntity entity = jpaRepository.save(UserPersistenceMapper.toEntity(user));
+        return UserPersistenceMapper.toDomain(entity);
     }
 
     @Override

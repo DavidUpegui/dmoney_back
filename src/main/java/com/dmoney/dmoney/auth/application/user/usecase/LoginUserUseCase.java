@@ -1,10 +1,12 @@
-package com.dmoney.dmoney.auth.application.user.login;
+package com.dmoney.dmoney.auth.application.user.usecase;
 
+import com.dmoney.dmoney.auth.application.user.command.LoginCommand;
 import com.dmoney.dmoney.auth.application.user.ports.JwtGenerator;
 import com.dmoney.dmoney.auth.application.user.ports.PasswordHasher;
 import com.dmoney.dmoney.auth.domain.user.model.User;
 import com.dmoney.dmoney.auth.domain.user.model.UserEmail;
 import com.dmoney.dmoney.auth.domain.user.repository.UserRepository;
+import com.dmoney.dmoney.shared.domain.exceptions.UnauthenticatedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,14 +21,12 @@ public class LoginUserUseCase {
         UserEmail email = UserEmail.from(command.email());
 
         User user = repository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid credentials"));
+                .orElseThrow(() -> new UnauthenticatedException("Invalid credentials"));
 
         if(!passwordHasher.matches(command.password(), user.password().value())){
-            throw new IllegalArgumentException("Invalid credentials");
+            throw new UnauthenticatedException("Invalid credentials");
         }
 
         return jwtGenerator.generate(user.userId());
     }
-
-
 }
