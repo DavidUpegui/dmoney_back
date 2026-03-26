@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class TagTest {
+class TagTest {
 
     @Test
     void should_rehydrate_tag_from_values(){

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class PasswordHashTest {
+class PasswordHashTest {
     @Test
     void should_create_hashed_password_from_string(){
         String stringHashedPassword = "hashedPassword";
@@ -22,7 +22,7 @@ public class PasswordHashTest {
         String stringHashedPassword = "hashedPassword";
         PasswordHash passwordHash = PasswordHash.from(stringHashedPassword);
 
-        assertThat(passwordHash.toString()).isEqualTo(passwordHash.value());
+        assertThat(passwordHash.toString()).hasToString(passwordHash.value());
     }
 
     @Test

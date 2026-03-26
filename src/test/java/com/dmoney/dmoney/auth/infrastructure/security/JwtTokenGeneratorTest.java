@@ -8,7 +8,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class JwtTokenGeneratorTest {
+class JwtTokenGeneratorTest {
     private final String secret = "test-secret-key-test-secret-key-test";
     private final JwtTokenGenerator generator = new JwtTokenGenerator(secret);
     private final JwtTokenParser parser = new JwtTokenParser(secret);

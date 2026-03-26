@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TagIdTest {
+class TagIdTest {
 
     @Test
     void should_create_id_from_constructor(){

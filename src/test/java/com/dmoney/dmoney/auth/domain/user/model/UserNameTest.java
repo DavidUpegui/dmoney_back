@@ -6,22 +6,23 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class UserNameTest {
+class UserNameTest {
     @Test
     void should_create_user_name_from_string(){
         String userNameString = "UserName";
 
         UserName userName = UserName.from(userNameString);
 
-        assertThat(userName.toString()).isEqualTo(userNameString);
+        assertThat(userName.value()).hasToString(userNameString);
     }
 
+    @Test
     void should_trim_user_name(){
         String userNameString = "      UserName          ";
 
         UserName userName = UserName.from(userNameString);
 
-        assertThat(userName.toString()).isEqualTo(userNameString.trim());
+        assertThat(userName.toString()).hasToString(userNameString.trim());
     }
 
     @Test
@@ -56,6 +57,6 @@ public class UserNameTest {
         String userNameString = "UserName";
         UserName userName = UserName.from(userNameString);
 
-        assertThat(userName.toString()).isEqualTo(userNameString);
+        assertThat(userName.toString()).hasToString(userNameString);
     }
 }

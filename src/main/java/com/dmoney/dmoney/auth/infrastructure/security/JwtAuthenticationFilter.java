@@ -1,5 +1,6 @@
 package com.dmoney.dmoney.auth.infrastructure.security;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,7 +40,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         );
                 SecurityContextHolder.getContext()
                         .setAuthentication(authentication);
-            } catch (Exception ignored) {}
+            } catch (JwtException e) {
+                // Invalid or Expired token, the request will continue without authentication
+                // If authentication is needed (Protected endpoint) will throw a 401
+            }
         }
         filterChain.doFilter(request,response);
     }

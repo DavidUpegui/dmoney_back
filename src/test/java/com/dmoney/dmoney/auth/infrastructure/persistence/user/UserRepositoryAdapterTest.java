@@ -2,7 +2,6 @@ package com.dmoney.dmoney.auth.infrastructure.persistence.user;
 
 import com.dmoney.dmoney.auth.domain.user.model.*;
 import com.dmoney.dmoney.shared.domain.models.UserId;
-import jakarta.validation.constraints.Email;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,7 @@ import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
-public class UserRepositoryAdapterTest {
+class UserRepositoryAdapterTest {
 
     @Autowired
     private UserJpaRepository jpaRepository;

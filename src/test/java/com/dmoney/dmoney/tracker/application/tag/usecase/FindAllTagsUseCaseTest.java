@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith({MockitoExtension.class})
-public class FindAllTagsUseCaseTest {
+class FindAllTagsUseCaseTest {
 
     @Mock
     private TagRepository tagRepository;
