@@ -165,4 +165,7 @@ public class Category {
     public Set<Subcategory> subcategories(){
         return Collections.unmodifiableSet(this.subcategories);
     }
+    public CategoryType categoryType(){
+        return this.categoryType;
+    }
 }
