@@ -7,7 +7,6 @@ import com.dmoney.dmoney.auth.domain.user.model.*;
 import com.dmoney.dmoney.auth.domain.user.repository.UserRepository;
 import com.dmoney.dmoney.shared.domain.exceptions.UnauthenticatedException;
 import com.dmoney.dmoney.shared.domain.models.UserId;
-import org.apache.juli.logging.Log;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class LoginUserUseCaseTest {
+class LoginUserUseCaseTest {
     @Mock
     private UserRepository userRepository;
 

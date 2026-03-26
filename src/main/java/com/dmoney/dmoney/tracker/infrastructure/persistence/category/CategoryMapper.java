@@ -15,7 +15,8 @@ public final class CategoryMapper {
                 category.id().value(),
                 category.userId().value(),
                 category.name().value(),
-                category.description().value()
+                category.description().value(),
+                category.categoryType().toString()
         );
 
         category.subcategories().forEach(sub -> {
@@ -45,7 +46,8 @@ public final class CategoryMapper {
                 CategoryId.from(entity.getId().toString()),
                 CategoryName.from(entity.getName()),
                 CategoryDescription.from(entity.getDescription()),
-                subcategorySet
+                subcategorySet,
+                CategoryType.valueOf(entity.getType())
         );
     }
 }

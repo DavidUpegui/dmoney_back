@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class DeleteTagUseCaseTest {
+class DeleteTagUseCaseTest {
     @Mock
     private TagRepository tagRepository;
 

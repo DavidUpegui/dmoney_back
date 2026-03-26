@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-public class UserTest {
+class UserTest {
     @Test
     void should_register_an_user(){
         UserEmail userEmail = UserEmail.from("email@email.com");

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class TagDescriptionTest {
+class TagDescriptionTest {
 
     @Test
     void should_create_tag_description_with_the_constructor(){

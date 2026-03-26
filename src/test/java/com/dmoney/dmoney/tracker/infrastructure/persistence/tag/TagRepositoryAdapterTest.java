@@ -14,12 +14,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
-public class TagRepositoryAdapterTest {
+class TagRepositoryAdapterTest {
 
     @Autowired
     private TagJpaRepository jpaRepository;
@@ -66,7 +66,7 @@ public class TagRepositoryAdapterTest {
 
             List<Tag> found = adapter.findAllByUserId(userId);
 
-            assertThat(found.size()).isEqualTo(1);
+            assertThat(found).hasSize(1);
             assertThat(found.getFirst().id()).isEqualTo(toFound1.id());
         }
 

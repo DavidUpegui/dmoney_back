@@ -1,10 +1,7 @@
 package com.dmoney.dmoney.tracker.infrastructure.persistence.category;
 
 import com.dmoney.dmoney.shared.domain.models.UserId;
-import com.dmoney.dmoney.tracker.domain.category.model.Category;
-import com.dmoney.dmoney.tracker.domain.category.model.CategoryId;
-import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
-import com.dmoney.dmoney.tracker.domain.category.model.CategoryDescription;
+import com.dmoney.dmoney.tracker.domain.category.model.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -39,7 +36,8 @@ class CategoryRepositoryAdapterTest {
             Category category = Category.create(
                     userId,
                     CategoryName.from("Food"),
-                    CategoryDescription.from("Description")
+                    CategoryDescription.from("Description"),
+                    CategoryType.INCOME
             );
 
             adapter.save(category);
@@ -57,7 +55,8 @@ class CategoryRepositoryAdapterTest {
             Category category = Category.create(
                     userId,
                     CategoryName.from("Food"),
-                    CategoryDescription.from("Description")
+                    CategoryDescription.from("Description"),
+                    CategoryType.INCOME
             );
 
             adapter.save(category);
@@ -77,12 +76,14 @@ class CategoryRepositoryAdapterTest {
             Category category1 = Category.create(
                     userId,
                     CategoryName.from("Food"),
-                    CategoryDescription.from("Description")
+                    CategoryDescription.from("Description"),
+                    CategoryType.INCOME
             );
             Category category2 = Category.create(
                     userId,
                     CategoryName.from("Transport"),
-                    CategoryDescription.from("Description")
+                    CategoryDescription.from("Description"),
+                    CategoryType.OUTCOME
             );
 
             adapter.save(category1);
@@ -116,7 +117,8 @@ class CategoryRepositoryAdapterTest {
             Category category = Category.create(
                     userId,
                     CategoryName.from("Food"),
-                    CategoryDescription.from("Food description")
+                    CategoryDescription.from("Food description"),
+                    CategoryType.INCOME
             );
 
             Category saved = adapter.save(category);
@@ -141,7 +143,8 @@ class CategoryRepositoryAdapterTest {
             Category category = Category.create(
                     userId,
                     CategoryName.from("Food"),
-                    CategoryDescription.from("Food description")
+                    CategoryDescription.from("Food description"),
+                    CategoryType.INCOME
             );
 
             adapter.save(category);
@@ -160,7 +163,8 @@ class CategoryRepositoryAdapterTest {
             Category category = Category.create(
                     userId,
                     CategoryName.from("Food"),
-                    CategoryDescription.from("Food description")
+                    CategoryDescription.from("Food description"),
+                    CategoryType.INCOME
             );
 
             adapter.save(category);
@@ -178,7 +182,8 @@ class CategoryRepositoryAdapterTest {
             Category category = Category.create(
                     userId,
                     CategoryName.from("Food"),
-                    CategoryDescription.from("Food description")
+                    CategoryDescription.from("Food description"),
+                    CategoryType.INCOME
             );
 
             adapter.save(category);
@@ -200,7 +205,8 @@ class CategoryRepositoryAdapterTest {
             Category category = Category.create(
                     userId,
                     CategoryName.from("Food"),
-                    CategoryDescription.from("Description")
+                    CategoryDescription.from("Description"),
+                    CategoryType.INCOME
             );
             CategoryId categoryId = category.id();
 

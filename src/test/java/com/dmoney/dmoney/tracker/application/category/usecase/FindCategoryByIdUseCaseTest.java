@@ -5,10 +5,7 @@ import com.dmoney.dmoney.tracker.application.category.helpers.CategoryLoader;
 import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
 import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
-import com.dmoney.dmoney.tracker.domain.category.model.Category;
-import com.dmoney.dmoney.tracker.domain.category.model.CategoryDescription;
-import com.dmoney.dmoney.tracker.domain.category.model.CategoryId;
-import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
+import com.dmoney.dmoney.tracker.domain.category.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,8 +43,9 @@ class FindCategoryByIdUseCaseTest {
     void should_return_category_by_id(){
         CategoryName categoryName = CategoryName.from("Category name");
         CategoryDescription categoryDescription = CategoryDescription.from("Category description");
+        CategoryType type = CategoryType.INCOME;
 
-        Category category = Category.create(userId, categoryName, categoryDescription);
+        Category category = Category.create(userId, categoryName, categoryDescription, type);
         CategoryId categoryId = category.id();
 
         when(categoryLoader.load(userId, categoryId))

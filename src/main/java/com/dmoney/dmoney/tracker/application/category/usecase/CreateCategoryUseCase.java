@@ -7,6 +7,7 @@ import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
 import com.dmoney.dmoney.tracker.domain.category.model.Category;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryDescription;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
+import com.dmoney.dmoney.tracker.domain.category.model.CategoryType;
 import com.dmoney.dmoney.tracker.domain.category.repository.CategoryRepository;
 import com.dmoney.dmoney.tracker.domain.category.service.CategoryUniquenessChecker;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,8 @@ public class CreateCategoryUseCase {
         Category category = Category.create(
                 userId,
                 name,
-                CategoryDescription.fromNullable(command.description())
+                CategoryDescription.fromNullable(command.description()),
+                CategoryType.valueOf(command.type())
         );
         return CategoryResult.from(repository.save(category));
     }

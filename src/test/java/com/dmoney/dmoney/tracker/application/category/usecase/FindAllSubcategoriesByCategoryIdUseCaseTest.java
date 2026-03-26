@@ -45,7 +45,8 @@ class FindAllSubcategoriesByCategoryIdUseCaseTest {
         Category category = Category.create(
                 userId,
                 CategoryName.from("category name"),
-                CategoryDescription.from("category description")
+                CategoryDescription.from("category description"),
+                CategoryType.OUTCOME
         );
         CategoryId categoryId = category.id();
 
@@ -79,7 +80,8 @@ class FindAllSubcategoriesByCategoryIdUseCaseTest {
         Category category = Category.create(
                 userId,
                 CategoryName.from("category name"),
-                CategoryDescription.from("category description")
+                CategoryDescription.from("category description"),
+                CategoryType.OUTCOME
         );
         CategoryId categoryId = category.id();
 

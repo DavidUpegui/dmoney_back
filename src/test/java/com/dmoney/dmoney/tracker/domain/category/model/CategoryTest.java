@@ -19,14 +19,17 @@ class CategoryTest {
         UserId userId = UserId.newId();
         CategoryName name = CategoryName.from("name");
         CategoryDescription description = CategoryDescription.from("description");
+        CategoryType type = CategoryType.INCOME;
 
-        Category category = Category.create(userId, name, description);
+        Category category = Category.create(userId, name, description, type);
 
         assertNotNull(category.id());
         assertEquals(userId, category.userId());
         assertEquals(name, category.name());
         assertEquals(description, category.description());
         assertEquals(0, category.subcategories().toArray().length);
+        assertEquals(type, category.categoryType());
+
     }
 
     @Test
@@ -44,38 +47,56 @@ class CategoryTest {
                 CategoryId.newId(),
                 CategoryName.from("name"),
                 CategoryDescription.from("description"),
-                subcategories
+                subcategories,
+                CategoryType.INCOME
         );
 
         assertEquals(1, category.subcategories().size());
     }
 
     @Test
-    void shouldEditOnlyTheName(){
+    void shouldChangeName(){
         Category category = Category.create(
                 UserId.newId(),
                 CategoryName.from("name"),
-                CategoryDescription.from("description")
+                CategoryDescription.from("description"),
+                CategoryType.INCOME
         );
         CategoryName newName = CategoryName.from("newName");
 
-        category.edit(newName, null);
+        category.changeName(newName);
 
         assertEquals(newName, category.name());
     }
 
     @Test
-    void shouldEditOnlyTheDescription(){
+    void shouldChangeDescription(){
         Category category = Category.create(
                 UserId.newId(),
                 CategoryName.from("name"),
-                CategoryDescription.from("description")
+                CategoryDescription.from("description"),
+                CategoryType.INCOME
         );
         CategoryDescription newDescription = CategoryDescription.from("newDescription");
 
-        category.edit(null, newDescription);
+        category.changeDescription(newDescription);
 
         assertEquals(newDescription, category.description());
+    }
+
+    @Test
+    void should_change_type(){
+        Category category = Category.create(
+                UserId.newId(),
+                CategoryName.from("name"),
+                CategoryDescription.from("description"),
+                CategoryType.INCOME
+        );
+        CategoryType newType = CategoryType.INCOME;
+
+        category.changeType(newType);
+
+        assertEquals(newType, category.categoryType());
     }
 
 
@@ -84,7 +105,8 @@ class CategoryTest {
         Category category = Category.create(
                 UserId.newId(),
                 CategoryName.from("name"),
-                CategoryDescription.from("description")
+                CategoryDescription.from("description"),
+                CategoryType.INCOME
         );
 
         SubcategoryName subcategoryName = SubcategoryName.from("subcategoryName");
@@ -101,7 +123,8 @@ class CategoryTest {
         Category category = Category.create(
                 UserId.newId(),
                 CategoryName.from("name"),
-                CategoryDescription.from("description")
+                CategoryDescription.from("description"),
+                CategoryType.INCOME
         );
 
         SubcategoryDescription description = SubcategoryDescription.from(("subcategoryDescription"));
@@ -114,7 +137,8 @@ class CategoryTest {
         Category category = Category.create(
                 UserId.newId(),
                 CategoryName.from("name"),
-                CategoryDescription.from("description")
+                CategoryDescription.from("description"),
+                CategoryType.INCOME
         );
 
         SubcategoryName subcategoryName = SubcategoryName.from("subcategoryName");
@@ -128,7 +152,8 @@ class CategoryTest {
         Category category = Category.create(
                 UserId.newId(),
                 CategoryName.from("name"),
-                CategoryDescription.from("description")
+                CategoryDescription.from("description"),
+                CategoryType.INCOME
         );
 
         SubcategoryName subcategoryName = SubcategoryName.from("subcategoryName");
@@ -153,7 +178,8 @@ class CategoryTest {
             category = Category.create(
                     UserId.newId(),
                     CategoryName.from("name"),
-                    CategoryDescription.from("description")
+                    CategoryDescription.from("description"),
+                    CategoryType.INCOME
             );
 
             subcategory = category.addSubcategory(

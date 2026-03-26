@@ -14,18 +14,21 @@ public class Category {
     private final CategoryId id;
     private CategoryName name;
     private CategoryDescription description;
+    private CategoryType categoryType;
     private final Set<Subcategory> subcategories = new HashSet<>();
 
     private Category(
             UserId userId,
             CategoryId id,
             CategoryName name,
-            CategoryDescription description
+            CategoryDescription description,
+            CategoryType categoryType
     ){
         this.userId = Objects.requireNonNull(userId);
         this.id = Objects.requireNonNull(id);
         this.name = Objects.requireNonNull(name);
         this.description = Objects.requireNonNull(description);
+        this.categoryType = Objects.requireNonNull(categoryType);
     }
 
     private Category(
@@ -33,7 +36,8 @@ public class Category {
             CategoryId id,
             CategoryName name,
             CategoryDescription description,
-            Set<Subcategory> subcategories
+            Set<Subcategory> subcategories,
+            CategoryType categoryType
     ) {
         this.userId = Objects.requireNonNull(userId);
         this.id = Objects.requireNonNull(id);
@@ -42,14 +46,16 @@ public class Category {
         this.subcategories.addAll(
                 Objects.requireNonNull(subcategories)
         );
+        this.categoryType = Objects.requireNonNull(categoryType);
     }
 
-    public static Category create(UserId userId, CategoryName name, CategoryDescription description){
+    public static Category create(UserId userId, CategoryName name, CategoryDescription description, CategoryType categoryType){
         return new Category(
                 userId,
                 CategoryId.newId(),
                 name,
-                description
+                description,
+                categoryType
         );
     }
 
@@ -57,23 +63,28 @@ public class Category {
                               CategoryId categoryId,
                               CategoryName name,
                               CategoryDescription description,
-                              Set<Subcategory> subcategories){
+                              Set<Subcategory> subcategories,
+                                     CategoryType categoryType){
         return new Category(
                 userId,
                 categoryId,
                 name,
                 description,
-                subcategories
+                subcategories,
+                categoryType
         );
     }
 
-    public void edit(CategoryName name, CategoryDescription description){
-        if(name != null){
+    public void changeName(CategoryName name){
             this.name = name;
-        }
-        if(description != null){
+    }
+
+    public void changeDescription(CategoryDescription description){
             this.description = description;
-        }
+    }
+
+    public void changeType(CategoryType type){
+        this.categoryType = type;
     }
 
     public Subcategory addSubcategory(SubcategoryName name, SubcategoryDescription description){
@@ -153,5 +164,8 @@ public class Category {
     }
     public Set<Subcategory> subcategories(){
         return Collections.unmodifiableSet(this.subcategories);
+    }
+    public CategoryType categoryType(){
+        return this.categoryType;
     }
 }

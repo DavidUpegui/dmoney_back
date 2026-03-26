@@ -2,8 +2,6 @@ package com.dmoney.dmoney.tracker.domain.tag.service;
 
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
 import com.dmoney.dmoney.shared.domain.models.UserId;
-import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
-import com.dmoney.dmoney.tracker.domain.category.repository.CategoryRepository;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagName;
 import com.dmoney.dmoney.tracker.domain.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;

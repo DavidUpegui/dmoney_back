@@ -12,6 +12,9 @@ import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -126,13 +130,8 @@ public class TagControllerTest {
         }
 
         @Test
-        void should_return_404_when_ag_not_found() throws Exception{
+        void should_return_404_when_tag_not_found() throws Exception{
             String id = "1";
-            TagResponse founded = new TagResponse(
-                    id,
-                    "Name",
-                    "Description"
-            );
 
             when(findTagById.execute(id))
                     .thenThrow(new ResourceNotFoundException("Tag", "id", id));
@@ -144,6 +143,30 @@ public class TagControllerTest {
 
     @Nested
     class CreateTagControllerTest{
+
+        static Stream<Arguments> invalidRequests() {
+            return Stream.of(
+                    Arguments.of("name blank", """
+            {
+                "name": "",
+                "description": "Description"
+            }
+        """),
+                    Arguments.of("name null", """
+            {
+                "name": null,
+                "description": "Description"
+            }
+        """),
+                    Arguments.of("malformed json", """
+            {
+                "name": "Any"
+                "description": "Description"
+            }
+        """)
+            );
+        }
+
         @Test
         void should_create_the_tag() throws Exception{
             String json = """
@@ -201,50 +224,9 @@ public class TagControllerTest {
             ));
         }
 
-        @Test
-        void should_return_400_when_name_is_blank() throws Exception{
-            String json = """
-                        {
-                            "name": "",
-                            "description": "Description"
-                        }
-                    """;
-
-            mockMvc.perform(post("/api/tags")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(json))
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.status").value(400))
-                    .andExpect(jsonPath("$.error").value("Bad Request"))
-                    .andExpect(jsonPath("$.message").exists());
-        }
-
-        @Test
-        void should_return_400_when_name_is_null()throws Exception{
-            String json = """
-                        {
-                            "name": null,
-                            "description": "Description"
-                        }
-                    """;
-
-            mockMvc.perform(post("/api/tags")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(json))
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.status").value(400))
-                    .andExpect(jsonPath("$.error").value("Bad Request"))
-                    .andExpect(jsonPath("$.message").exists());
-        }
-
-        @Test
-        void should_return_400_when_malformed_json()throws Exception{
-            String json = """
-                        {
-                            "name": "Any"
-                            "description": "Description"
-                        }
-                    """;
+        @ParameterizedTest(name = "{index} - {0}")
+        @MethodSource("invalidRequests")
+        void should_return_400_when_request_is_invalid(String testName, String json) throws Exception {
 
             mockMvc.perform(post("/api/tags")
                             .contentType(MediaType.APPLICATION_JSON)

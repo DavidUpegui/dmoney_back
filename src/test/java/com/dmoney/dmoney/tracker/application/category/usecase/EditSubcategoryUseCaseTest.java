@@ -44,7 +44,8 @@ class EditSubcategoryUseCaseTest {
         category = Category.create(
                 userId,
                 CategoryName.from("Category name"),
-                CategoryDescription.from("Category description")
+                CategoryDescription.from("Category description"),
+                CategoryType.INCOME
         );
         subcategory = category.addSubcategory(
                 SubcategoryName.from("Subcategory name"),

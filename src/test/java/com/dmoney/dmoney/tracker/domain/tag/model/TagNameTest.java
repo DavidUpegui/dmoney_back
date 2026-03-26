@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class TagNameTest {
+class TagNameTest {
 
     @Test
     void should_create_name_from_constructor(){

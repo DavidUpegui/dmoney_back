@@ -5,10 +5,7 @@ import com.dmoney.dmoney.tracker.application.category.commands.EditCategoryComma
 import com.dmoney.dmoney.tracker.application.category.helpers.CategoryLoader;
 import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
 import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
-import com.dmoney.dmoney.tracker.domain.category.model.Category;
-import com.dmoney.dmoney.tracker.domain.category.model.CategoryDescription;
-import com.dmoney.dmoney.tracker.domain.category.model.CategoryId;
-import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
+import com.dmoney.dmoney.tracker.domain.category.model.*;
 import com.dmoney.dmoney.tracker.domain.category.repository.CategoryRepository;
 import com.dmoney.dmoney.tracker.domain.category.service.CategoryUniquenessChecker;
 import lombok.RequiredArgsConstructor;
@@ -32,15 +29,15 @@ public class EditCategoryUseCase {
             uniquenessChecker.check(userId,
                     CategoryName.from(command.name()),
                     category.name());
+            category.changeName(CategoryName.from(command.name()));
         }
 
-        CategoryName newName = command.name() == null ? null : CategoryName.from(command.name());
-        CategoryDescription newDescription =
-                command.description() == null ? null : CategoryDescription.from(command.description());
-
-        category.edit(
-                newName,
-                newDescription);
+        if(command.description() != null){
+            category.changeDescription(CategoryDescription.from(command.description()));
+        }
+        if(command.type() != null){
+            category.changeType(CategoryType.valueOf(command.type()));
+        }
 
         return CategoryResult.from(categoryRepository.save(category));
     }

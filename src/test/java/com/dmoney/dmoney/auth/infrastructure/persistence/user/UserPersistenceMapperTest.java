@@ -10,7 +10,7 @@ import java.util.UUID;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class UserPersistenceMapperTest {
+class UserPersistenceMapperTest {
 
     @Test
     void should_have_private_constructor() throws Exception{
@@ -57,6 +57,6 @@ public class UserPersistenceMapperTest {
         assertThat(domain.email().value()).isEqualTo(entity.getEmail());
         assertThat(domain.password().value()).isEqualTo(entity.getPasswordHash());
         assertThat(domain.userName().value()).isEqualTo(entity.getName());
-        assertThat(domain.authProvider().toString()).isEqualTo(entity.getProvider());
+        assertThat(domain.authProvider().toString()).hasToString(entity.getProvider());
     }
 }
