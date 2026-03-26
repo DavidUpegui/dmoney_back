@@ -33,11 +33,15 @@ public class CategoryEntity {
     )
     private Set<SubcategoryEntity> subcategories = new HashSet<>();
 
-    public CategoryEntity(UUID id,UUID userId, String name, String description){
+    @Column(name = "type", nullable = false)
+    private String type;
+
+    public CategoryEntity(UUID id,UUID userId, String name, String description, String type){
         this.id = id;
         this.userId = userId;
         this.name = name;
         this.description = description;
+        this.type = type;
     }
 
 }
