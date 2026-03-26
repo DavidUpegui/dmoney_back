@@ -33,7 +33,8 @@ public class CategoryController {
     ){
             CreateCategoryCommand command = new CreateCategoryCommand(
                     request.name(),
-                    request.description()
+                    request.description(),
+                    request.type()
             );
 
             CategoryResult categoryCreated = createCategoryUseCase.execute(command);
@@ -89,7 +90,7 @@ public class CategoryController {
     ){
 
         EditCategoryCommand command =
-                new EditCategoryCommand(catIdParam, request.name(), request.description());
+                new EditCategoryCommand(catIdParam, request.name(), request.description(), request.type());
 
         CategoryResult category = editCategoryUseCase.execute(command);
 
