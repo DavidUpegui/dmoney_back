@@ -20,7 +20,8 @@ class CategoryWebMapperTest {
                 CategoryId.newId(),
                 CategoryName.from("Name"),
                 CategoryDescription.from("Description"),
-                Set.of()
+                Set.of(),
+                CategoryType.OUTCOME
         );
 
         CategoryResponse result = CategoryWebMapper.toResponse(domain);

@@ -45,7 +45,8 @@ class DeleteSubcategoryUseCaseTest {
         category = Category.create(
                 userId,
                 CategoryName.from("category name"),
-                CategoryDescription.from("category description")
+                CategoryDescription.from("category description"),
+                CategoryType.INCOME
         );
         when(authProvider.currentUserId()).thenReturn(userId);
     }

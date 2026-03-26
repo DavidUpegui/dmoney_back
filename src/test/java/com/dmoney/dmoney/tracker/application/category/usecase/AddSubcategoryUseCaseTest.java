@@ -10,6 +10,7 @@ import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
 import com.dmoney.dmoney.tracker.domain.category.model.Category;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryDescription;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
+import com.dmoney.dmoney.tracker.domain.category.model.CategoryType;
 import com.dmoney.dmoney.tracker.domain.category.repository.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,8 @@ class AddSubcategoryUseCaseTest {
         category = Category.create(
                 userId,
                 CategoryName.from("category"),
-                CategoryDescription.from("description")
+                CategoryDescription.from("description"),
+                CategoryType.INCOME
         );
     }
 

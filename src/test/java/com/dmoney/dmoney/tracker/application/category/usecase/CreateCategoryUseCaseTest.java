@@ -51,7 +51,8 @@ class CreateCategoryUseCaseTest {
         CreateCategoryCommand command =
                 new CreateCategoryCommand(
                         "new category",
-                        "desc"
+                        "desc",
+                        "INCOME"
                 );
 
         when(repository.save(any()))
@@ -69,7 +70,7 @@ class CreateCategoryUseCaseTest {
     @Test
     void should_throw_exception_when_category_already_exists(){
         CreateCategoryCommand categoryCommand =
-                new CreateCategoryCommand("existing","desc");
+                new CreateCategoryCommand("existing","desc", "INCOME");
 
         doThrow(new ResourceAlreadyExistsException("Category", "name", "existing"))
                 .when(uniquenessChecker).check(userId, CategoryName.from("existing"));

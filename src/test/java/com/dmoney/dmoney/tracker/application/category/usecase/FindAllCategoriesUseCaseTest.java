@@ -6,6 +6,7 @@ import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
 import com.dmoney.dmoney.tracker.domain.category.model.Category;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryDescription;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
+import com.dmoney.dmoney.tracker.domain.category.model.CategoryType;
 import com.dmoney.dmoney.tracker.domain.category.repository.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,13 +48,15 @@ class FindAllCategoriesUseCaseTest {
         Category category1 = Category.create(
                 userId,
                 CategoryName.from("Food"),
-                CategoryDescription.from("Food category")
+                CategoryDescription.from("Food category"),
+                CategoryType.INCOME
         );
 
         Category category2 = Category.create(
                 userId,
                 CategoryName.from("Tech"),
-                CategoryDescription.from("Tech category")
+                CategoryDescription.from("Tech category"),
+                CategoryType.OUTCOME
         );
 
         when(categoryRepository.findAllByUserId(userId))

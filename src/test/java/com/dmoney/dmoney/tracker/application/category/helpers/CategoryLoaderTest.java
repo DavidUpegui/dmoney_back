@@ -2,10 +2,7 @@ package com.dmoney.dmoney.tracker.application.category.helpers;
 
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
 import com.dmoney.dmoney.shared.domain.models.UserId;
-import com.dmoney.dmoney.tracker.domain.category.model.Category;
-import com.dmoney.dmoney.tracker.domain.category.model.CategoryDescription;
-import com.dmoney.dmoney.tracker.domain.category.model.CategoryId;
-import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
+import com.dmoney.dmoney.tracker.domain.category.model.*;
 import com.dmoney.dmoney.tracker.domain.category.repository.CategoryRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,8 +31,9 @@ class CategoryLoaderTest {
         UserId userId = UserId.newId();
         CategoryName categoryName = CategoryName.from("Category name");
         CategoryDescription categoryDescription =  CategoryDescription.from("Category description");
+        CategoryType type = CategoryType.INCOME;
 
-        Category category = Category.create(userId, categoryName, categoryDescription);
+        Category category = Category.create(userId, categoryName, categoryDescription, type);
         CategoryId categoryId = category.id();
         when(categoryRepository.findByUserIdAndId(userId, categoryId))
                 .thenReturn(Optional.of(category));
@@ -45,6 +43,7 @@ class CategoryLoaderTest {
         assertEquals(categoryId, result.id());
         assertEquals(categoryName, result.name());
         assertEquals(categoryDescription, result.description());
+        assertEquals(type, result.categoryType());
 
         verify(categoryRepository).findByUserIdAndId(userId, categoryId);
     }

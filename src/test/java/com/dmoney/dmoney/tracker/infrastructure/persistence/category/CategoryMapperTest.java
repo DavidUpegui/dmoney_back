@@ -25,7 +25,8 @@ class CategoryMapperTest {
         Category categoryDomain = Category.create(
                 userId,
                 CategoryName.from("Category name"),
-                CategoryDescription.from("Category Description")
+                CategoryDescription.from("Category Description"),
+                CategoryType.OUTCOME
         );
 
         categoryDomain.addSubcategory(
@@ -44,6 +45,7 @@ class CategoryMapperTest {
         assertEquals(categoryDomain.name().value(), categoryEntity.getName());
         assertEquals(categoryDomain.id().value(), categoryEntity.getId());
         assertEquals(categoryDomain.description().value(), categoryEntity.getDescription());
+        assertEquals(categoryDomain.categoryType().toString(), categoryEntity.getType());
 
         Assertions.assertThat(categoryEntity.getSubcategories())
                 .hasSize(2)
@@ -60,7 +62,8 @@ class CategoryMapperTest {
         Category categoryDomain = Category.create(
                 userId,
                 CategoryName.from("Category name"),
-                CategoryDescription.from("Category Description")
+                CategoryDescription.from("Category Description"),
+                CategoryType.OUTCOME
         );
 
 
@@ -70,6 +73,7 @@ class CategoryMapperTest {
         assertEquals(categoryDomain.name().value(), categoryEntity.getName());
         assertEquals(categoryDomain.id().value(), categoryEntity.getId());
         assertTrue(categoryEntity.getSubcategories().isEmpty());
+        assertEquals(categoryDomain.categoryType().toString(), categoryEntity.getType());
     }
 
     @Test
@@ -107,7 +111,8 @@ class CategoryMapperTest {
                 categoryId,
                 userId,
                 "Tech",
-                "Tech description"
+                "Tech description",
+                "INCOME"
         );
 
         Category result = CategoryMapper.toDomain(categoryEntity);
@@ -125,7 +130,8 @@ class CategoryMapperTest {
                 categoryId,
                 userId,
                 "Tech",
-                "Tech description"
+                "Tech description",
+                "OUTCOME"
         );
 
         SubcategoryEntity sub1 = new SubcategoryEntity(

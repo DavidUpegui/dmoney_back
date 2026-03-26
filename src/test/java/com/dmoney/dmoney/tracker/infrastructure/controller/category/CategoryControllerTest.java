@@ -75,12 +75,13 @@ class CategoryControllerTest {
             String json = """
                     {
                      "name": "Tech",
-                     "description": "Tech description"
+                     "description": "Tech description",
+                     "type": "INCOME"
                     }
                     """;
 
             CategoryResult result =
-                    new CategoryResult("1", "Tech", "Tech description");
+                    new CategoryResult("1", "Tech", "Tech description", "INCOME");
 
             when(createCategoryUseCase.execute(any()))
                     .thenReturn(result);
@@ -90,7 +91,8 @@ class CategoryControllerTest {
                             .content(json))
                     .andExpect(status().isCreated())
                     .andExpect(jsonPath("$.name").value("Tech"))
-                    .andExpect(jsonPath("$.description").value("Tech description"));
+                    .andExpect(jsonPath("$.description").value("Tech description"))
+                    .andExpect(jsonPath("$.type").value("INCOME"));
 
             verify(createCategoryUseCase).execute(argThat(command ->
                     command.name().equals("Tech") &&
@@ -104,7 +106,28 @@ class CategoryControllerTest {
             String json = """
                     {
                         "name": "",
-                        "description": "Description"
+                        "description": "Description",
+                        "type": "INCOME"
+                    }
+                    """;
+
+            mockMvc.perform(post("/api/categories")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(json))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.status").value(400))
+                    .andExpect(jsonPath("$.error").value("Bad Request"))
+                    .andExpect(jsonPath("$.message").exists());
+        }
+
+        @Test
+        void should_return_400_when_type_is_blank() throws Exception {
+
+            String json = """
+                    {
+                        "name": "",
+                        "description": "Description",
+                        "type": ""
                     }
                     """;
 
@@ -123,7 +146,8 @@ class CategoryControllerTest {
             String json = """
                     {
                         "name": "Tech"
-                        "description": "test"
+                        "description": "test",
+                        "type": "INCOME"
                     }
                     """;
 
@@ -141,7 +165,8 @@ class CategoryControllerTest {
             String json = """
                     {
                         "name": "Books",
-                        "description": "Category for books"
+                        "description": "Category for books",
+                        "type": "INCOME"
                     }
                     """;
 
@@ -163,7 +188,8 @@ class CategoryControllerTest {
 
             String json = """
                     {
-                        "description": "Description"
+                        "description": "Description",
+                        "type": "INCOME"
                     }
                     """;
 
@@ -180,8 +206,8 @@ class CategoryControllerTest {
         void should_return_all_categories() throws Exception {
 
             List<CategoryResult> result = List.of(
-                    new CategoryResult("1", "Tech", "Technology"),
-                    new CategoryResult("2", "Books", "Books category")
+                    new CategoryResult("1", "Tech", "Technology", "INCOME"),
+                    new CategoryResult("2", "Books", "Books category", "OUTCOME")
             );
 
             when(findAllCategoriesUseCase.execute())
@@ -225,7 +251,7 @@ class CategoryControllerTest {
         @Test
         void should_return_the_category_if_found() throws Exception{
             CategoryResult categoryResult =  new CategoryResult(
-                    "1", "Tech", "Technology"
+                    "1", "Tech", "Technology", "OUTCOME"
             );
 
             when(findCategoryByIdUseCase.execute("1"))
@@ -264,12 +290,13 @@ class CategoryControllerTest {
             verify(deleteCategoryUseCase).execute("1");
         }
 
+        @Test
         void should_return_404_when_category_is_not_found() throws Exception{
             doThrow(new ResourceNotFoundException("Category", "id", "1"))
                     .when(deleteCategoryUseCase)
                     .execute("1");
             mockMvc.perform(delete("/api/categories/1"))
-                    .andExpect(status().isNoContent());
+                    .andExpect(status().isNotFound());
 
             verify(deleteCategoryUseCase).execute("1");
         }
@@ -431,14 +458,17 @@ class CategoryControllerTest {
             String json = """
                         {
                             "name": "Changed Name",
-                            "description": "Changed Description"
+                            "description": "Changed Description",
+                            "type": "INCOME"
                         }
                     """;
 
             CategoryResult result = new CategoryResult(
                     "1",
                     "Changed Name",
-                    "Changed Description");
+                    "Changed Description",
+                    "INCOME"
+            );
 
             when(editCategoryUseCase.execute(any()))
                     .thenReturn(result);
@@ -462,14 +492,16 @@ class CategoryControllerTest {
          void should_edit_category_when_name_is_null() throws Exception{
              String json = """
                         {
-                            "description": "Changed Description"
+                            "description": "Changed Description",
+                            "type": "INCOME"
                         }
                     """;
 
              CategoryResult result = new CategoryResult(
                      "1",
                      "Name",
-                     "Changed Description");
+                     "Changed Description",
+                     "INCOME");
 
              when(editCategoryUseCase.execute(any()))
                      .thenReturn(result);
@@ -480,7 +512,8 @@ class CategoryControllerTest {
                      .andExpect(status().isCreated())
                      .andExpect(jsonPath("$.id").value("1"))
                      .andExpect(jsonPath("$.name").value("Name"))
-                     .andExpect(jsonPath("$.description").value("Changed Description"));
+                     .andExpect(jsonPath("$.description").value("Changed Description"))
+                     .andExpect(jsonPath("$.type").value("INCOME"));
 
              verify(editCategoryUseCase).execute(argThat(command ->
                      command.id().equals("1") &&
@@ -921,7 +954,8 @@ class CategoryControllerTest {
                         .content("""
                         {
                             "name": "Tech",
-                            "description": "desc"
+                            "description": "desc",
+                            "type": "INCOME"
                         }
                     """))
                 .andExpect(status().isBadRequest())

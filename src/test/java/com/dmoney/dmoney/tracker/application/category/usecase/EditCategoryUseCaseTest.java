@@ -8,10 +8,7 @@ import com.dmoney.dmoney.tracker.application.category.helpers.CategoryLoader;
 import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
 import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
-import com.dmoney.dmoney.tracker.domain.category.model.Category;
-import com.dmoney.dmoney.tracker.domain.category.model.CategoryDescription;
-import com.dmoney.dmoney.tracker.domain.category.model.CategoryId;
-import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
+import com.dmoney.dmoney.tracker.domain.category.model.*;
 import com.dmoney.dmoney.tracker.domain.category.repository.CategoryRepository;
 import com.dmoney.dmoney.tracker.domain.category.service.CategoryUniquenessChecker;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +50,8 @@ class EditCategoryUseCaseTest {
         category = Category.create(
                 userId,
                 CategoryName.from("Category name"),
-                CategoryDescription.from("Category description")
+                CategoryDescription.from("Category description"),
+                CategoryType.INCOME
         );
         when(authProvider.currentUserId()).thenReturn(userId);
     }
@@ -63,11 +61,13 @@ class EditCategoryUseCaseTest {
         CategoryId categoryId = category.id();
         String newName ="New Category name";
         String newDescription = "New Category description";
+        String newType = "OUTCOME";
 
         EditCategoryCommand command = new EditCategoryCommand(
                 categoryId.value().toString(),
                 newName,
-                newDescription
+                newDescription,
+                newType
         );
 
 
@@ -86,6 +86,7 @@ class EditCategoryUseCaseTest {
         verify(categoryRepository).save(any(Category.class));
         assertEquals(newName, editedCategory.name());
         assertEquals(newDescription, editedCategory.description());
+        assertEquals(newType, editedCategory.type());
         assertEquals(categoryId.value().toString(), editedCategory.id());
     }
 
@@ -97,6 +98,7 @@ class EditCategoryUseCaseTest {
         EditCategoryCommand command = new EditCategoryCommand(
                 categoryId.value().toString(),
                 newName,
+                null,
                 null
         );
 
@@ -119,6 +121,7 @@ class EditCategoryUseCaseTest {
                 category.description().value(),
                 editedCategory.description()
         );
+        assertEquals(category.categoryType().toString(), editedCategory.type());
         assertEquals(categoryId.value().toString(), editedCategory.id());
     }
 
@@ -131,7 +134,8 @@ class EditCategoryUseCaseTest {
         EditCategoryCommand command = new EditCategoryCommand(
                 categoryId.value().toString(),
                 null,
-                newDescription
+                newDescription,
+                null
         );
 
         when(categoryLoader.load(userId, categoryId))
@@ -150,6 +154,40 @@ class EditCategoryUseCaseTest {
 
         assertEquals(category.name().value(), editedCategory.name());
         assertEquals(newDescription, editedCategory.description());
+        assertEquals(category.categoryType().toString(), editedCategory.type());
+        assertEquals(categoryId.value().toString(), editedCategory.id());
+    }
+
+    @Test
+    void should_only_edit_type_and_save_the_category(){
+        CategoryId categoryId = category.id();
+        String newType = "OUTCOME";
+
+
+        EditCategoryCommand command = new EditCategoryCommand(
+                categoryId.value().toString(),
+                null,
+                null,
+                newType
+        );
+
+        when(categoryLoader.load(userId, categoryId))
+                .thenReturn(category);
+
+        when(categoryRepository.save(any()))
+                .thenAnswer(invocation ->
+                        invocation.getArgument(0)
+                );
+
+        CategoryResult editedCategory = useCase.execute(command);
+
+
+        verify(categoryLoader).load(userId, categoryId);
+        verify(categoryRepository).save(any(Category.class));
+
+        assertEquals(category.name().value(), editedCategory.name());
+        assertEquals(category.description().value(), editedCategory.description());
+        assertEquals(newType, editedCategory.type());
         assertEquals(categoryId.value().toString(), editedCategory.id());
     }
 
@@ -158,7 +196,7 @@ class EditCategoryUseCaseTest {
         CategoryId categoryId = category.id();
 
         EditCategoryCommand command = new EditCategoryCommand(
-                categoryId.value().toString(), "Existing name", null
+                categoryId.value().toString(), "Existing name", null, null
         );
 
         when(categoryLoader.load(userId,categoryId)).thenReturn(category);
@@ -180,11 +218,13 @@ class EditCategoryUseCaseTest {
         CategoryId unexistingId = CategoryId.newId();
         String newName ="New Category name";
         String newDescription = "New Category description";
+        String newType = "OUTCOME";
 
         EditCategoryCommand command = new EditCategoryCommand(
                 unexistingId.value().toString(),
                 newName,
-                newDescription
+                newDescription,
+                newType
         );
 
         when(categoryLoader.load(userId, unexistingId))
