@@ -1,10 +1,12 @@
 package com.dmoney.dmoney.tracker.application.movement.response;
 
 import com.dmoney.dmoney.tracker.domain.movement.model.Movement;
+import com.dmoney.dmoney.tracker.domain.tag.model.TagId;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record MovementResponse(
         String movementId,
@@ -13,7 +15,8 @@ public record MovementResponse(
         BigDecimal amount,
         String type,
         String description,
-        LocalDate date
+        LocalDate date,
+        List<TagId> tagIds
 ) {
     public static MovementResponse from(Movement domain){
         return new MovementResponse(
@@ -23,7 +26,8 @@ public record MovementResponse(
                 domain.amount().value(),
                 domain.type().toString(),
                 domain.description().value(),
-                domain.date()
+                domain.date(),
+                domain.tags().stream().toList()
         );
     }
 }
