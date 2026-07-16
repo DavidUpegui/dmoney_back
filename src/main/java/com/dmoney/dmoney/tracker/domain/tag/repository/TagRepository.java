@@ -12,6 +12,7 @@ public interface TagRepository {
     boolean deleteByUserIdAndId(UserId userId, TagId id);
     boolean existsByUserIdAndNameIgnoreCase(UserId userId, TagName tagName);
     Optional<Tag> findByUserIdAndId(UserId userId, TagId id);
+    boolean existsByUserIdAndId(UserId userId, TagId tagId);
     Tag save(Tag tag);
     List<Tag> findAllByUserId(UserId userId);
 }

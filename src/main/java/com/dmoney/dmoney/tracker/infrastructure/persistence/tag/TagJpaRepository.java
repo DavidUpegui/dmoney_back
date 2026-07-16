@@ -14,6 +14,7 @@ public interface TagJpaRepository extends JpaRepository<TagEntity, UUID> {
     @Transactional
     int deleteByUserIdAndId(UUID userId, UUID id);
 
+    boolean existsByUserIdAndId(UUID userId, UUID tagId);
     boolean existsByUserIdAndNameIgnoreCase(UUID userId, String name);
     List<TagEntity> findAllByUserId(UUID userId);
     Optional<TagEntity> findByUserIdAndId(UUID userId, UUID id);

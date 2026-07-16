@@ -36,6 +36,11 @@ public class TagRepositoryAdapter implements TagRepository {
     }
 
     @Override
+    public boolean existsByUserIdAndId(UserId userId, TagId tagId) {
+        return tagJpaRepository.existsByUserIdAndId(userId.value(), tagId.value());
+    }
+
+    @Override
     public boolean existsByUserIdAndNameIgnoreCase(UserId userId, TagName name) {
         return tagJpaRepository.existsByUserIdAndNameIgnoreCase(userId.value(), name.value());
     }

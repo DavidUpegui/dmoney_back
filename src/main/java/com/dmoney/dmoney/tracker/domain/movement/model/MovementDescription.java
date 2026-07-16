@@ -1,4 +1,4 @@
-package com.dmoney.dmoney.tracker.domain.movement;
+package com.dmoney.dmoney.tracker.domain.movement.model;
 
 import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
 

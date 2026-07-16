@@ -1,4 +1,4 @@
-package com.dmoney.dmoney.tracker.domain.movement;
+package com.dmoney.dmoney.tracker.domain.movement.model;
 
 import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
 
@@ -13,5 +13,9 @@ public record Amount(BigDecimal value) {
             throw new ValidationException("Amount should be valid.");
         }
         this.value = value;
+    }
+
+    public static Amount from(BigDecimal value){
+        return new Amount(value);
     }
 }
