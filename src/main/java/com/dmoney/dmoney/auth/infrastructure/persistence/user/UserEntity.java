@@ -32,5 +32,4 @@ public class UserEntity {
 
     @Column(nullable = false)
     private String provider;
-
 }

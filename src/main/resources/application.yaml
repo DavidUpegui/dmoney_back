@@ -5,9 +5,12 @@ spring:
     url: jdbc:postgresql://localhost:5432/dmoney
     username: postgres
     password: root
+  liquibase:
+    enabled: true
+    changelog: classpath:db/changelog/db.changelog-master.xml
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
