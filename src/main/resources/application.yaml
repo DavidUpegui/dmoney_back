@@ -8,6 +8,7 @@ spring:
   liquibase:
     enabled: true
     changelog: classpath:db/changelog/db.changelog-master.xml
+    contexts: dev
   jpa:
     hibernate:
       ddl-auto: validate

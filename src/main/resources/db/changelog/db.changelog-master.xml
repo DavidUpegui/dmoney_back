@@ -6,5 +6,5 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
     <includeAll path="changes/" relativeToChangelogFile="true"/>
-
+    <includeAll path="test-data/" relativeToChangelogFile="true"/>
 </databaseChangeLog>
