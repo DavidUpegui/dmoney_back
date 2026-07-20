@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 public record MovementResponse(
         String movementId,
@@ -16,7 +17,7 @@ public record MovementResponse(
         String type,
         String description,
         LocalDate date,
-        List<TagId> tagIds
+        List<UUID> tagIds
 ) {
     public static MovementResponse from(Movement domain){
         return new MovementResponse(
@@ -27,7 +28,7 @@ public record MovementResponse(
                 domain.type().toString(),
                 domain.description().value(),
                 domain.date(),
-                domain.tags().stream().toList()
+                domain.tags().stream().map(TagId::value).toList()
         );
     }
 }
