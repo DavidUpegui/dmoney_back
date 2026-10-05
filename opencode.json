@@ -1,0 +1,10 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["AGENTS.md", "OBSERVATIONS.md"],
+  "references": {
+    "docs": {
+      "path": "docs",
+      "description": "Project docs: testing conventions (testing.md) and hexagonal architecture details (architecture.md). Use when writing tests or working across domain/application/infrastructure layers."
+    }
+  }
+}
