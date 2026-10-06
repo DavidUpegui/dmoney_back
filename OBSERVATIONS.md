@@ -7,4 +7,4 @@ spec's "Out of Scope", not here.
 
 ## 2026-10-05
 
-- `test` task is disabled in `build.gradle` (`tasks.named('test') { enabled = false }`) — re-enable once the first spec cycle produces tests so CI runs and measures coverage.
+- `CategoryController` and `TagController` return `201 Created` from their `@PatchMapping` edit endpoints; REST semantics should return `200 OK`. The new movement PATCH returns `200`. Revisit category/tag once their specs are (re)written.

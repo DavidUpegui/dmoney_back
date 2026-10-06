@@ -1,9 +1,13 @@
 package com.dmoney.dmoney.tracker.infrastructure.controller.movement;
 
 import com.dmoney.dmoney.tracker.application.movement.command.CreateMovementCommand;
+import com.dmoney.dmoney.tracker.application.movement.command.EditMovementCommand;
 import com.dmoney.dmoney.tracker.application.movement.response.MovementResponse;
 import com.dmoney.dmoney.tracker.application.movement.usecase.CreateMovementUseCase;
+import com.dmoney.dmoney.tracker.application.movement.usecase.DeleteMovementUseCase;
+import com.dmoney.dmoney.tracker.application.movement.usecase.EditMovementUseCase;
 import com.dmoney.dmoney.tracker.application.movement.usecase.FindAllMovementsUseCase;
+import com.dmoney.dmoney.tracker.application.movement.usecase.FindMovementByIdUseCase;
 import com.dmoney.dmoney.tracker.domain.movement.model.Movement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +29,9 @@ public class MovementController {
 
     private final CreateMovementUseCase createMovementUseCase;
     private final FindAllMovementsUseCase findAllMovementsUseCase;
+    private final FindMovementByIdUseCase findMovementByIdUseCase;
+    private final EditMovementUseCase editMovementUseCase;
+    private final DeleteMovementUseCase deleteMovementUseCase;
 
     @PostMapping
     public ResponseEntity<MovementResponse> create(
@@ -59,5 +66,41 @@ public class MovementController {
         return ResponseEntity
                 .ok()
                 .body(findAllMovementsUseCase.execute());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<MovementResponse> findById(@PathVariable String id){
+        return ResponseEntity
+                .ok()
+                .body(findMovementByIdUseCase.execute(id));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<MovementResponse> edit(
+            @PathVariable String id,
+            @Valid @RequestBody EditMovementRequest request
+    ){
+        EditMovementCommand command = new EditMovementCommand(
+                id,
+                request.categoryId() == null ? null : request.categoryId().toString(),
+                request.subcategoryId() == null ? null : request.subcategoryId().toString(),
+                request.amount(),
+                request.type(),
+                request.description(),
+                request.date(),
+                request.tags() == null ?
+                        null : request.tags()
+                        .stream()
+                        .map(UUID::toString)
+                        .collect(Collectors.toSet())
+        );
+
+        return ResponseEntity.ok(editMovementUseCase.execute(command));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id){
+        deleteMovementUseCase.execute(id);
+        return ResponseEntity.noContent().build();
     }
 }

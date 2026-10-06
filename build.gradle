@@ -98,7 +98,6 @@ jacocoTestCoverageVerification{
 //check.dependsOn jacocoTestCoverageVerification
 
 tasks.named('test') {
-	enabled = false
 	useJUnitPlatform()
 	finalizedBy jacocoTestReport
 }

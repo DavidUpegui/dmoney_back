@@ -1,6 +1,5 @@
 package com.dmoney.dmoney.tracker.application.movement.usecase;
 
-import com.dmoney.dmoney.auth.domain.user.model.User;
 import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.application.movement.command.CreateMovementCommand;
 import com.dmoney.dmoney.tracker.application.movement.response.MovementResponse;
@@ -41,8 +40,8 @@ public class CreateMovementUseCase {
                 categoryId,
                 subcategoryId,
                 Amount.from(command.amount()),
-                MovementType.valueOf(command.type()),
-                MovementDescription.from(command.description()),
+                MovementType.from(command.type()),
+                MovementDescription.fromNullable(command.description()),
                 command.date(),
                 tagsId
         );

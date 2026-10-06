@@ -92,6 +92,36 @@ public class Movement {
     }
 
 
+    public void changeCategory(CategoryId catId){
+        this.catId = Objects.requireNonNull(catId);
+    }
+
+    public void changeSubcategory(SubcategoryId subcatId){
+        this.subcatId = Objects.requireNonNull(subcatId);
+    }
+
+    public void changeAmount(Amount amount){
+        this.amount = Objects.requireNonNull(amount);
+    }
+
+    public void changeType(MovementType type){
+        this.type = Objects.requireNonNull(type);
+    }
+
+    public void changeDescription(MovementDescription description){
+        this.description = Objects.requireNonNull(description);
+    }
+
+    public void changeDate(LocalDate date){
+        this.date = Objects.requireNonNull(date);
+    }
+
+    public void changeTags(Set<TagId> tags){
+        Objects.requireNonNull(tags);
+        this.tags.clear();
+        this.tags.addAll(tags);
+    }
+
     public MovementId movementId(){
         return this.movementId;
     }
