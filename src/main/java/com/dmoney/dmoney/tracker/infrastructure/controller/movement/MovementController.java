@@ -9,6 +9,7 @@ import com.dmoney.dmoney.tracker.application.movement.usecase.EditMovementUseCas
 import com.dmoney.dmoney.tracker.application.movement.usecase.FindAllMovementsUseCase;
 import com.dmoney.dmoney.tracker.application.movement.usecase.FindMovementByIdUseCase;
 import com.dmoney.dmoney.tracker.domain.movement.model.Movement;
+import com.dmoney.dmoney.tracker.domain.movement.model.MovementFilter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -62,10 +64,21 @@ public class MovementController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MovementResponse>> findAll(){
+    public ResponseEntity<List<MovementResponse>> findAll(
+            @RequestParam(required = false) List<String> categoryIds,
+            @RequestParam(required = false) List<String> subcategoryIds,
+            @RequestParam(required = false) List<String> tagIds,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) LocalDate dateFrom,
+            @RequestParam(required = false) LocalDate dateTo,
+            @RequestParam(required = false) String search
+    ){
+        MovementFilter filter = MovementFilter.of(
+                categoryIds, subcategoryIds, tagIds, type, dateFrom, dateTo, search
+        );
         return ResponseEntity
                 .ok()
-                .body(findAllMovementsUseCase.execute());
+                .body(findAllMovementsUseCase.execute(filter));
     }
 
     @GetMapping("/{id}")

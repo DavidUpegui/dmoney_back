@@ -1,11 +1,19 @@
 # Tasks: Movement — Filter & Search
 
 ## Spec
-- [ ] `spec.md` written and reviewed
+- [x] `spec.md` written and reviewed
+
 ## Implementation
-- [ ] Domain / Application / Infrastructure done
+- [x] Domain layer done (`MovementFilter` multi-select + repository signature)
+- [x] Application layer done (`FindAllMovementsUseCase`)
+- [x] Infrastructure layer done (Specifications `in`/`isMember` OR + controller params)
+
 ## Tests
-- [ ] Use case / controller tests
+- [x] Value object tests
+- [x] Use case tests
+- [x] Adapter filter tests (multi-select + any-of tags)
+- [x] Controller tests (multi-value binding)
+
 ## Verification
-- [ ] `./gradlew clean build` passes
-- [ ] Coverage ≥ 80%
+- [x] `./gradlew clean build` passes
+- [x] Coverage ≥ 80%

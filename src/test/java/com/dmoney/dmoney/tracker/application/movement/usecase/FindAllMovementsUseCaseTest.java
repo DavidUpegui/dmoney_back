@@ -8,6 +8,7 @@ import com.dmoney.dmoney.tracker.domain.category.model.SubcategoryId;
 import com.dmoney.dmoney.tracker.domain.movement.model.Amount;
 import com.dmoney.dmoney.tracker.domain.movement.model.Movement;
 import com.dmoney.dmoney.tracker.domain.movement.model.MovementDescription;
+import com.dmoney.dmoney.tracker.domain.movement.model.MovementFilter;
 import com.dmoney.dmoney.tracker.domain.movement.model.MovementType;
 import com.dmoney.dmoney.tracker.domain.movement.repository.MovementRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -47,7 +49,7 @@ class FindAllMovementsUseCaseTest {
     }
 
     @Test
-    void should_return_only_user_movements(){
+    void should_forward_filter_and_return_user_movements(){
         Movement movement = Movement.create(
                 userId,
                 CategoryId.newId(),
@@ -59,13 +61,30 @@ class FindAllMovementsUseCaseTest {
                 Set.of()
         );
 
-        when(movementRepository.findAllByUserId(userId)).thenReturn(List.of(movement));
+        MovementFilter filter = MovementFilter.of(null, null, null, null, null, null, null);
 
-        List<MovementResponse> responses = useCase.execute();
+        when(movementRepository.findAllByUserId(eq(userId), eq(filter)))
+                .thenReturn(List.of(movement));
+
+        List<MovementResponse> responses = useCase.execute(filter);
 
         assertEquals(1, responses.size());
         assertEquals(movement.movementId().value().toString(), responses.getFirst().movementId());
 
-        verify(movementRepository).findAllByUserId(userId);
+        verify(movementRepository).findAllByUserId(eq(userId), eq(filter));
+    }
+
+    @Test
+    void should_return_empty_list_when_no_movements_match(){
+        MovementFilter filter = MovementFilter.of(null, null, null, null, null, null, null);
+
+        when(movementRepository.findAllByUserId(eq(userId), eq(filter)))
+                .thenReturn(List.of());
+
+        List<MovementResponse> responses = useCase.execute(filter);
+
+        assertEquals(0, responses.size());
+
+        verify(movementRepository).findAllByUserId(eq(userId), eq(filter));
     }
 }

@@ -9,6 +9,7 @@ import com.dmoney.dmoney.tracker.application.movement.usecase.DeleteMovementUseC
 import com.dmoney.dmoney.tracker.application.movement.usecase.EditMovementUseCase;
 import com.dmoney.dmoney.tracker.application.movement.usecase.FindAllMovementsUseCase;
 import com.dmoney.dmoney.tracker.application.movement.usecase.FindMovementByIdUseCase;
+import com.dmoney.dmoney.tracker.domain.movement.model.MovementFilter;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,14 +151,56 @@ class MovementControllerTest {
     class FindAllMovementsControllerTest {
         @Test
         void should_return_all_movements() throws Exception {
-            when(findAllMovementsUseCase.execute()).thenReturn(List.of(response()));
+            when(findAllMovementsUseCase.execute(any(MovementFilter.class)))
+                    .thenReturn(List.of(response()));
 
             mockMvc.perform(get("/api/movements"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.size()").value(1))
                     .andExpect(jsonPath("$[0].movementId").value(MOVEMENT_ID));
 
-            verify(findAllMovementsUseCase).execute();
+            verify(findAllMovementsUseCase).execute(any(MovementFilter.class));
+        }
+
+        @Test
+        void should_build_filter_from_query_params() throws Exception {
+            when(findAllMovementsUseCase.execute(any(MovementFilter.class)))
+                    .thenReturn(List.of(response()));
+
+            mockMvc.perform(get("/api/movements")
+                            .param("type", "outcome")
+                            .param("search", "arriendo")
+                            .param("dateFrom", "2026-07-01"))
+                    .andExpect(status().isOk());
+
+            verify(findAllMovementsUseCase).execute(argThat(filter ->
+                    filter.type() != null &&
+                            filter.type().toString().equals("OUTCOME") &&
+                            filter.search().equals("arriendo")
+            ));
+        }
+
+        @Test
+        void should_bind_multiple_category_and_tag_ids() throws Exception {
+            when(findAllMovementsUseCase.execute(any(MovementFilter.class)))
+                    .thenReturn(List.of(response()));
+
+            mockMvc.perform(get("/api/movements")
+                            .param("categoryIds", CATEGORY_ID + "," + CATEGORY_ID.replace('1', '2'))
+                            .param("tagIds", "40000000-0000-0000-0000-000000000001,40000000-0000-0000-0000-000000000002"))
+                    .andExpect(status().isOk());
+
+            verify(findAllMovementsUseCase).execute(argThat(filter ->
+                    filter.categories().size() == 2 &&
+                            filter.tags().size() == 2
+            ));
+        }
+
+        @Test
+        void should_return_400_when_type_is_invalid() throws Exception {
+            mockMvc.perform(get("/api/movements")
+                            .param("type", "FOO"))
+                    .andExpect(status().isBadRequest());
         }
     }
 
