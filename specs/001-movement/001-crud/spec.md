@@ -49,14 +49,14 @@ POST /api/movements
   "type": "OUTCOME",
   "description": "Arriendo",
   "date": "2026-07-14",
-  "tags": ["40000000-..."]
+  "tagIds": ["40000000-..."]
 }
 ```
 
 - `amount` is `BigDecimal > 0`.
 - `type` is `INCOME | OUTCOME | TRANSFER`, case-insensitive on input.
 - `description` may be null or empty.
-- `tags` is optional.
+- `tagIds` is optional.
 
 `201` → `MovementResponse` + `Location` header.
 
@@ -146,3 +146,6 @@ Value objects (immutable, self-validating):
 
 - `2026-10-05` — Retroactive baseline for create/list; documented the
   `type` case-insensitivity and nullable-`description` fixes as explicit rules.
+- `2026-10-08` — Renamed the create/update request field `tags` → `tagIds` to
+  match the response and filter parameter (`tagIds`), resolving the API
+  asymmetry.

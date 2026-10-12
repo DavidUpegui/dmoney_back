@@ -46,8 +46,8 @@ public class MovementController {
                 request.type(),
                 request.description(),
                 request.date(),
-                request.tags() == null ?
-                        Set.of() : request.tags()
+                request.tagIds() == null ?
+                        Set.of() : request.tagIds()
                                 .stream()
                                 .map(UUID::toString)
                                 .collect(Collectors.toSet())
@@ -101,8 +101,8 @@ public class MovementController {
                 request.type(),
                 request.description(),
                 request.date(),
-                request.tags() == null ?
-                        null : request.tags()
+                request.tagIds() == null ?
+                        null : request.tagIds()
                         .stream()
                         .map(UUID::toString)
                         .collect(Collectors.toSet())

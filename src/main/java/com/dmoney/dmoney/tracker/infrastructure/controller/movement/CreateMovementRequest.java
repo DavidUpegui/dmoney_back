@@ -18,5 +18,5 @@ public record CreateMovementRequest(
         @NotBlank String type,
         @Size(max = 500) String description,
         @NotNull LocalDate date,
-        Set<UUID> tags
+        Set<UUID> tagIds
 ) {}

@@ -15,5 +15,5 @@ public record EditMovementRequest(
         String type,
         @Size(max = 500) String description,
         LocalDate date,
-        Set<UUID> tags
+        Set<UUID> tagIds
 ) {}

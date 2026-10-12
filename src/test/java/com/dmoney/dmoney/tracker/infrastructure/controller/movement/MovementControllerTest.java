@@ -94,7 +94,7 @@ class MovementControllerTest {
                         "type": "OUTCOME",
                         "description": "Arriendo",
                         "date": "2026-07-14",
-                        "tags": []
+                        "tagIds": []
                     }
                     """.formatted(CATEGORY_ID, SUBCATEGORY_ID);
 
@@ -122,7 +122,7 @@ class MovementControllerTest {
                         "type": "OUTCOME",
                         "description": "Arriendo",
                         "date": "2026-07-14",
-                        "tags": []
+                        "tagIds": []
                     }
                     """.formatted(CATEGORY_ID, SUBCATEGORY_ID);
 
