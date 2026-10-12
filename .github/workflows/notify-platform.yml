@@ -14,7 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Dispatch contract-sync to dmoney_platform
-        uses: peter-evans/repository-dispatch@v3
+        # Pinned to the v3 commit SHA (supply-chain hardening; Sonar S7637).
+        uses: peter-evans/repository-dispatch@ff45666b9427631e3450c54a1bcbee4d9ff4d7c0 # v3
         with:
           token: ${{ secrets.PLATFORM_DISPATCH_TOKEN }}
           repository: DavidUpegui/dmoney_platform
