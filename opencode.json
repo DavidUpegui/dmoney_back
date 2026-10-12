@@ -1,0 +1,14 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["AGENTS.md", "OBSERVATIONS.md"],
+  "references": {
+    "docs": {
+      "path": "docs",
+      "description": "Project docs: testing conventions (testing.md) and hexagonal architecture details (architecture.md). Use when writing tests or working across domain/application/infrastructure layers."
+    },
+    "contract": {
+      "path": "../dmoney_platform/contracts",
+      "description": "Shared HTTP contract with dmoney_front. Curated semantics in API_CONTRACT.md (owner-scoping, errors, business meaning). Any API surface change must be reflected here in the same change set."
+    }
+  }
+}
