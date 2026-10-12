@@ -9,8 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
@@ -29,9 +27,6 @@ jobs:
         run: ./gradlew clean build --info
 
       - name: Sonar Analysis
-        # Advisory only: skipped when no SONAR_TOKEN is configured, and never
-        # blocks the build when SonarCloud rejects the token (403) or is down.
-        # Remove `continue-on-error` to make the quality gate blocking.
-        if: ${{ env.SONAR_TOKEN != '' }}
-        continue-on-error: true
         run: ./gradlew sonar -Dsonar.qualitygate.wait=true
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
