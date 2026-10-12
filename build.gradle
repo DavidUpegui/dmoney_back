@@ -98,5 +98,8 @@ check.dependsOn jacocoTestCoverageVerification
 
 tasks.named('test') {
 	useJUnitPlatform()
+	// Forward to the test JVM so OpenApiExportTest runs only on demand:
+	// ./gradlew test --tests com.dmoney.dmoney.OpenApiExportTest -Dopenapi.export=true
+	systemProperty 'openapi.export', System.getProperty('openapi.export', 'false')
 	finalizedBy jacocoTestReport
 }
