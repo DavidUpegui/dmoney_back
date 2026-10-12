@@ -1,0 +1,23 @@
+name: Notify Platform
+
+# When a change lands on trunk, tell dmoney_platform to regenerate and sync the
+# shared OpenAPI contract. Requires the PLATFORM_DISPATCH_TOKEN secret: a
+# fine-grained PAT (or GitHub App token) with permission to dispatch events on
+# DavidUpegui/dmoney_platform.
+
+on:
+  push:
+    branches: [ trunk, main ]
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch contract-sync to dmoney_platform
+        # Pinned to the v3 commit SHA (supply-chain hardening; Sonar S7637).
+        uses: peter-evans/repository-dispatch@ff45666b9427631e3450c54a1bcbee4d9ff4d7c0 # v3
+        with:
+          token: ${{ secrets.PLATFORM_DISPATCH_TOKEN }}
+          repository: DavidUpegui/dmoney_platform
+          event-type: openapi-updated
+          client-payload: '{"ref": "${{ github.sha }}"}'
