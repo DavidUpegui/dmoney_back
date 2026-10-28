@@ -74,7 +74,7 @@ public class TagController {
         );
 
         return ResponseEntity
-                .status(HttpStatus.CREATED)
+                .ok()
                 .body(editedTag);
     }
 

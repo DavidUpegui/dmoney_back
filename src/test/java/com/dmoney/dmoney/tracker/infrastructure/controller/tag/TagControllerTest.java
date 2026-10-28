@@ -260,7 +260,7 @@ public class TagControllerTest {
             mockMvc.perform(patch("/api/tags/1")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(json))
-                    .andExpect(status().isCreated())
+                    .andExpect(status().isOk())
                     .andExpect(jsonPath("$.id").value("1"))
                     .andExpect(jsonPath("$.name").value("New Name"))
                     .andExpect(jsonPath("$.description").value("New Description"));

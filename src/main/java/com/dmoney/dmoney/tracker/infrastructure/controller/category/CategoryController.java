@@ -95,7 +95,7 @@ public class CategoryController {
         CategoryResult category = editCategoryUseCase.execute(command);
 
         return ResponseEntity
-                .status(HttpStatus.CREATED)
+                .ok()
                 .body(category);
 
     }
@@ -117,7 +117,7 @@ public class CategoryController {
         SubcategoryResult subcategory =  editSubcategoryUseCase.execute(command);
 
         return ResponseEntity
-                .status(HttpStatus.CREATED)
+                .ok()
                 .body(subcategory);
     }
 
