@@ -55,4 +55,10 @@ class SecurityIntegrationTest {
                         .header("Authorization", "Bearer " + validToken))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void should_return_401_for_movements_when_no_jwt() throws Exception {
+        mockMvc.perform(get("/api/movements"))
+                .andExpect(status().isUnauthorized());
+    }
 }
