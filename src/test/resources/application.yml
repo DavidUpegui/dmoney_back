@@ -13,5 +13,8 @@ spring:
   h2:
     console:
       enabled: true
+
+  liquibase:
+    enabled: false
 jwt:
   secret: test-secret-key-test-secret-key-test
