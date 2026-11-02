@@ -45,7 +45,7 @@ class CreateTagUseCaseTest {
     }
 
     @Test
-    void should_create_a_tag_and_save(){
+    void tag01_creates_and_saves(){
         String name = "Name";
         String description = "Description";
 
@@ -66,7 +66,7 @@ class CreateTagUseCaseTest {
     }
 
     @Test
-    void should_throw_exception_when_name_already_exists(){
+    void tag04_rejects_duplicate_name(){
         String name = "Name";
         String description = "Description";
 
@@ -84,7 +84,7 @@ class CreateTagUseCaseTest {
     }
 
     @Test
-    void should_propagate_exception_when_name_is_null(){
+    void tag02_rejects_null_name(){
         CreateTagCommand command =
                 new CreateTagCommand(null, "description");
 
@@ -95,7 +95,7 @@ class CreateTagUseCaseTest {
     }
 
     @Test
-    void should_allow_null_description(){
+    void tag03_allows_null_description(){
         CreateTagCommand command =
                 new CreateTagCommand("Name", null);
 

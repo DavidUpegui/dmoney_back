@@ -43,7 +43,7 @@ class FindTagByIdUseCaseTest {
         when(authProvider.currentUserId()).thenReturn(userId);
     }
     @Test
-    void should_found_by_id(){
+    void tag07_finds_own_tag(){
         Tag tag = Tag.create(
                 userId,
                 TagName.from("Tag name"),
@@ -64,7 +64,7 @@ class FindTagByIdUseCaseTest {
     }
 
     @Test
-    void should_throw_exception_when_not_found(){
+    void tag07_rejects_missing_or_foreign_tag(){
         TagId tagId = TagId.newId();
 
         when(tagRepository.findByUserIdAndId(userId,tagId))

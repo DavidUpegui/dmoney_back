@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class TagDescriptionTest {
 
     @Test
-    void should_create_tag_description_with_the_constructor(){
+    void tag03_creates_description(){
         String description = "Tag Description";
 
         TagDescription tagDescription = new TagDescription(description);
@@ -18,7 +18,7 @@ class TagDescriptionTest {
     }
 
     @Test
-    void should_create_tag_description_with_the_from(){
+    void tag03_creates_description_from_string(){
         String description = "Tag Description";
 
         TagDescription tagDescription = TagDescription.from(description);
@@ -27,21 +27,21 @@ class TagDescriptionTest {
     }
 
     @Test
-    void should_create_empty_tag(){
+    void tag03_creates_empty_description(){
         TagDescription emptyTag = TagDescription.empty();
 
         assertEquals("", emptyTag.value());
     }
 
     @Test
-    void should_create_tag_empty_description_from_nullable(){
+    void tag03_nullable_null_becomes_empty(){
         TagDescription emptyDescription = TagDescription.fromNullable(null);
 
         assertEquals("", emptyDescription.value());
     }
 
     @Test
-    void should_create_tag_from_nullable(){
+    void tag03_creates_from_nullable(){
         String description = "Tag Description";
 
         TagDescription tagDescription = TagDescription.fromNullable(description);
@@ -50,7 +50,7 @@ class TagDescriptionTest {
     }
 
     @Test
-    void should_trim_value(){
+    void tag03_trims_description(){
         String notTrimmedDescription = "            Description      ";
 
         TagDescription tagDescription = TagDescription.from(notTrimmedDescription);
@@ -59,14 +59,14 @@ class TagDescriptionTest {
     }
 
     @Test
-    void should_create_empty_description_when_description_is_null(){
+    void tag03_null_becomes_empty(){
         TagDescription tagDescription = new TagDescription(null);
 
         assertEquals("", tagDescription.value());
     }
 
     @Test
-    void should_throw_illegal_argument_exception_when_description_is_too_large(){
+    void tag03_rejects_too_long_description(){
         String tooLong = "a".repeat(256);
 
         ValidationException exception = assertThrows(ValidationException.class,

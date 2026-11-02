@@ -16,7 +16,14 @@ public record MovementId(UUID value) {
     }
 
     public static MovementId fromString(String value) {
-        return new MovementId(UUID.fromString(value));
+        if (value == null || value.isBlank()) {
+            throw new ValidationException("Invalid movement id: " + value);
+        }
+        try {
+            return new MovementId(UUID.fromString(value));
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException("Invalid movement id: " + value);
+        }
     }
 
     public static MovementId fromUUID(UUID value) {

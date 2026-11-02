@@ -34,7 +34,7 @@ class TagRepositoryAdapterTest {
     @Nested
     class CreateTagRepositoryAdapterTest{
         @Test
-        void should_persist_tag_and_return_mapped_domain(){
+        void tag01_persists_tag(){
             Tag toCreate = Tag.create(
                     UserId.newId(),
                     TagName.from("Name"),
@@ -56,7 +56,7 @@ class TagRepositoryAdapterTest {
     @Nested
     class FindAllTagRepositoryAdapterTest{
         @Test
-        void should_find_only_tags_belonging_to_user() {
+        void tag05_finds_only_own_tags() {
             UserId userId = UserId.newId();
             Tag toFound1 = Tag.create(userId, TagName.from("Name1"), TagDescription.from("Description"));
             Tag toFound2 = Tag.create(UserId.newId(), TagName.from("Name2"), TagDescription.from("Description")); // ← usuario diferente
@@ -71,7 +71,7 @@ class TagRepositoryAdapterTest {
         }
 
         @Test
-        void should_return_empty_list_when_no_tags_found(){
+        void tag06_returns_empty_list_for_user(){
             UserId userId = UserId.newId();
             List<Tag> found = adapter.findAllByUserId(userId);
 
@@ -82,7 +82,7 @@ class TagRepositoryAdapterTest {
     @Nested
     class FindByIdTagRepositoryAdapterTest{
         @Test
-        void should_find_a_tag_by_id(){
+        void tag07_finds_tag_by_id(){
             UserId userId = UserId.newId();
             Tag toFound = Tag.create(
                     userId,
@@ -101,7 +101,7 @@ class TagRepositoryAdapterTest {
         }
 
         @Test
-        void should_return_empty_if_tag_is_not_found(){
+        void tag07_returns_empty_for_unknown_id(){
             TagId id = TagId.newId();
             UserId userId = UserId.newId();
 
@@ -114,7 +114,7 @@ class TagRepositoryAdapterTest {
     @Nested
     class ExistByNameTagRepositoryAdapterTest{
         @Test
-        void should_return_true_if_name_exist(){
+        void tag04_detects_existing_name(){
             UserId userId = UserId.newId();
             TagName name =  TagName.from("Name");
             Tag toFoundByName = Tag.create(
@@ -130,7 +130,24 @@ class TagRepositoryAdapterTest {
         }
 
         @Test
-        void should_return_false_if_name_does_not_exist(){
+        void tag04_detects_existing_name_ignoring_case(){
+            UserId userId = UserId.newId();
+            adapter.save(Tag.create(
+                    userId,
+                    TagName.from("Vacation"),
+                    TagDescription.from("Description")
+            ));
+
+            boolean doExists = adapter.existsByUserIdAndNameIgnoreCase(
+                    userId,
+                    TagName.from("VACATION")
+            );
+
+            assertThat(doExists).isTrue();
+        }
+
+        @Test
+        void tag04_reports_unknown_name(){
             TagName name =  TagName.from("Name");
             UserId userId = UserId.newId();
 
@@ -143,7 +160,7 @@ class TagRepositoryAdapterTest {
     @Nested
     class DeleteByIdTagRepositoryAdapterTest{
         @Test
-        void should_delete_tag_by_id(){
+        void tag11_deletes_own_tag(){
             UserId userId = UserId.newId();
             Tag toDelete = Tag.create(
                     userId,
@@ -162,7 +179,7 @@ class TagRepositoryAdapterTest {
         }
 
         @Test
-        void should_return_false_if_not_deleted(){
+        void tag11_reports_missing_tag(){
             UserId userId = UserId.newId();
             TagId anyTagId = TagId.newId();
 
@@ -170,6 +187,26 @@ class TagRepositoryAdapterTest {
 
 
             assertThat(deleted).isFalse();
+        }
+    }
+
+    @Nested
+    class OwnerScopingTagRepositoryAdapterTest{
+        @Test
+        void tag05_does_not_expose_or_delete_another_users_tag(){
+            UserId owner = UserId.newId();
+            UserId other = UserId.newId();
+            Tag tag = Tag.create(
+                    owner,
+                    TagName.from("Name"),
+                    TagDescription.from("Description")
+            );
+            adapter.save(tag);
+
+            assertThat(adapter.findByUserIdAndId(other, tag.id())).isEmpty();
+            assertThat(adapter.existsByUserIdAndId(other, tag.id())).isFalse();
+            assertThat(adapter.deleteByUserIdAndId(other, tag.id())).isFalse();
+            assertThat(adapter.findByUserIdAndId(owner, tag.id())).isPresent();
         }
     }
 }

@@ -24,7 +24,7 @@ class TagTest {
     }
 
     @Test
-    void should_create_tag(){
+    void tag01_creates_tag(){
         UserId userId = UserId.newId();
         TagName name = TagName.from("Created tag name");
         TagDescription description = TagDescription.from("Created tag description");
@@ -38,7 +38,7 @@ class TagTest {
     }
 
     @Test
-    void should_change_name(){
+    void tag08_changes_name(){
         UserId userId = UserId.newId();
         TagDescription description = TagDescription.from("Description");
         TagName changedName = TagName.from("Changed name");
@@ -54,7 +54,7 @@ class TagTest {
     }
 
     @Test
-    void should_change_description(){
+    void tag08_changes_description(){
         UserId userId = UserId.newId();
         TagName name = TagName.from("Name");
         TagDescription changedDescription = TagDescription.from("Changed description");

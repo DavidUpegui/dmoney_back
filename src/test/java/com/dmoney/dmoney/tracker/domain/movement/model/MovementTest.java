@@ -44,7 +44,7 @@ class MovementTest {
     }
 
     @Test
-    void shouldCreateMovementWithGeneratedId(){
+    void mov01_creates_movement(){
         Movement movement = newMovement();
 
         assertNotNull(movement.movementId());
@@ -77,7 +77,7 @@ class MovementTest {
     }
 
     @Test
-    void shouldChangeCategory(){
+    void mov10_changes_category(){
         Movement movement = newMovement();
         CategoryId newCategoryId = CategoryId.newId();
 
@@ -87,7 +87,7 @@ class MovementTest {
     }
 
     @Test
-    void shouldChangeSubcategory(){
+    void mov10_changes_subcategory(){
         Movement movement = newMovement();
         SubcategoryId newSubcategoryId = SubcategoryId.newId();
 
@@ -97,7 +97,7 @@ class MovementTest {
     }
 
     @Test
-    void shouldChangeAmount(){
+    void mov10_changes_amount(){
         Movement movement = newMovement();
 
         movement.changeAmount(Amount.from(new BigDecimal("100")));
@@ -106,7 +106,7 @@ class MovementTest {
     }
 
     @Test
-    void shouldChangeType(){
+    void mov10_changes_type(){
         Movement movement = newMovement();
 
         movement.changeType(MovementType.TRANSFER);
@@ -115,7 +115,7 @@ class MovementTest {
     }
 
     @Test
-    void shouldChangeDescription(){
+    void mov10_changes_description(){
         Movement movement = newMovement();
 
         movement.changeDescription(MovementDescription.from("New description"));
@@ -124,7 +124,7 @@ class MovementTest {
     }
 
     @Test
-    void shouldChangeDate(){
+    void mov10_changes_date(){
         Movement movement = newMovement();
 
         LocalDate newDate = LocalDate.of(2026, 8, 1);
@@ -134,7 +134,7 @@ class MovementTest {
     }
 
     @Test
-    void shouldChangeTags(){
+    void mov10_changes_tags(){
         Movement movement = newMovement();
         Set<TagId> newTags = Set.of(TagId.newId(), TagId.newId());
 
@@ -142,5 +142,14 @@ class MovementTest {
 
         assertEquals(newTags, movement.tags());
         assertTrue(movement.tags().containsAll(newTags));
+    }
+
+    @Test
+    void mov10_clears_tags(){
+        Movement movement = newMovement();
+
+        movement.changeTags(Set.of());
+
+        assertTrue(movement.tags().isEmpty());
     }
 }

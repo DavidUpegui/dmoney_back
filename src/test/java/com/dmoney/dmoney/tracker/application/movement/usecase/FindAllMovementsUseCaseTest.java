@@ -49,7 +49,7 @@ class FindAllMovementsUseCaseTest {
     }
 
     @Test
-    void should_forward_filter_and_return_user_movements(){
+    void mov08_lists_user_movements(){
         Movement movement = Movement.create(
                 userId,
                 CategoryId.newId(),
@@ -75,7 +75,7 @@ class FindAllMovementsUseCaseTest {
     }
 
     @Test
-    void should_return_empty_list_when_no_movements_match(){
+    void mov08_returns_empty_list(){
         MovementFilter filter = MovementFilter.of(null, null, null, null, null, null, null);
 
         when(movementRepository.findAllByUserId(eq(userId), eq(filter)))

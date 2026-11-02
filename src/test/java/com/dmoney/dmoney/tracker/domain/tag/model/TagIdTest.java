@@ -28,6 +28,11 @@ class TagIdTest {
     }
 
     @Test
+    void should_throw_validation_exception_when_id_is_malformed(){
+        assertThrows(ValidationException.class, () -> TagId.from("not-a-uuid"));
+    }
+
+    @Test
     void should_generate_unique_valid_ids(){
         TagId id1 = TagId.newId();
         TagId id2 = TagId.newId();

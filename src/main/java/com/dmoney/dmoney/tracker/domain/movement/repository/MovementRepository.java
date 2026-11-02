@@ -1,6 +1,8 @@
 package com.dmoney.dmoney.tracker.domain.movement.repository;
 
 import com.dmoney.dmoney.shared.domain.models.UserId;
+import com.dmoney.dmoney.tracker.domain.category.model.CategoryId;
+import com.dmoney.dmoney.tracker.domain.category.model.SubcategoryId;
 import com.dmoney.dmoney.tracker.domain.movement.model.Movement;
 import com.dmoney.dmoney.tracker.domain.movement.model.MovementFilter;
 import com.dmoney.dmoney.tracker.domain.movement.model.MovementId;
@@ -13,4 +15,6 @@ public interface MovementRepository {
     List<Movement> findAllByUserId(UserId userId, MovementFilter filter);
     Optional<Movement> findByUserIdAndId(UserId userId, MovementId id);
     boolean deleteByUserIdAndId(UserId userId, MovementId id);
+    boolean existsByUserIdAndCategoryId(UserId userId, CategoryId categoryId);
+    boolean existsByUserIdAndSubcategoryId(UserId userId, SubcategoryId subcategoryId);
 }

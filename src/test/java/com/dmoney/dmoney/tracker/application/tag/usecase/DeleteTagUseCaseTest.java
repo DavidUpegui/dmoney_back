@@ -37,7 +37,7 @@ class DeleteTagUseCaseTest {
 
 
     @Test
-    void should_delete_tag(){
+    void tag11_deletes_own_tag(){
         TagId tagId = TagId.newId();
 
         when(tagRepository.deleteByUserIdAndId(userId, tagId))
@@ -49,7 +49,7 @@ class DeleteTagUseCaseTest {
     }
 
     @Test
-    void should_throw_exception_when_tag_not_found(){
+    void tag11_returns_404_when_missing(){
         TagId anyId = TagId.newId();
 
         when(tagRepository.deleteByUserIdAndId(userId, anyId))

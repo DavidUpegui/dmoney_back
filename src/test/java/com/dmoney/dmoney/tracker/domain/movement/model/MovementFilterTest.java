@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class MovementFilterTest {
 
     @Test
-    void shouldBuildEmptyFilterWhenAllNull(){
+    void mov18_returns_empty_filter(){
         MovementFilter filter = MovementFilter.of(null, null, null, null, null, null, null);
 
         assertTrue(filter.categories().isEmpty());
@@ -30,7 +30,7 @@ class MovementFilterTest {
     }
 
     @Test
-    void shouldParseMultipleValues(){
+    void mov12_parses_multiple_categories(){
         String categoryId1 = CategoryId.newId().value().toString();
         String categoryId2 = CategoryId.newId().value().toString();
         String subcategoryId = SubcategoryId.newId().value().toString();
@@ -57,32 +57,32 @@ class MovementFilterTest {
     }
 
     @Test
-    void shouldNormalizeBlankSearchToNull(){
+    void mov17_ignores_blank_search(){
         MovementFilter filter = MovementFilter.of(null, null, null, null, null, null, "   ");
 
         assertNull(filter.search());
     }
 
     @Test
-    void shouldThrowWhenCategoryIdIsMalformed(){
+    void mov19_rejects_malformed_category(){
         assertThrows(ValidationException.class,
                 () -> MovementFilter.of(List.of("not-a-uuid"), null, null, null, null, null, null));
     }
 
     @Test
-    void shouldThrowWhenSubcategoryIdIsMalformed(){
+    void mov19_rejects_malformed_subcategory(){
         assertThrows(ValidationException.class,
                 () -> MovementFilter.of(null, List.of("not-a-uuid"), null, null, null, null, null));
     }
 
     @Test
-    void shouldThrowWhenTagIdIsMalformed(){
+    void mov19_rejects_malformed_tag(){
         assertThrows(ValidationException.class,
                 () -> MovementFilter.of(null, null, List.of("not-a-uuid"), null, null, null, null));
     }
 
     @Test
-    void shouldThrowWhenTypeIsInvalid(){
+    void mov19_rejects_invalid_type(){
         assertThrows(ValidationException.class,
                 () -> MovementFilter.of(null, null, null, "FOO", null, null, null));
     }

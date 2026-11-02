@@ -57,7 +57,7 @@ class EditTagUseCaseTest {
     }
 
     @Test
-    void should_edit_tag(){
+    void tag08_updates_name_and_description(){
         String id = tag.id().value().toString();
         String changedName = "Changed name";
         String changedDescription = "Changed description";
@@ -87,7 +87,7 @@ class EditTagUseCaseTest {
     }
 
     @Test
-    void should_throw_exception_when_tag_to_edit_not_found(){
+    void tag05_rejects_foreign_or_missing_tag(){
         String anyId = UUID.randomUUID().toString();
         String changedName = "Changed name";
         String changedDescription = "Changed description";
@@ -109,7 +109,7 @@ class EditTagUseCaseTest {
     }
 
     @Test
-    void should_throw_exception_when_other_tag_exists_with_the_changed_name(){
+    void tag09_rejects_name_of_another_tag(){
         String id = tag.id().value().toString();
         String existingName = "Existing name";
         String changedDescription = "Changed description";
@@ -134,7 +134,7 @@ class EditTagUseCaseTest {
     }
 
     @Test
-    void should_not_throw_exception_when_same_tag_exists_with_the_changed_name(){
+    void tag09_allows_casing_change_of_own_name(){
         String id = tag.id().value().toString();
         String sameName = tag.name().value();
         String changedDescription = "Changed description";
@@ -162,7 +162,7 @@ class EditTagUseCaseTest {
     }
 
     @Test
-    void should_edit_only_tag_name(){
+    void tag08_updates_only_name(){
         String id = tag.id().value().toString();
         String changedName = "Changed name";
         String sameDescription = tag.description().value();
@@ -193,7 +193,7 @@ class EditTagUseCaseTest {
     }
 
     @Test
-    void should_only_the_description(){
+    void tag08_updates_only_description(){
         String id = tag.id().value().toString();
         String sameName = tag.name().value();
         String changedDescription = "Changed description";
