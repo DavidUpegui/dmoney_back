@@ -1,44 +1,45 @@
-# Feature: Movement — CRUD
-
-- **Status:** `implemented`
-- **Folder:** `001-movement/001-crud`
-- **Related module:** `tracker`
-
-## 1. Overview
+# Movement — CRUD
 
 A movement records a financial transaction for a user: an amount classified by
-a category/subcategory, optionally tagged, with a type (INCOME / OUTCOME /
-TRANSFER), a description, and a date. This slice covers the full CRUD
-lifecycle. Create and list already exist and are documented here as the
-baseline; find-by-id, update, and delete are new.
+a category/subcategory, optionally tagged, with a type, a description and a
+date. This slice covers create, list, find, update and delete.
 
-## 2. Requirements
+## Requirements
 
-### Functional (FR)
+- **MOV01** — A user can create a movement with valid data; the response is
+  `201` with a `Location` header and the created movement.
+- **MOV02** — The amount must be strictly greater than zero; zero or negative
+  returns `400`.
+- **MOV03** — The type is `INCOME`, `OUTCOME` or `TRANSFER`, case-insensitive on
+  input, and stored uppercase.
+- **MOV04** — The description is optional, at most 500 characters, trimmed;
+  `null` becomes an empty string.
+- **MOV05** — The category must belong to the authenticated user; a foreign
+  category returns `404`.
+- **MOV06** — The subcategory must belong to the movement's category;
+  otherwise the request returns `400`.
+- **MOV07** — Every tag must belong to the authenticated user; a foreign tag
+  returns `404`.
+- **MOV08** — A user can list only their own movements.
+- **MOV09** — A user can read one of their movements by id; a missing or
+  foreign id returns `404`.
+- **MOV10** — A movement can be updated partially: only the fields present
+  change, `tagIds: []` clears the tags, and ownership is re-validated when
+  category, subcategory or tags change.
+- **MOV11** — A user can delete one of their movements; the response is `204`
+  and a missing or foreign id returns `404`.
 
-- **FR-1** — Create a movement.
-- **FR-2** — List all movements for the current user.
-- **FR-3** — Find a movement by id.
-- **FR-4** — Update a movement (partial).
-- **FR-5** — Delete a movement.
+## API Contract
 
-### Non-functional (NFR)
+| Method | Path | Req | Success | Errors |
+|--------|------|-----|---------|--------|
+| `POST` | `/api/movements` | MOV01–MOV07 | `201` + `Location` | `400`, `401`, `404` |
+| `GET` | `/api/movements` | MOV08 | `200` | `401` |
+| `GET` | `/api/movements/{id}` | MOV09 | `200` | `401`, `404` |
+| `PATCH` | `/api/movements/{id}` | MOV05–MOV07, MOV10 | `200` | `400`, `401`, `404` |
+| `DELETE` | `/api/movements/{id}` | MOV11 | `204` | `401`, `404` |
 
-- **NFR-1** — Every operation is scoped to the current `UserId`.
-- **NFR-2** — Validation error → `400`; foreign/missing resource → `404`; no token → `401`.
-- **NFR-3** — Coverage ≥ 80%, one test per acceptance criterion.
-
-## 3. API Contract
-
-| Method   | Path                    | Description | Auth |
-|----------|-------------------------|-------------|------|
-| `POST`   | `/api/movements`        | Create      | required |
-| `GET`    | `/api/movements`        | List        | required |
-| `GET`    | `/api/movements/{id}`   | Find        | required |
-| `PATCH`  | `/api/movements/{id}`   | Update      | required |
-| `DELETE` | `/api/movements/{id}`   | Delete      | required |
-
-### Create
+### Request / Response
 
 ```json
 POST /api/movements
@@ -53,99 +54,24 @@ POST /api/movements
 }
 ```
 
-- `amount` is `BigDecimal > 0`.
-- `type` is `INCOME | OUTCOME | TRANSFER`, case-insensitive on input.
-- `description` may be null or empty.
-- `tagIds` is optional.
+`PATCH` accepts any subset of the same fields. `tagIds: []` clears the tags;
+omitted or `null` fields keep their current value.
 
-`201` → `MovementResponse` + `Location` header.
+## Data Model
 
-### Update (PATCH)
+| Entity | Fields | Constraints |
+|--------|--------|-------------|
+| `movement` | `id`, `user_id`, `cat_id`, `subcat_id`, `amount`, `type`, `description`, `date` | `id` UUID PK; `amount` NUMERIC(19,4) > 0; `type` enum string; `description` max 500 |
+| `movement_tags` | `movement_id`, `tag_id` | composite PK; FK to `movement` with `ON DELETE CASCADE` |
 
-Only provided fields change; null fields are left unchanged. Re-validates
-category/subcategory/tag ownership when those fields change.
+Value objects: `MovementId`, `Amount` (> 0), `MovementType` (case-insensitive
+parse), `MovementDescription` (trimmed, max 500, null → empty).
 
-### Response shape
+## Out of Scope
 
-```json
-{
-  "movementId": "50000000-...",
-  "categoryId": "20000000-...",
-  "subcategoryId": "30000000-...",
-  "amount": 85.50,
-  "type": "OUTCOME",
-  "description": "Arriendo",
-  "date": "2026-07-14",
-  "tagIds": ["40000000-..."]
-}
-```
-
-### Status codes
-
-- `200` — find / list / update
-- `201` — create
-- `204` — delete
-- `400` — validation error
-- `401` — unauthenticated
-- `404` — movement, category, subcategory, or tag not found
-
-## 4. Data Model
-
-| Entity          | Fields | Constraints |
-|-----------------|--------|-------------|
-| `movement`      | `id`, `user_id`, `cat_id`, `subcat_id`, `amount`, `type`, `description`, `date` | `id` UUID PK; `amount` `NUMERIC(19,4) > 0`; `type` enum string |
-| `movement_tags` | `movement_id`, `tag_id` | composite PK; FK cascade on `movement_id` |
-
-Value objects (immutable, self-validating):
-
-- `MovementId` — non-null, non-blank UUID.
-- `Amount` — non-null `BigDecimal`, must be `> 0`.
-- `MovementType` — `INCOME | OUTCOME | TRANSFER`, parsed case-insensitively.
-- `MovementDescription` — non-null, trimmed; empty allowed.
-
-## 5. Business Rules & Validation
-
-- The movement belongs to the current `UserId`.
-- The category must belong to the user.
-- The subcategory must belong to the category.
-- Every tag must belong to the user.
-- `type` is case-insensitive on input (rule to fix current behavior).
-- `description` may be empty but not null (rule to fix current behavior).
-
-## 6. Edge Cases
-
-- Negative/zero amount → `400`.
-- Lowercase `type` → accepted.
-- Null `description` → treated as empty (not a `500`).
-- Foreign category/tag → `404`; subcategory not in category → validation error.
-- Find/update/delete a non-existent or foreign movement → `404`.
-
-## 7. Acceptance Criteria
-
-- **AC-1** — Given valid input, when create, then `201` + `Location` + persisted.
-- **AC-2** — Given amount ≤ 0, when create, then `400`.
-- **AC-3** — Given a lowercase `type`, when create, then accepted.
-- **AC-4** — Given null/empty `description`, when create, then accepted (empty).
-- **AC-5** — Given a category belonging to another user, when create, then `404`.
-- **AC-6** — Given a subcategory not in the category, when create, then validation error.
-- **AC-7** — Given a tag belonging to another user, when create, then `404`.
-- **AC-8** — When list, then only the current user's movements are returned.
-- **AC-9** — Given an id, when find, then the owner's movement; foreign/unknown → `404`.
-- **AC-10** — Given an id + changed fields, when patch, then updated; unchanged nulls preserved.
-- **AC-11** — Given an id, when delete, then `204`; foreign/unknown → `404`.
-- **AC-12** — Given no token, any endpoint → `401`.
-
-## 8. Out of Scope
-
-- Filtering/searching (`002-filter`).
+- Filtering and search; that is `002-filter`.
 - Pagination.
+- Ordering of the list; no order is guaranteed.
 - Enriching the response with category/subcategory/tag names.
 - Currency handling (single currency assumed).
-
-## Changelog
-
-- `2026-10-05` — Retroactive baseline for create/list; documented the
-  `type` case-insensitivity and nullable-`description` fixes as explicit rules.
-- `2026-10-08` — Renamed the create/update request field `tags` → `tagIds` to
-  match the response and filter parameter (`tagIds`), resolving the API
-  asymmetry.
+- What happens to `movement_tags` when a tag is deleted (see `OBSERVATIONS.md`).

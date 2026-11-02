@@ -2,6 +2,10 @@
   "$schema": "https://opencode.ai/config.json",
   "instructions": ["AGENTS.md", "OBSERVATIONS.md"],
   "references": {
+    "specs": {
+      "path": "specs",
+      "description": "Requirements model and per-capability specs. Read specs/README.md before writing code; requirement IDs and their Validado blocks live here."
+    },
     "docs": {
       "path": "docs",
       "description": "Project docs: testing conventions (testing.md) and hexagonal architecture details (architecture.md). Use when writing tests or working across domain/application/infrastructure layers."
