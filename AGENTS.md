@@ -4,6 +4,13 @@
 
 `dmoney` backend — a personal money tracker. Spring Boot 3.3.5, Java 21, Gradle, PostgreSQL + Liquibase, Spring Security + JWT (jjwt 0.12.5), SpringDoc OpenAPI, JaCoCo + SonarCloud.
 
+## Repository
+
+- **Remote**: `git@github.com:DavidUpegui/dmoney_back.git` (SSH)
+- **Branching**: Trunk-based development; default branch is `trunk`.
+- **Git workflow**: `../dmoney_platform/docs/technical/git-workflow.md` —
+  branch names, commit format, PR rules and merge strategy.
+
 ## Architecture
 
 Hexagonal, three bounded contexts, each split into `domain` / `application` / `infrastructure`:
