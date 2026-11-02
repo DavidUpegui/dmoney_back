@@ -33,6 +33,11 @@ class CategoryIdTest {
     }
 
     @Test
+    void shouldThrowWhenIdIsMalformed(){
+        assertThrows(ValidationException.class, () -> CategoryId.from("not-a-uuid"));
+    }
+
+    @Test
     void shouldGenerateDifferentIds(){
         CategoryId id1 = CategoryId.newId();
         CategoryId id2 = CategoryId.newId();

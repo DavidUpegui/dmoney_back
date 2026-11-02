@@ -14,6 +14,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
@@ -112,7 +113,9 @@ class CategoryMapperTest {
                 userId,
                 "Tech",
                 "Tech description",
-                "INCOME"
+                "INCOME",
+                null,
+                null
         );
 
         Category result = CategoryMapper.toDomain(categoryEntity);
@@ -131,21 +134,27 @@ class CategoryMapperTest {
                 userId,
                 "Tech",
                 "Tech description",
-                "OUTCOME"
+                "OUTCOME",
+                null,
+                null
         );
 
         SubcategoryEntity sub1 = new SubcategoryEntity(
                 subId1,
                 "Phones",
                 "Phones desc",
-                categoryEntity
+                categoryEntity,
+                null,
+                null
         );
 
         SubcategoryEntity sub2 = new SubcategoryEntity(
                 subId2,
                 "Laptops",
                 "Laptops desc",
-                categoryEntity
+                categoryEntity,
+                null,
+                null
         );
 
         Set<SubcategoryEntity> subcategories = new HashSet<>();
@@ -166,4 +175,75 @@ class CategoryMapperTest {
         constructor.setAccessible(true);
         constructor.newInstance();
     }
+
+    @Test
+    void cat18_mapsCategoryVisualToEntity() {
+        Category category = Category.create(
+                UserId.newId(),
+                CategoryName.from("Food"),
+                CategoryDescription.from("Food"),
+                CategoryType.OUTCOME,
+                CategoryIcon.from("utensils"),
+                CategoryColor.from("amber")
+        );
+
+        CategoryEntity entity = CategoryMapper.toEntity(category);
+
+        assertEquals("utensils", entity.getIcon());
+        assertEquals("amber", entity.getColor());
+    }
+
+    @Test
+    void cat22_mapsSubcategoryVisualToEntity() {
+        Category category = Category.create(
+                UserId.newId(),
+                CategoryName.from("Food"),
+                CategoryDescription.from("Food"),
+                CategoryType.OUTCOME
+        );
+        category.addSubcategory(
+                SubcategoryName.from("Groceries"),
+                SubcategoryDescription.from("Groceries"),
+                CategoryIcon.from("shopping-basket"),
+                CategoryColor.from("green")
+        );
+
+        CategoryEntity entity = CategoryMapper.toEntity(category);
+        SubcategoryEntity subcategoryEntity = entity.getSubcategories().iterator().next();
+
+        assertEquals("shopping-basket", subcategoryEntity.getIcon());
+        assertEquals("green", subcategoryEntity.getColor());
+    }
+
+    @Test
+    void cat23_mapsNullVisualsBackToDomain() {
+        UUID categoryId = UUID.randomUUID();
+        UUID subcategoryId = UUID.randomUUID();
+        CategoryEntity entity = new CategoryEntity(
+                categoryId,
+                UUID.randomUUID(),
+                "Food",
+                "Food",
+                "OUTCOME",
+                null,
+                null
+        );
+        entity.getSubcategories().add(new SubcategoryEntity(
+                subcategoryId,
+                "Groceries",
+                "Groceries",
+                entity,
+                null,
+                null
+        ));
+
+        Category domain = CategoryMapper.toDomain(entity);
+
+        assertNull(domain.icon());
+        assertNull(domain.color());
+        Subcategory subcategory = domain.subcategories().iterator().next();
+        assertNull(subcategory.icon());
+        assertNull(subcategory.color());
+    }
+
 }

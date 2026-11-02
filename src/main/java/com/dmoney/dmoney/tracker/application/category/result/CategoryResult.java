@@ -6,7 +6,9 @@ public record CategoryResult(
         String id,
         String name,
         String description,
-        String type
+        String type,
+        String icon,
+        String color
 ) {
 
     public static CategoryResult from(Category domain){
@@ -14,7 +16,9 @@ public record CategoryResult(
                 domain.id().value().toString(),
                 domain.name().value(),
                 domain.description().value(),
-                domain.categoryType().toString()
+                domain.categoryType().toString(),
+                domain.icon() == null ? null : domain.icon().value(),
+                domain.color() == null ? null : domain.color().value()
         );
     }
 }

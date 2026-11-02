@@ -33,6 +33,13 @@ public class EditSubcategoryUseCase {
                 subcategoryName,
                 description);
 
+        if (command.icon() != null) {
+            subcategory.changeIcon(CategoryIcon.fromNullable(command.icon()));
+        }
+        if (command.color() != null) {
+            subcategory.changeColor(CategoryColor.fromNullable(command.color()));
+        }
+
         categoryRepository.save(category);
 
         return SubcategoryResult.from(subcategory, categoryId.value().toString());

@@ -6,6 +6,7 @@ import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
 import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
 import com.dmoney.dmoney.tracker.application.category.result.SubcategoryResult;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
+import com.dmoney.dmoney.shared.domain.exceptions.ResourceInUseException;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
 import com.dmoney.dmoney.tracker.application.category.usecase.*;
 import org.junit.jupiter.api.Nested;
@@ -19,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -70,7 +72,7 @@ class CategoryControllerTest {
     @Nested
     class CreateCategoryControllerTests {
         @Test
-        void should_create_category_and_return_201() throws Exception {
+        void cat01_returns_201() throws Exception {
 
             String json = """
                     {
@@ -81,7 +83,9 @@ class CategoryControllerTest {
                     """;
 
             CategoryResult result =
-                    new CategoryResult("1", "Tech", "Tech description", "INCOME");
+                    new CategoryResult("1", "Tech", "Tech description", "INCOME",
+                        null,
+                        null);
 
             when(createCategoryUseCase.execute(any()))
                     .thenReturn(result);
@@ -101,7 +105,7 @@ class CategoryControllerTest {
         }
 
         @Test
-        void should_return_400_when_name_is_blank() throws Exception {
+        void cat02_rejects_blank_name() throws Exception {
 
             String json = """
                     {
@@ -121,7 +125,7 @@ class CategoryControllerTest {
         }
 
         @Test
-        void should_return_400_when_type_is_blank() throws Exception {
+        void cat04_rejects_blank_type() throws Exception {
 
             String json = """
                     {
@@ -160,7 +164,7 @@ class CategoryControllerTest {
         }
 
         @Test
-        void should_return_409_when_category_already_exists() throws Exception {
+        void cat05_returns_409() throws Exception {
 
             String json = """
                     {
@@ -184,7 +188,7 @@ class CategoryControllerTest {
         }
 
         @Test
-        void should_return_400_when_name_is_missing() throws Exception {
+        void cat02_rejects_missing_name() throws Exception {
 
             String json = """
                     {
@@ -203,11 +207,15 @@ class CategoryControllerTest {
     @Nested
     class FindAllCategoriesControllerTests{
         @Test
-        void should_return_all_categories() throws Exception {
+        void cat06_returns_categories() throws Exception {
 
             List<CategoryResult> result = List.of(
-                    new CategoryResult("1", "Tech", "Technology", "INCOME"),
-                    new CategoryResult("2", "Books", "Books category", "OUTCOME")
+                    new CategoryResult("1", "Tech", "Technology", "INCOME",
+                        null,
+                        null),
+                    new CategoryResult("2", "Books", "Books category", "OUTCOME",
+                        null,
+                        null)
             );
 
             when(findAllCategoriesUseCase.execute())
@@ -223,7 +231,7 @@ class CategoryControllerTest {
         }
 
         @Test
-        void should_return_empty_list_when_no_categories_exist() throws Exception {
+        void cat06_returns_empty_array() throws Exception {
 
             when(findAllCategoriesUseCase.execute())
                     .thenReturn(List.of());
@@ -249,9 +257,11 @@ class CategoryControllerTest {
     @Nested
     class findCategoryByIdControllerTests{
         @Test
-        void should_return_the_category_if_found() throws Exception{
+        void cat07_returns_category() throws Exception{
             CategoryResult categoryResult =  new CategoryResult(
-                    "1", "Tech", "Technology", "OUTCOME"
+                    "1", "Tech", "Technology", "OUTCOME",
+                    null,
+                    null
             );
 
             when(findCategoryByIdUseCase.execute("1"))
@@ -266,7 +276,7 @@ class CategoryControllerTest {
         }
 
         @Test
-        void should_return_404_if_category_not_found() throws Exception{
+        void cat07_returns_404() throws Exception{
             String anyId = "123";
             when(findCategoryByIdUseCase.execute(anyId))
                     .thenThrow(new ResourceNotFoundException(
@@ -283,7 +293,7 @@ class CategoryControllerTest {
     @Nested
     class DeleteCategoryControllerTests{
         @Test
-        void should_delete_category_by_id() throws Exception{
+        void cat09_returns_204() throws Exception{
             mockMvc.perform(delete("/api/categories/1"))
                     .andExpect(status().isNoContent());
 
@@ -291,7 +301,7 @@ class CategoryControllerTest {
         }
 
         @Test
-        void should_return_404_when_category_is_not_found() throws Exception{
+        void cat09_returns_404() throws Exception{
             doThrow(new ResourceNotFoundException("Category", "id", "1"))
                     .when(deleteCategoryUseCase)
                     .execute("1");
@@ -299,6 +309,17 @@ class CategoryControllerTest {
                     .andExpect(status().isNotFound());
 
             verify(deleteCategoryUseCase).execute("1");
+        }
+
+        @Test
+        void cat11_returns_409_when_the_category_has_movements() throws Exception{
+            doThrow(new ResourceInUseException("Category", "it still has movements"))
+                    .when(deleteCategoryUseCase)
+                    .execute("1");
+
+            mockMvc.perform(delete("/api/categories/1"))
+                    .andExpect(status().isConflict())
+                    .andExpect(jsonPath("$.status").value(409));
         }
 
         @Test
@@ -316,7 +337,7 @@ class CategoryControllerTest {
     @Nested
     class CreateSubcategoryControllerTests{
         @Test
-        void should_create_a_subcategory() throws Exception {
+        void cat12_returns_201() throws Exception {
             String json = """
                         {
                             "name": "Name",
@@ -327,7 +348,9 @@ class CategoryControllerTest {
                     "1",
                     "2",
                     "Name",
-                    "Description"
+                    "Description",
+                    null,
+                    null
             );
 
             when(addSubcategoryUseCase.execute(any()))
@@ -350,7 +373,7 @@ class CategoryControllerTest {
         }
 
         @Test
-        void should_return_400_when_name_is_not_provided() throws Exception{
+        void cat12_rejects_missing_name() throws Exception{
             String json = """
                         {
                             "description": "Description"
@@ -379,7 +402,7 @@ class CategoryControllerTest {
         }
 
         @Test
-        void should_throw_404_when_category_is_not_found() throws Exception {
+        void cat17_rejects_foreign_category_on_subcategory_create() throws Exception {
             String json = """
                         {
                             "name": "Name",
@@ -403,7 +426,7 @@ class CategoryControllerTest {
         }
 
         @Test
-        void should_throw_409_when_subcategory_already_exists() throws Exception {
+        void cat13_returns_409() throws Exception {
             String json = """
                         {
                             "name": "Name",
@@ -454,7 +477,7 @@ class CategoryControllerTest {
      @Nested
     class EditCategoryControllerTests{
         @Test
-         void should_edit_category() throws Exception{
+         void cat08_returns_updated_category() throws Exception{
             String json = """
                         {
                             "name": "Changed Name",
@@ -467,7 +490,9 @@ class CategoryControllerTest {
                     "1",
                     "Changed Name",
                     "Changed Description",
-                    "INCOME"
+                    "INCOME",
+                    null,
+                    null
             );
 
             when(editCategoryUseCase.execute(any()))
@@ -489,7 +514,7 @@ class CategoryControllerTest {
         }
 
          @Test
-         void should_edit_category_when_name_is_null() throws Exception{
+         void cat08_updates_only_description() throws Exception{
              String json = """
                         {
                             "description": "Changed Description",
@@ -501,7 +526,9 @@ class CategoryControllerTest {
                      "1",
                      "Name",
                      "Changed Description",
-                     "INCOME");
+                     "INCOME",
+                    null,
+                    null);
 
              when(editCategoryUseCase.execute(any()))
                      .thenReturn(result);
@@ -523,7 +550,7 @@ class CategoryControllerTest {
          }
 
          @Test
-         void should_return_400_when_the_name_is_blank() throws Exception{
+         void cat08_rejects_blank_name() throws Exception{
              String json = """
                         {
                             "name": "",
@@ -553,7 +580,7 @@ class CategoryControllerTest {
          }
 
          @Test
-         void should_return_404_when_category_is_not_found() throws Exception{
+         void cat08_returns_404() throws Exception{
              String json = """
                         {
                             "name": "Changed Name",
@@ -577,7 +604,7 @@ class CategoryControllerTest {
          }
 
          @Test
-         void should_return_409_when_category_already_exists() throws Exception{
+         void cat05_returns_409_on_edit() throws Exception{
              String json = """
                         {
                             "name": "Changed Name",
@@ -628,7 +655,7 @@ class CategoryControllerTest {
      @Nested
     class EditSubcategoryControllerTests{
         @Test
-         void should_edit_subcategory() throws Exception{
+         void cat15_returns_updated_subcategory() throws Exception{
             String json = """
                         {
                         "name": "Changed Name",
@@ -640,7 +667,9 @@ class CategoryControllerTest {
                     "1",
                     "2",
                     "Changed Name",
-                    "Changed Description"
+                    "Changed Description",
+                    null,
+                    null
             );
 
             when(editSubcategoryUseCase.execute(any()))
@@ -662,7 +691,7 @@ class CategoryControllerTest {
         }
 
          @Test
-         void should_edit_subcategory_without_name() throws Exception{
+         void cat15_updates_only_description() throws Exception{
              String json = """
                         {
                         "description": "Changed Description"
@@ -673,7 +702,9 @@ class CategoryControllerTest {
                      "1",
                      "2",
                      "Name",
-                     "Changed Description"
+                     "Changed Description",
+                     null,
+                     null
              );
 
              when(editSubcategoryUseCase.execute(any()))
@@ -695,7 +726,7 @@ class CategoryControllerTest {
          }
 
          @Test
-         void should_return_404_when_category_not_found() throws Exception{
+         void cat17_rejects_foreign_category_on_subcategory_edit() throws Exception{
              String json = """
                         {
                         "name": "Changed Name",
@@ -720,7 +751,7 @@ class CategoryControllerTest {
          }
 
          @Test
-         void should_return_404_when_subcategory_not_found() throws Exception{
+         void cat15_returns_404() throws Exception{
              String json = """
                         {
                         "name": "Changed Name",
@@ -745,7 +776,7 @@ class CategoryControllerTest {
          }
 
          @Test
-         void should_return_409_when_subcategory_already_exists() throws Exception{
+         void cat13_returns_409_on_edit() throws Exception{
              String json = """
                         {
                         "name": "Changed Name",
@@ -770,7 +801,7 @@ class CategoryControllerTest {
          }
 
          @Test
-         void should_return_400_when_name_is_blank() throws Exception{
+         void cat15_rejects_blank_name() throws Exception{
              String json = """
                         {
                         "name": "",
@@ -828,16 +859,20 @@ class CategoryControllerTest {
      @Nested
     class FindAllSubcategoriesByCatIdControllerTests{
         @Test
-        void should_get_all_subcategories_by_category_id() throws Exception{
+        void cat14_returns_subcategories() throws Exception{
             List<SubcategoryResult> result = List.of(
                     new SubcategoryResult("1",
                             "2",
                             "Name1",
-                            "Description1"),
+                            "Description1",
+                        null,
+                        null),
                     new SubcategoryResult("1",
                             "3",
                             "Name2",
-                            "Description2")
+                            "Description2",
+                        null,
+                        null)
             );
 
             when(findAllSubcategoriesByCategoryIdUseCase.execute(any()))
@@ -854,7 +889,7 @@ class CategoryControllerTest {
         }
 
          @Test
-         void should_get_empty_array_when_no_subcategories_found() throws Exception{
+         void cat14_returns_empty_array() throws Exception{
              List<SubcategoryResult> result = List.of();
 
              when(findAllSubcategoriesByCategoryIdUseCase.execute(any()))
@@ -882,7 +917,7 @@ class CategoryControllerTest {
      @Nested
     class DeleteSubcategoryControllerTest{
         @Test
-         void should_delete_subcategory() throws Exception{
+         void cat16_returns_204() throws Exception{
 
             mockMvc.perform(delete("/api/categories/1/subcategories/2"))
                     .andExpect(status().isNoContent());
@@ -893,7 +928,7 @@ class CategoryControllerTest {
         }
 
         @Test
-         void should_return_404_when_category_not_found() throws Exception{
+         void cat17_rejects_foreign_category_on_subcategory_delete() throws Exception{
             doThrow(new ResourceNotFoundException("Category", "id", "1"))
                     .when(deleteSubcategoryUseCase)
                     .execute(argThat(command ->
@@ -910,7 +945,7 @@ class CategoryControllerTest {
         }
 
          @Test
-         void should_return_404_when_subcategory_not_found() throws Exception{
+         void cat16_returns_404() throws Exception{
              doThrow(new ResourceNotFoundException("Subcategory", "id", "1"))
                      .when(deleteSubcategoryUseCase)
                      .execute(argThat(command ->
@@ -924,6 +959,20 @@ class CategoryControllerTest {
              verify(deleteSubcategoryUseCase).execute(argThat(command ->
                      command.categoryId().equals("1") &&
                              command.subcategoryId().equals("2")));
+         }
+
+         @Test
+         void cat16_returns_409_when_the_subcategory_has_movements() throws Exception{
+             doThrow(new ResourceInUseException("Subcategory", "it still has movements"))
+                     .when(deleteSubcategoryUseCase)
+                     .execute(argThat(command ->
+                             command.categoryId().equals("1") &&
+                                     command.subcategoryId().equals("2")
+                     ));
+
+             mockMvc.perform(delete("/api/categories/1/subcategories/2"))
+                     .andExpect(status().isConflict())
+                     .andExpect(jsonPath("$.status").value(409));
          }
 
          @Test
@@ -961,4 +1010,148 @@ class CategoryControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Invalid data"));
     }
+
+    @Nested
+    class CategoryVisualControllerTests {
+
+        @Test
+        void cat18_acceptsIconAndColorOnCreate() throws Exception {
+            String json = """
+                    {
+                        "name": "Food",
+                        "description": "Food",
+                        "type": "OUTCOME",
+                        "icon": "utensils",
+                        "color": "amber"
+                    }
+                    """;
+
+            when(createCategoryUseCase.execute(any()))
+                    .thenReturn(new CategoryResult(
+                            "1", "Food", "Food", "OUTCOME", "utensils", "amber"));
+
+            mockMvc.perform(post("/api/categories")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(json))
+                    .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.icon").value("utensils"))
+                    .andExpect(jsonPath("$.color").value("amber"));
+
+            verify(createCategoryUseCase).execute(argThat(command ->
+                    "utensils".equals(command.icon()) &&
+                            "amber".equals(command.color())
+            ));
+        }
+
+        @Test
+        void cat20_returnsNullIconAndColorWhenNotChosen() throws Exception {
+            when(findCategoryByIdUseCase.execute("1"))
+                    .thenReturn(new CategoryResult(
+                            "1", "Food", "Food", "OUTCOME", null, null));
+
+            mockMvc.perform(get("/api/categories/1"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(containsString("\"icon\":null")))
+                    .andExpect(content().string(containsString("\"color\":null")));
+        }
+
+        @Test
+        void cat20_returnsNullIconAndColorInCategoryList() throws Exception {
+            when(findAllCategoriesUseCase.execute())
+                    .thenReturn(List.of(new CategoryResult(
+                            "1", "Food", "Food", "OUTCOME", null, null)));
+
+            mockMvc.perform(get("/api/categories"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(containsString("\"icon\":null")))
+                    .andExpect(content().string(containsString("\"color\":null")));
+        }
+
+        @Test
+        void cat21_acceptsIconAndColorOnPatch() throws Exception {
+            String json = """
+                    {
+                        "icon": "car",
+                        "color": "blue"
+                    }
+                    """;
+
+            when(editCategoryUseCase.execute(any()))
+                    .thenReturn(new CategoryResult(
+                            "1", "Food", "Food", "OUTCOME", "car", "blue"));
+
+            mockMvc.perform(patch("/api/categories/1")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(json))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.icon").value("car"))
+                    .andExpect(jsonPath("$.color").value("blue"));
+
+            verify(editCategoryUseCase).execute(argThat(command ->
+                    "car".equals(command.icon()) &&
+                            "blue".equals(command.color())
+            ));
+        }
+
+        @Test
+        void cat21_rejectsIconLongerThan48() throws Exception {
+            String json = "{\"icon\": \"" + "a".repeat(49) + "\"}";
+
+            mockMvc.perform(patch("/api/categories/1")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(json))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        void cat19_rejectsColorLongerThan32() throws Exception {
+            String json = "{\"color\": \"" + "a".repeat(33) + "\"}";
+
+            mockMvc.perform(patch("/api/categories/1")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(json))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        void cat22_acceptsSubcategoryIconAndColor() throws Exception {
+            String json = """
+                    {
+                        "name": "Groceries",
+                        "description": "Groceries",
+                        "icon": "carrot",
+                        "color": "green"
+                    }
+                    """;
+
+            when(addSubcategoryUseCase.execute(any()))
+                    .thenReturn(new SubcategoryResult(
+                            "1", "2", "Groceries", "Groceries", "carrot", "green"));
+
+            mockMvc.perform(post("/api/categories/1/subcategories")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(json))
+                    .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.icon").value("carrot"))
+                    .andExpect(jsonPath("$.color").value("green"));
+
+            verify(addSubcategoryUseCase).execute(argThat(command ->
+                    "carrot".equals(command.icon()) &&
+                            "green".equals(command.color())
+            ));
+        }
+
+        @Test
+        void cat23_returnsNullIconAndColorForSubcategory() throws Exception {
+            when(findAllSubcategoriesByCategoryIdUseCase.execute("1"))
+                    .thenReturn(List.of(new SubcategoryResult(
+                            "1", "2", "Groceries", "Groceries", null, null)));
+
+            mockMvc.perform(get("/api/categories/1/subcategories"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(containsString("\"icon\":null")))
+                    .andExpect(content().string(containsString("\"color\":null")));
+        }
+    }
+
 }

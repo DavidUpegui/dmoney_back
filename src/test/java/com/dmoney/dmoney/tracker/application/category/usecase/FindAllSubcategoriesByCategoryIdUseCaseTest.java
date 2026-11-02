@@ -41,7 +41,7 @@ class FindAllSubcategoriesByCategoryIdUseCaseTest {
     }
 
     @Test
-    void should_return_subcategories_from_category_id(){
+    void cat14_lists_subcategories(){
         Category category = Category.create(
                 userId,
                 CategoryName.from("category name"),
@@ -76,7 +76,7 @@ class FindAllSubcategoriesByCategoryIdUseCaseTest {
     }
 
     @Test
-    void should_return_void_when_no_subcategories_added(){
+    void cat14_returns_empty_list(){
         Category category = Category.create(
                 userId,
                 CategoryName.from("category name"),
@@ -95,7 +95,7 @@ class FindAllSubcategoriesByCategoryIdUseCaseTest {
     }
 
     @Test
-    void should_propagate_category_not_found_exception() {
+    void cat14_rejects_missing_or_foreign_category() {
         CategoryId unexistingId = CategoryId.newId();
 
         when(categoryLoader.load(userId, unexistingId))

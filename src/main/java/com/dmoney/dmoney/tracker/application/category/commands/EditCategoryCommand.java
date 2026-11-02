@@ -4,6 +4,8 @@ public record EditCategoryCommand(
         String id,
         String name,
         String description,
-        String type
+        String type,
+        String icon,
+        String color
 ) {
 }

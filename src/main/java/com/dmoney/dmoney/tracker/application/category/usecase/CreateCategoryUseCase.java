@@ -5,7 +5,9 @@ import com.dmoney.dmoney.tracker.application.category.commands.CreateCategoryCom
 import com.dmoney.dmoney.tracker.application.category.result.CategoryResult;
 import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
 import com.dmoney.dmoney.tracker.domain.category.model.Category;
+import com.dmoney.dmoney.tracker.domain.category.model.CategoryColor;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryDescription;
+import com.dmoney.dmoney.tracker.domain.category.model.CategoryIcon;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryType;
 import com.dmoney.dmoney.tracker.domain.category.repository.CategoryRepository;
@@ -31,7 +33,9 @@ public class CreateCategoryUseCase {
                 userId,
                 name,
                 CategoryDescription.fromNullable(command.description()),
-                CategoryType.valueOf(command.type())
+                CategoryType.from(command.type()),
+                CategoryIcon.fromNullable(command.icon()),
+                CategoryColor.fromNullable(command.color())
         );
         return CategoryResult.from(repository.save(category));
     }

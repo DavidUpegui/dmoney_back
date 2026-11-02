@@ -36,12 +36,28 @@ public class CategoryEntity {
     @Column(name = "type", nullable = false)
     private String type;
 
-    public CategoryEntity(UUID id,UUID userId, String name, String description, String type){
+    @Column(length = 48)
+    private String icon;
+
+    @Column(length = 32)
+    private String color;
+
+    public CategoryEntity(
+            UUID id,
+            UUID userId,
+            String name,
+            String description,
+            String type,
+            String icon,
+            String color
+    ){
         this.id = id;
         this.userId = userId;
         this.name = name;
         this.description = description;
         this.type = type;
+        this.icon = icon;
+        this.color = color;
     }
 
 }

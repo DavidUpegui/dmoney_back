@@ -6,7 +6,9 @@ public record SubcategoryResult(
         String categoryId,
         String subcategoryId,
         String subcategoryName,
-        String subcategoryDescription
+        String subcategoryDescription,
+        String icon,
+        String color
 ) {
 
     public static SubcategoryResult from(Subcategory subcategoryDomain, String categoryId){
@@ -14,7 +16,9 @@ public record SubcategoryResult(
                 categoryId,
                 subcategoryDomain.id().value().toString(),
                 subcategoryDomain.name().value(),
-                subcategoryDomain.description().value()
+                subcategoryDomain.description().value(),
+                subcategoryDomain.icon() == null ? null : subcategoryDomain.icon().value(),
+                subcategoryDomain.color() == null ? null : subcategoryDomain.color().value()
         );
     }
 }

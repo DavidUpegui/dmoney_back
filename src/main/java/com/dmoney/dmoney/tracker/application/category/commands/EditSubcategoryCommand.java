@@ -4,5 +4,7 @@ public record EditSubcategoryCommand(
         String categoryId,
         String subcategoryId,
         String subcategoryName,
-        String subcategoryDescription) {
+        String subcategoryDescription,
+        String icon,
+        String color) {
 }

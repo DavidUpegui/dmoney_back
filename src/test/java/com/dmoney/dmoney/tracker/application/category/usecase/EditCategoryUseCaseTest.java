@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -57,7 +58,7 @@ class EditCategoryUseCaseTest {
     }
 
     @Test
-    void should_edit_and_save_the_category(){
+    void cat08_updates_category(){
         CategoryId categoryId = category.id();
         String newName ="New Category name";
         String newDescription = "New Category description";
@@ -67,7 +68,9 @@ class EditCategoryUseCaseTest {
                 categoryId.value().toString(),
                 newName,
                 newDescription,
-                newType
+                newType,
+                null,
+                null
         );
 
 
@@ -91,13 +94,15 @@ class EditCategoryUseCaseTest {
     }
 
     @Test
-    void should_only_edit_name_and_save_the_category(){
+    void cat08_updates_only_name(){
         CategoryId categoryId = category.id();
         String newName ="New Category name";
 
         EditCategoryCommand command = new EditCategoryCommand(
                 categoryId.value().toString(),
                 newName,
+                null,
+                null,
                 null,
                 null
         );
@@ -126,7 +131,7 @@ class EditCategoryUseCaseTest {
     }
 
     @Test
-    void should_only_edit_description_and_save_the_category(){
+    void cat08_updates_only_description(){
         CategoryId categoryId = category.id();
         String newDescription = "New Category description";
 
@@ -135,6 +140,8 @@ class EditCategoryUseCaseTest {
                 categoryId.value().toString(),
                 null,
                 newDescription,
+                null,
+                null,
                 null
         );
 
@@ -159,7 +166,7 @@ class EditCategoryUseCaseTest {
     }
 
     @Test
-    void should_only_edit_type_and_save_the_category(){
+    void cat08_updates_only_type(){
         CategoryId categoryId = category.id();
         String newType = "OUTCOME";
 
@@ -168,7 +175,9 @@ class EditCategoryUseCaseTest {
                 categoryId.value().toString(),
                 null,
                 null,
-                newType
+                newType,
+                null,
+                null
         );
 
         when(categoryLoader.load(userId, categoryId))
@@ -192,11 +201,13 @@ class EditCategoryUseCaseTest {
     }
 
     @Test
-    void should_throw_exception_when_name_already_exists(){
+    void cat05_rejects_duplicate_name_on_edit(){
         CategoryId categoryId = category.id();
 
         EditCategoryCommand command = new EditCategoryCommand(
-                categoryId.value().toString(), "Existing name", null, null
+                categoryId.value().toString(), "Existing name", null, null,
+                null,
+                null
         );
 
         when(categoryLoader.load(userId,categoryId)).thenReturn(category);
@@ -214,7 +225,7 @@ class EditCategoryUseCaseTest {
     }
 
     @Test
-    void should_propagate_category_not_found_exception(){
+    void cat17_rejects_foreign_or_missing_category(){
         CategoryId unexistingId = CategoryId.newId();
         String newName ="New Category name";
         String newDescription = "New Category description";
@@ -224,7 +235,9 @@ class EditCategoryUseCaseTest {
                 unexistingId.value().toString(),
                 newName,
                 newDescription,
-                newType
+                newType,
+                null,
+                null
         );
 
         when(categoryLoader.load(userId, unexistingId))
@@ -240,4 +253,78 @@ class EditCategoryUseCaseTest {
         verify(categoryLoader).load(userId, unexistingId);
         verify(categoryRepository, never()).save(any());
     }
+
+    @Test
+    void cat21_updatesIconAndColor() {
+        CategoryId categoryId = category.id();
+
+        EditCategoryCommand command = new EditCategoryCommand(
+                categoryId.value().toString(),
+                null,
+                null,
+                null,
+                "utensils",
+                "amber"
+        );
+
+        when(categoryLoader.load(userId, categoryId)).thenReturn(category);
+        when(categoryRepository.save(any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        CategoryResult result = useCase.execute(command);
+
+        assertEquals("utensils", result.icon());
+        assertEquals("amber", result.color());
+    }
+
+    @Test
+    void cat21_clearsIconAndColorWhenEmpty() {
+        CategoryId categoryId = category.id();
+        category.changeIcon(CategoryIcon.from("utensils"));
+        category.changeColor(CategoryColor.from("amber"));
+
+        EditCategoryCommand command = new EditCategoryCommand(
+                categoryId.value().toString(),
+                null,
+                null,
+                null,
+                "",
+                "   "
+        );
+
+        when(categoryLoader.load(userId, categoryId)).thenReturn(category);
+        when(categoryRepository.save(any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        CategoryResult result = useCase.execute(command);
+
+        assertNull(result.icon());
+        assertNull(result.color());
+    }
+
+    @Test
+    void cat21_keepsIconAndColorWhenAbsent() {
+        CategoryId categoryId = category.id();
+        category.changeIcon(CategoryIcon.from("utensils"));
+        category.changeColor(CategoryColor.from("amber"));
+
+        EditCategoryCommand command = new EditCategoryCommand(
+                categoryId.value().toString(),
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        when(categoryLoader.load(userId, categoryId)).thenReturn(category);
+        when(categoryRepository.save(any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        CategoryResult result = useCase.execute(command);
+
+        assertEquals("utensils", result.icon());
+        assertEquals("amber", result.color());
+    }
+
 }

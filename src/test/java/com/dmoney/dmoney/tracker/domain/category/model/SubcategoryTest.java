@@ -5,12 +5,13 @@ import org.junit.jupiter.api.Test;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SubcategoryTest {
 
     @Test
-    void shouldCreateValidSubcategory(){
+    void cat12_creates_subcategory(){
         SubcategoryId id = new SubcategoryId(UUID.randomUUID());
         SubcategoryName name = SubcategoryName.from("food");
         SubcategoryDescription description = SubcategoryDescription.from("description");
@@ -43,7 +44,7 @@ class SubcategoryTest {
     }
 
     @Test
-    void shouldRename(){
+    void cat15_renames_subcategory(){
         SubcategoryId id = new SubcategoryId(UUID.randomUUID());
         SubcategoryName name = SubcategoryName.from("food");
         SubcategoryDescription description = SubcategoryDescription.from("description");
@@ -69,7 +70,7 @@ class SubcategoryTest {
     }
 
     @Test
-    void shouldChangeDescription(){
+    void cat15_changes_subcategory_description(){
         SubcategoryId id = new SubcategoryId(UUID.randomUUID());
         SubcategoryName name = SubcategoryName.from("food");
         SubcategoryDescription description = SubcategoryDescription.from("description");
@@ -80,4 +81,38 @@ class SubcategoryTest {
 
         assertEquals(newDescription, subcategory.description());
     }
+
+    @Test
+    void cat22_subcategoryHasNoVisualByDefault() {
+        Subcategory subcategory = new Subcategory(
+                new SubcategoryId(UUID.randomUUID()),
+                SubcategoryName.from("food"),
+                SubcategoryDescription.from("description")
+        );
+
+        assertNull(subcategory.icon());
+        assertNull(subcategory.color());
+    }
+
+    @Test
+    void cat22_changesAndClearsVisual() {
+        Subcategory subcategory = new Subcategory(
+                new SubcategoryId(UUID.randomUUID()),
+                SubcategoryName.from("food"),
+                SubcategoryDescription.from("description")
+        );
+
+        subcategory.changeIcon(CategoryIcon.from("carrot"));
+        subcategory.changeColor(CategoryColor.from("green"));
+
+        assertEquals("carrot", subcategory.icon().value());
+        assertEquals("green", subcategory.color().value());
+
+        subcategory.changeIcon(null);
+        subcategory.changeColor(null);
+
+        assertNull(subcategory.icon());
+        assertNull(subcategory.color());
+    }
+
 }

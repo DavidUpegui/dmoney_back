@@ -8,20 +8,20 @@ import static org.junit.jupiter.api.Assertions.*;
 class CategoryNameTest {
 
     @Test
-    void shouldCreateValidCategoryName(){
+    void cat02_creates_name(){
         CategoryName categoryName = new CategoryName("Food");
         assertEquals("Food", categoryName.value());
     }
 
     @Test
-    void shouldTrimValue(){
+    void cat02_trims_name(){
         CategoryName categoryName = new CategoryName("    FOOD   ");
 
         assertEquals("FOOD", categoryName.value());
     }
 
     @Test
-    void shouldCreateNameFromString(){
+    void cat02_creates_from_string(){
         String name = "food";
 
         CategoryName categoryName = CategoryName.from(name);
@@ -30,12 +30,17 @@ class CategoryNameTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenValueIsNull(){
+    void cat02_rejects_null(){
         assertThrows(ValidationException.class, () -> new CategoryName(null));
     }
 
     @Test
-    void shouldThrowExceptionWhenValueIsBlank(){
+    void cat02_rejects_blank(){
         assertThrows(ValidationException.class, () -> new CategoryName("   "));
+    }
+
+    @Test
+    void cat02_rejects_too_long(){
+        assertThrows(ValidationException.class, () -> new CategoryName("a".repeat(256)));
     }
 }

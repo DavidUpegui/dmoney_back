@@ -13,7 +13,14 @@ public record SubcategoryId(UUID value) {
     }
 
     public static SubcategoryId from(String value){
-        return new SubcategoryId(UUID.fromString(value));
+        if(value == null || value.isBlank()){
+            throw new ValidationException("Invalid subcategory id: " + value);
+        }
+        try {
+            return new SubcategoryId(UUID.fromString(value));
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException("Invalid subcategory id: " + value);
+        }
     }
 
     public static SubcategoryId newId() {
