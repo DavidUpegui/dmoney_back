@@ -34,7 +34,7 @@ class LoginUserUseCaseTest {
     private LoginUserUseCase useCase;
 
     @Test
-    void should_return_the_jwt_token_when_user_login(){
+    void auth05_returns_token(){
         String email = "test@email.com";
         String password = "password";
 
@@ -64,7 +64,7 @@ class LoginUserUseCaseTest {
     }
 
     @Test
-    void should_throw_exception_when_email_is_not_found(){
+    void auth06_rejects_unknown_email(){
         String email = "test@email.com";
         String password = "password";
 
@@ -82,7 +82,7 @@ class LoginUserUseCaseTest {
     }
 
     @Test
-    void should_throw_exception_password_does_not_match(){
+    void auth06_rejects_wrong_password(){
         String email = "test@email.com";
         String password = "password";
 

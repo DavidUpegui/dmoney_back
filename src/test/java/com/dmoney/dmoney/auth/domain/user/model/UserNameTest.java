@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class UserNameTest {
     @Test
-    void should_create_user_name_from_string(){
+    void auth08_creates_name(){
         String userNameString = "UserName";
 
         UserName userName = UserName.from(userNameString);
@@ -17,7 +17,7 @@ class UserNameTest {
     }
 
     @Test
-    void should_trim_user_name(){
+    void auth08_trims_name(){
         String userNameString = "      UserName          ";
 
         UserName userName = UserName.from(userNameString);
@@ -26,7 +26,7 @@ class UserNameTest {
     }
 
     @Test
-    void should_throw_exception_when_name_is_blank(){
+    void auth08_rejects_blank(){
         String blankUserName = "";
         ValidationException exception =
                 assertThrows(ValidationException.class, () -> UserName.from(blankUserName));
@@ -35,7 +35,7 @@ class UserNameTest {
     }
 
     @Test
-    void should_throw_exception_when_name_is_null(){
+    void auth08_rejects_null(){
         ValidationException exception =
                 assertThrows(ValidationException.class, () -> UserName.from(null));
 
@@ -43,7 +43,7 @@ class UserNameTest {
     }
 
     @Test
-    void should_throw_exception_when_name_is_greater_than_max_length(){
+    void auth08_rejects_too_long(){
         int maxLength = 100;
         String largeName = "a".repeat(maxLength + 1);
         ValidationException exception =
@@ -53,7 +53,7 @@ class UserNameTest {
     }
 
     @Test
-    void should_return_value_when_to_string(){
+    void auth08_returns_string(){
         String userNameString = "UserName";
         UserName userName = UserName.from(userNameString);
 

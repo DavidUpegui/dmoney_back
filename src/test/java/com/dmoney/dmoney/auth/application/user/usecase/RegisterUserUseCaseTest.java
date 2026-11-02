@@ -6,6 +6,7 @@ import com.dmoney.dmoney.auth.application.user.ports.PasswordHasher;
 import com.dmoney.dmoney.auth.domain.user.model.*;
 import com.dmoney.dmoney.auth.domain.user.repository.UserRepository;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
+import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
 import com.dmoney.dmoney.shared.domain.models.UserId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,7 +34,7 @@ class RegisterUserUseCaseTest {
     private RegisterUserUseCase useCase;
 
     @Test
-    void should_register_an_user_and_save(){
+    void auth01_registers_and_saves(){
         String email = "user@mail.com";
         String password = "password";
         String name = "name";
@@ -55,7 +56,7 @@ class RegisterUserUseCaseTest {
     }
 
     @Test
-    void should_throw_exception_when_email_does_exist(){
+    void auth03_rejects_existing_email(){
         String email = "user@mail.com";
         String password = "password";
         String name = "name";
@@ -79,5 +80,16 @@ class RegisterUserUseCaseTest {
         verify(userRepository).findByEmail(UserEmail.from(email));
         verify(userRepository, never()).save(any(User.class));
         verify(passwordHasher, never()).hash(password);
+    }
+
+    @Test
+    void auth09_rejects_a_password_shorter_than_eight_characters(){
+        UserRegistrationCommand command =
+                new UserRegistrationCommand("user@mail.com", "short", "name");
+
+        assertThrows(ValidationException.class, () -> useCase.execute(command));
+
+        verify(userRepository, never()).save(any(User.class));
+        verify(passwordHasher, never()).hash("short");
     }
 }

@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class UserEmailTest {
     @Test
-    void should_create_email_from_string(){
+    void auth02_creates_email(){
         String validEmail = "asd@asd.com";
 
         UserEmail userEmail = UserEmail.from(validEmail);
@@ -17,7 +17,7 @@ class UserEmailTest {
     }
 
     @Test
-    void should_return_value_when_to_string(){
+    void auth02_returns_string(){
         String validEmail = "asd@asd.com";
 
         UserEmail userEmail = UserEmail.from(validEmail);
@@ -26,7 +26,7 @@ class UserEmailTest {
     }
 
     @Test
-    void should_trim_value(){
+    void auth02_trims_value(){
         String validEmail = "       asd@asd.com         ";
 
         UserEmail userEmail = UserEmail.from(validEmail);
@@ -35,7 +35,7 @@ class UserEmailTest {
     }
 
     @Test
-    void should_lower_case_value(){
+    void auth02_lowercases_value(){
         String validEmail = "aSd@aSd.coM";
 
         UserEmail userEmail = UserEmail.from(validEmail);
@@ -44,7 +44,7 @@ class UserEmailTest {
     }
 
     @Test
-    void should_return_exception_when_email_is_null(){
+    void auth02_rejects_null(){
         ValidationException exception = assertThrows(ValidationException.class,
                 () -> UserEmail.from(null));
 
@@ -52,7 +52,7 @@ class UserEmailTest {
     }
 
     @Test
-    void should_return_exception_when_email_is_blank(){
+    void auth02_rejects_blank(){
         String blankEmail = "";
 
         ValidationException exception = assertThrows(ValidationException.class,
@@ -62,12 +62,22 @@ class UserEmailTest {
     }
 
     @Test
-    void should_return_exception_when_email_has_not_correct_format(){
+    void auth02_rejects_bad_format(){
         String blankEmail = "asdasdasd.ccom";
 
         ValidationException exception = assertThrows(ValidationException.class,
                 () -> UserEmail.from(blankEmail));
 
         assertThat(exception.getMessage()).isEqualTo("Email doesn't match the correct format.");
+    }
+
+    @Test
+    void auth02_rejects_too_long(){
+        String longEmail = "a".repeat(250) + "@b.com";
+
+        ValidationException exception = assertThrows(ValidationException.class,
+                () -> UserEmail.from(longEmail));
+
+        assertThat(exception.getMessage()).isEqualTo("Email is too long.");
     }
 }

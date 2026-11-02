@@ -1,6 +1,7 @@
 package com.dmoney.dmoney.shared.infrastructure.exceptions;
 
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
+import com.dmoney.dmoney.shared.domain.exceptions.ResourceInUseException;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
 import com.dmoney.dmoney.shared.domain.exceptions.UnauthenticatedException;
 import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
@@ -28,6 +29,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(ApiError.of(HttpStatus.NOT_FOUND, ex.getMessage()));
+    }
+
+    @ExceptionHandler(ResourceInUseException.class)
+    public ResponseEntity<ApiError> handleInUse(ResourceInUseException ex){
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ApiError.of(HttpStatus.CONFLICT, ex.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

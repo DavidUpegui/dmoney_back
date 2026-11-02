@@ -7,7 +7,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class UserTest {
     @Test
-    void should_register_an_user(){
+    void auth01_creates_user(){
         UserEmail userEmail = UserEmail.from("email@email.com");
         PasswordHash passwordHash = PasswordHash.from("password");
         UserName userName = UserName.from("Name");
