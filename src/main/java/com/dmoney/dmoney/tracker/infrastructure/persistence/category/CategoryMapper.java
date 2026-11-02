@@ -16,7 +16,9 @@ public final class CategoryMapper {
                 category.userId().value(),
                 category.name().value(),
                 category.description().value(),
-                category.categoryType().toString()
+                category.categoryType().toString(),
+                category.icon() == null ? null : category.icon().value(),
+                category.color() == null ? null : category.color().value()
         );
 
         category.subcategories().forEach(sub -> {
@@ -24,7 +26,9 @@ public final class CategoryMapper {
                     sub.id().value(),
                     sub.name().value(),
                     sub.description().value(),
-                    entity
+                    entity,
+                    sub.icon() == null ? null : sub.icon().value(),
+                    sub.color() == null ? null : sub.color().value()
             );
             entity.getSubcategories().add(subcategoryEntity);
         });
@@ -37,7 +41,9 @@ public final class CategoryMapper {
                 .map(subEntity -> new Subcategory(
                         new SubcategoryId(subEntity.getId()),
                         new SubcategoryName(subEntity.getName()),
-                        new SubcategoryDescription(subEntity.getDescription())
+                        new SubcategoryDescription(subEntity.getDescription()),
+                        CategoryIcon.fromNullable(subEntity.getIcon()),
+                        CategoryColor.fromNullable(subEntity.getColor())
                 ))
                 .collect(Collectors.toSet());
 
@@ -47,7 +53,9 @@ public final class CategoryMapper {
                 CategoryName.from(entity.getName()),
                 CategoryDescription.from(entity.getDescription()),
                 subcategorySet,
-                CategoryType.valueOf(entity.getType())
+                CategoryType.valueOf(entity.getType()),
+                CategoryIcon.fromNullable(entity.getIcon()),
+                CategoryColor.fromNullable(entity.getColor())
         );
     }
 }

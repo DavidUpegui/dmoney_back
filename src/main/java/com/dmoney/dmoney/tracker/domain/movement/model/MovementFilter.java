@@ -1,6 +1,5 @@
 package com.dmoney.dmoney.tracker.domain.movement.model;
 
-import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryId;
 import com.dmoney.dmoney.tracker.domain.category.model.SubcategoryId;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagId;
@@ -68,27 +67,15 @@ public record MovementFilter(
     }
 
     private static CategoryId parseCategoryId(String value){
-        try {
-            return CategoryId.from(value);
-        } catch (IllegalArgumentException e) {
-            throw new ValidationException("Invalid categoryId: " + value);
-        }
+        return CategoryId.from(value);
     }
 
     private static SubcategoryId parseSubcategoryId(String value){
-        try {
-            return SubcategoryId.from(value);
-        } catch (IllegalArgumentException e) {
-            throw new ValidationException("Invalid subcategoryId: " + value);
-        }
+        return SubcategoryId.from(value);
     }
 
     private static TagId parseTagId(String value){
-        try {
-            return TagId.from(value);
-        } catch (IllegalArgumentException e) {
-            throw new ValidationException("Invalid tagId: " + value);
-        }
+        return TagId.from(value);
     }
 
     private static String normalizeSearch(String search){

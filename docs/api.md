@@ -1,9 +1,10 @@
 # dmoney API
 
-REST API for `dmoney`, a personal money tracker. This document is the
-implementation contract for any client (web, mobile, or another service). It is
-generated from the backend source and reflects current behavior, including a
-short list of known deviations at the end.
+REST API for `dmoney`, a personal money tracker. This is the back-end's HTTP
+reference for any client (web, mobile, or another service). It is maintained by
+hand and updated in the same change set as the endpoint it describes. It
+reflects current behavior, including a short list of client-visible deviations
+at the end.
 
 - **Runtime OpenAPI/Swagger UI:** `http://localhost:8080/swagger-ui.html`
 - **OpenAPI JSON:** `http://localhost:8080/v3/api-docs`
@@ -62,7 +63,7 @@ All errors returned by `GlobalExceptionHandler` share this shape:
 | `401` | Missing/invalid token, bad login credentials |
 | `404` | Resource not found or owned by another user |
 | `409` | Duplicate resource (category name, tag name, email) |
-| `500` | Unexpected error (see Known deviations for a few cases that should be 4xx) |
+| `500` | Unexpected error |
 
 Field-validation errors report only the **first** violation in `message`.
 
@@ -79,15 +80,15 @@ Request:
 ```json
 {
   "email": "ada@example.com",
-  "password": "s3cret",
+  "password": "secret123",
   "name": "Ada Lovelace"
 }
 ```
 
 | Field | Rules |
 |-------|-------|
-| `email` | required, non-blank, must match `^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$`; normalized to lowercase |
-| `password` | required, non-blank (no length policy enforced by this API) |
+| `email` | required, non-blank, must match `^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$`; normalized to lowercase; max 255 chars |
+| `password` | required, non-blank, at least 8 characters |
 | `name` | required, non-blank; trimmed; max 100 chars |
 
 Responses:
@@ -104,7 +105,7 @@ Responses:
 Request:
 
 ```json
-{ "email": "ada@example.com", "password": "s3cret" }
+{ "email": "ada@example.com", "password": "secret123" }
 ```
 
 Responses:
@@ -130,9 +131,15 @@ more **subcategories**. Category names are unique per user, case-insensitive.
   "id": "20000000-0000-0000-0000-000000000000",
   "name": "Housing",
   "description": "Monthly housing costs",
-  "type": "OUTCOME"
+  "type": "OUTCOME",
+  "icon": "house",
+  "color": "blue"
 }
 ```
+
+`icon` and `color` are opaque to the back-end: it stores the text the client
+sends and returns it unchanged. It does not validate either against a catalog
+or a palette and supplies no default, so either may be `null`.
 
 ### Subcategory object
 
@@ -141,57 +148,82 @@ more **subcategories**. Category names are unique per user, case-insensitive.
   "categoryId": "20000000-0000-0000-0000-000000000000",
   "subcategoryId": "30000000-0000-0000-0000-000000000000",
   "subcategoryName": "Rent",
-  "subcategoryDescription": "Apartment rent"
+  "subcategoryDescription": "Apartment rent",
+  "icon": null,
+  "color": null
 }
 ```
+
+A `null` `icon` or `color` on a subcategory means "inherit from its category".
+The back-end never resolves or copies the inherited value.
 
 ### Endpoints
 
 | Method | Path | Body | Success | Errors |
 |--------|------|------|---------|--------|
-| `POST` | `/api/categories` | `CreateCategoryRequest` | `201` Category | `400`, `409` |
+| `POST` | `/api/categories` | `CreateCategoryRequest` | `201` Category | `400`, `401`, `409` |
 | `GET` | `/api/categories` | — | `200` Category[] | `401` |
 | `GET` | `/api/categories/{id}` | — | `200` Category | `401`, `404` |
-| `PATCH` | `/api/categories/{id}` | `EditCategoryRequest` | `200` Category | `400`, `404`, `409` |
-| `DELETE` | `/api/categories/{id}` | — | `204` | `401`, `404` |
-| `POST` | `/api/categories/{categoryId}/subcategories` | `CreateSubcategoryRequest` | `201` Subcategory | `400`, `404` |
+| `PATCH` | `/api/categories/{id}` | `EditCategoryRequest` | `200` Category | `400`, `401`, `404`, `409` |
+| `DELETE` | `/api/categories/{id}` | — | `204` | `401`, `404`, `409` |
+| `POST` | `/api/categories/{categoryId}/subcategories` | `CreateSubcategoryRequest` | `201` Subcategory | `400`, `401`, `404`, `409` |
 | `GET` | `/api/categories/{categoryId}/subcategories` | — | `200` Subcategory[] | `401`, `404` |
-| `PATCH` | `/api/categories/{categoryId}/subcategories/{subcategoryId}` | `EditSubcategoryRequest` | `200` Subcategory | `400`, `404` |
-| `DELETE` | `/api/categories/{categoryId}/subcategories/{subcategoryId}` | — | `204` | `401`, `404` |
+| `PATCH` | `/api/categories/{categoryId}/subcategories/{subcategoryId}` | `EditSubcategoryRequest` | `200` Subcategory | `400`, `401`, `404`, `409` |
+| `DELETE` | `/api/categories/{categoryId}/subcategories/{subcategoryId}` | — | `204` | `401`, `404`, `409` |
 
 ### Request bodies
 
 `CreateCategoryRequest`
 
 ```json
-{ "name": "Housing", "description": "Monthly housing costs", "type": "OUTCOME" }
+{
+  "name": "Housing",
+  "description": "Monthly housing costs",
+  "type": "OUTCOME",
+  "icon": "house",
+  "color": "blue"
+}
 ```
 
-- `name`: required, non-blank.
+- `name`: required, non-blank, max 255 chars.
 - `description`: optional; trimmed; max 255 chars (blank/null → `""`).
 - `type`: required, non-blank; `INCOME` or `OUTCOME` (**uppercase**).
+- `icon`: optional; trimmed; max 48 chars; blank/null → `null`.
+- `color`: optional; trimmed; max 32 chars; blank/null → `null`.
 
 `EditCategoryRequest` (PATCH — only non-null fields change)
 
 ```json
-{ "name": "Home", "description": "Rent + utilities", "type": "OUTCOME" }
+{
+  "name": "Home",
+  "description": "Rent + utilities",
+  "type": "OUTCOME",
+  "icon": "house",
+  "color": "teal"
+}
 ```
 
-- `name`: optional; if present must not be blank; uniqueness re-checked.
+- `name`: optional; if present must not be blank and max 255 chars;
+  uniqueness re-checked.
 - `description`: optional; max 255 chars.
 - `type`: optional; uppercase enum.
+- `icon`: optional; absent keeps the value, `""` clears it to `null`, max 48.
+- `color`: optional; absent keeps the value, `""` clears it to `null`, max 32.
 
 `CreateSubcategoryRequest`
 
 ```json
-{ "name": "Rent", "description": "Apartment rent" }
+{ "name": "Rent", "description": "Apartment rent", "icon": "key", "color": null }
 ```
 
-- `name`: required, non-blank.
+- `name`: required, non-blank, max 255 chars.
 - `description`: optional; max 255 chars.
+- `icon`/`color`: optional, same limits as a category; `null` means inherit
+  from the category.
 
-`EditSubcategoryRequest` (PATCH): both fields optional; `name` if present must
-not be blank.
+`EditSubcategoryRequest` (PATCH): all fields optional; `name` if present must
+not be blank and max 255 chars. An absent `icon`/`color` keeps the value and an
+empty string clears it to `null` (inherit).
 
 ---
 
@@ -213,10 +245,10 @@ A tag belongs to the user. Tag names are unique per user, case-insensitive.
 
 | Method | Path | Body | Success | Errors |
 |--------|------|------|---------|--------|
-| `POST` | `/api/tags` | `CreateTagRequest` | `201` Tag | `400`, `409` |
+| `POST` | `/api/tags` | `CreateTagRequest` | `201` Tag | `400`, `401`, `409` |
 | `GET` | `/api/tags` | — | `200` Tag[] | `401` |
 | `GET` | `/api/tags/{id}` | — | `200` Tag | `401`, `404` |
-| `PATCH` | `/api/tags/{id}` | `EditTagRequest` | `200` Tag | `400`, `404`, `409` |
+| `PATCH` | `/api/tags/{id}` | `EditTagRequest` | `200` Tag | `400`, `401`, `404`, `409` |
 | `DELETE` | `/api/tags/{id}` | — | `204` | `401`, `404` |
 
 ### Request bodies
@@ -227,7 +259,7 @@ A tag belongs to the user. Tag names are unique per user, case-insensitive.
 { "name": "recurring", "description": "Monthly recurring expense" }
 ```
 
-- `name`: required, non-blank.
+- `name`: required, non-blank, max 255 chars.
 - `description`: optional; max 255 chars.
 
 `EditTagRequest` (PATCH — only non-null fields change)
@@ -236,7 +268,8 @@ A tag belongs to the user. Tag names are unique per user, case-insensitive.
 { "name": "subscriptions", "description": "Streaming + gym" }
 ```
 
-- `name`: optional; if present must not be blank; uniqueness re-checked.
+- `name`: optional; if present must not be blank and max 255 chars;
+  uniqueness re-checked.
 - `description`: optional; max 255 chars.
 
 ---
@@ -401,38 +434,22 @@ DELETE /api/movements/{id}
 
 - Every query/command is scoped to the authenticated user.
 - Category names and tag names are unique per user, case-insensitive.
+- `CategoryType` must be uppercase (`INCOME`/`OUTCOME`); invalid values return `400`.
 - A movement's category must belong to the user.
 - A movement's subcategory must belong to the movement's category.
 - A movement's tags must all belong to the user.
-- Deleting a category removes/affects its subcategories per the tracker domain
-  rules; movements reference categories by id.
+- Deleting a category deletes its subcategories. It is rejected with `409` if
+  the category still has movements.
+- Deleting a subcategory is rejected with `409` if it still has movements.
 - `amount` must be strictly greater than zero.
 - Descriptions are optional; unspecified/null descriptions are stored as `""`.
 
 ---
 
-## 9. Known deviations (as of 2026-10-12)
+## 9. Known deviations (as of 2026-10-30)
 
 These are current implementation quirks the client should be aware of. They are
-tracked in `OBSERVATIONS.md` and may be fixed later.
+known and may be fixed later.
 
-1. **Malformed UUID in a path variable** (e.g. `GET /api/movements/not-a-uuid`,
-   `/api/tags/{id}`, `/api/categories/{id}`) throws `IllegalArgumentException`
-   from `UUID.fromString`, which the handler maps to **`500`** instead of
-   `400`. Malformed UUIDs in movement **filter query params** correctly return
-   `400`.
-2. **Subcategory not belonging to the category** throws a domain exception
-   (`SubcategoryDoesNotBelongToCategoryException`) with no dedicated handler,
-   currently surfacing as **`500`** rather than `400`.
-3. **401 body shape**: a missing/invalid token is rejected by Spring Security's
-   entry point using `sendError`, producing the default Spring error payload
-   rather than the `ApiError` shape. `401` from bad login credentials uses the
-   `ApiError` shape.
-4. **`CategoryType` is case-sensitive**: `CreateCategoryRequest.type` /
-   `EditCategoryRequest.type` are parsed with `CategoryType.valueOf(...)`, so
-   they must be uppercase (`INCOME`/`OUTCOME`). (`MovementType` is
-   case-insensitive.)
-5. **Tag controller base path** is declared as `api/tags` (no leading slash);
+1. **Tag controller base path** is declared as `api/tags` (no leading slash);
    it resolves to `/api/tags`.
-6. **No password length policy** is enforced at the API layer beyond
-   non-blank.

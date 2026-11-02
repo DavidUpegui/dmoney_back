@@ -11,24 +11,24 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class AmountTest {
 
     @Test
-    void shouldCreateValidAmount(){
+    void mov02_accepts_positive_amount(){
         Amount amount = Amount.from(new BigDecimal("85.50"));
 
         assertEquals(new BigDecimal("85.50"), amount.value());
     }
 
     @Test
-    void shouldThrowExceptionWhenValueIsNull(){
+    void mov02_rejects_null(){
         assertThrows(ValidationException.class, () -> Amount.from(null));
     }
 
     @Test
-    void shouldThrowExceptionWhenValueIsZero(){
+    void mov02_rejects_zero(){
         assertThrows(ValidationException.class, () -> Amount.from(BigDecimal.ZERO));
     }
 
     @Test
-    void shouldThrowExceptionWhenValueIsNegative(){
+    void mov02_rejects_negative(){
         assertThrows(ValidationException.class, () -> Amount.from(new BigDecimal("-1")));
     }
 }

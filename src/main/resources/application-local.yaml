@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/dmoney
+    username: postgres
+    password: root
+  liquibase:
+    contexts: dev
+  jpa:
+    show-sql: true
+
+# Stable dev secret so tokens survive back-end restarts.
+jwt:
+  secret: ${JWT_SECRET:dev-secret-do-not-use-in-prod-0123456789}

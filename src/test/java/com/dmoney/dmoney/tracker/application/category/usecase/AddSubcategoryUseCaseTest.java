@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -52,13 +53,15 @@ class AddSubcategoryUseCaseTest {
     }
 
     @Test
-    void should_add_subcategory_and_save_category() {
+    void cat12_adds_subcategory() {
 
         AddSubcategoryCommand command =
                 new AddSubcategoryCommand(
                         category.id().value().toString(),
                         "new subcategory",
-                        "desc"
+                        "desc",
+                        null,
+                        null
                 );
 
         when(authProvider.currentUserId()).thenReturn(userId);
@@ -80,12 +83,14 @@ class AddSubcategoryUseCaseTest {
     }
 
     @Test
-    void should_throw_exception_when_category_is_not_found(){
+    void cat17_rejects_foreign_category_on_subcategory_create(){
         AddSubcategoryCommand command =
                 new AddSubcategoryCommand(
                         category.id().value().toString(),
                         "new subcategory",
-                        "desc"
+                        "desc",
+                        null,
+                        null
                 );
         when(authProvider.currentUserId()).thenReturn(userId);
         when(categoryLoader.load(userId, category.id()))
@@ -101,4 +106,45 @@ class AddSubcategoryUseCaseTest {
         verify(categoryLoader).load(userId, category.id());
         verify(categoryRepository, never()).save(category);
     }
+
+    @Test
+    void cat22_addsSubcategoryWithIconAndColor() {
+        AddSubcategoryCommand command =
+                new AddSubcategoryCommand(
+                        category.id().value().toString(),
+                        "new subcategory",
+                        "desc",
+                        "carrot",
+                        "green"
+                );
+
+        when(authProvider.currentUserId()).thenReturn(userId);
+        when(categoryLoader.load(userId, category.id())).thenReturn(category);
+
+        SubcategoryResult result = useCase.execute(command);
+
+        assertEquals("carrot", result.icon());
+        assertEquals("green", result.color());
+    }
+
+    @Test
+    void cat22_subcategoryKeepsInheritanceWhenVisualOmitted() {
+        AddSubcategoryCommand command =
+                new AddSubcategoryCommand(
+                        category.id().value().toString(),
+                        "new subcategory",
+                        "desc",
+                        null,
+                        null
+                );
+
+        when(authProvider.currentUserId()).thenReturn(userId);
+        when(categoryLoader.load(userId, category.id())).thenReturn(category);
+
+        SubcategoryResult result = useCase.execute(command);
+
+        assertNull(result.icon());
+        assertNull(result.color());
+    }
+
 }

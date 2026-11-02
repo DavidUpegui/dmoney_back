@@ -32,4 +32,9 @@ class MovementIdTest {
     void shouldThrowExceptionWhenValueIsNull(){
         assertThrows(ValidationException.class, () -> MovementId.fromUUID(null));
     }
+
+    @Test
+    void shouldThrowExceptionWhenValueIsMalformed(){
+        assertThrows(ValidationException.class, () -> MovementId.fromString("not-a-uuid"));
+    }
 }

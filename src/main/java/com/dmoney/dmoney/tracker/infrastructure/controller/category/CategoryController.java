@@ -34,7 +34,9 @@ public class CategoryController {
             CreateCategoryCommand command = new CreateCategoryCommand(
                     request.name(),
                     request.description(),
-                    request.type()
+                    request.type(),
+                    request.icon(),
+                    request.color()
             );
 
             CategoryResult categoryCreated = createCategoryUseCase.execute(command);
@@ -73,7 +75,9 @@ public class CategoryController {
         AddSubcategoryCommand command = new AddSubcategoryCommand(
                 categoryId,
                 request.name(),
-                request.description()
+                request.description(),
+                request.icon(),
+                request.color()
         );
 
         SubcategoryResult subcategory = addSubcategoryUseCase.execute(command);
@@ -90,7 +94,14 @@ public class CategoryController {
     ){
 
         EditCategoryCommand command =
-                new EditCategoryCommand(catIdParam, request.name(), request.description(), request.type());
+                new EditCategoryCommand(
+                        catIdParam,
+                        request.name(),
+                        request.description(),
+                        request.type(),
+                        request.icon(),
+                        request.color()
+                );
 
         CategoryResult category = editCategoryUseCase.execute(command);
 
@@ -111,7 +122,9 @@ public class CategoryController {
             categoryId,
             subcategoryId,
                 request.name(),
-                request.description()
+                request.description(),
+                request.icon(),
+                request.color()
         );
 
         SubcategoryResult subcategory =  editSubcategoryUseCase.execute(command);

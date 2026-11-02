@@ -65,7 +65,7 @@ public class TagControllerTest {
     @Nested
     class GetAllControllerTest{
         @Test
-        void should_get_all_tags() throws Exception{
+        void tag06_returns_tags() throws Exception{
             TagResponse tag1 = new TagResponse(
                     UUID.randomUUID().toString(),
                     "Name1",
@@ -92,7 +92,7 @@ public class TagControllerTest {
         }
 
         @Test
-        void should_get_empty_array_when_there_are_no_tags() throws Exception{
+        void tag06_returns_empty_array() throws Exception{
             List<TagResponse> tagList = List.of();
 
             when(findAllTagsUseCase.execute())
@@ -111,7 +111,7 @@ public class TagControllerTest {
     class FindTagByIdControllerTest{
 
         @Test
-        void should_return_found_tag() throws Exception{
+        void tag07_returns_tag() throws Exception{
             String id = "1";
             TagResponse founded = new TagResponse(
                     id,
@@ -130,7 +130,7 @@ public class TagControllerTest {
         }
 
         @Test
-        void should_return_404_when_tag_not_found() throws Exception{
+        void tag07_returns_404_when_missing() throws Exception{
             String id = "1";
 
             when(findTagById.execute(id))
@@ -144,7 +144,7 @@ public class TagControllerTest {
     @Nested
     class CreateTagControllerTest{
 
-        static Stream<Arguments> invalidRequests() {
+        static Stream<Arguments> invalidNames() {
             return Stream.of(
                     Arguments.of("name blank", """
             {
@@ -157,18 +157,12 @@ public class TagControllerTest {
                 "name": null,
                 "description": "Description"
             }
-        """),
-                    Arguments.of("malformed json", """
-            {
-                "name": "Any"
-                "description": "Description"
-            }
         """)
             );
         }
 
         @Test
-        void should_create_the_tag() throws Exception{
+        void tag01_returns_created_tag() throws Exception{
             String json = """
                         {
                             "name": "Name",
@@ -200,7 +194,7 @@ public class TagControllerTest {
         }
 
         @Test
-        void should_return_409_when_tag_name_already_exists() throws Exception{
+        void tag04_returns_409_on_duplicate() throws Exception{
             String json = """
                         {
                             "name": "Existing Name",
@@ -224,9 +218,9 @@ public class TagControllerTest {
             ));
         }
 
-        @ParameterizedTest(name = "{index} - {0}")
-        @MethodSource("invalidRequests")
-        void should_return_400_when_request_is_invalid(String testName, String json) throws Exception {
+        @ParameterizedTest(name = "tag02_returns_400_on_invalid_name [{index}] {0}")
+        @MethodSource("invalidNames")
+        void tag02_returns_400_on_invalid_name(String testName, String json) throws Exception {
 
             mockMvc.perform(post("/api/tags")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -236,13 +230,29 @@ public class TagControllerTest {
                     .andExpect(jsonPath("$.error").value("Bad Request"))
                     .andExpect(jsonPath("$.message").exists());
         }
+
+        @Test
+        void returns_400_when_json_is_malformed() throws Exception {
+            String json = """
+                    {
+                        "name": "Any"
+                        "description": "Description"
+                    }
+                    """;
+
+            mockMvc.perform(post("/api/tags")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(json))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.status").value(400));
+        }
     }
 
     @Nested
     class EditTagControllerTest{
 
         @Test
-        void should_edit_a_tag() throws Exception{
+        void tag08_returns_updated_tag() throws Exception{
             String json = """
                     {
                         "name": "New Name",
@@ -272,7 +282,7 @@ public class TagControllerTest {
         }
 
         @Test
-        void should_return_409_when_tag_name_already_exists() throws Exception{
+        void tag09_returns_409_on_duplicate() throws Exception{
             String json = """
                     {
                         "name": "Existing Name",
@@ -297,7 +307,7 @@ public class TagControllerTest {
         }
 
         @Test
-        void should_return_404_when_tag_id_is_not_found() throws Exception{
+        void tag07_returns_404_when_tag_missing() throws Exception{
             String json = """
                     {
                         "name": "New Name",
@@ -322,7 +332,7 @@ public class TagControllerTest {
         }
 
         @Test
-        void should_return_400_when_name_is_blank() throws Exception{
+        void tag10_returns_400_on_blank_name() throws Exception{
             String json = """
                     {
                         "name": "",
@@ -339,7 +349,7 @@ public class TagControllerTest {
         }
 
         @Test
-        void should_return_400_when_json_is_malformed() throws Exception{
+        void returns_400_when_json_is_malformed() throws Exception{
             String json = """
                     {
                         "name": "Malformed json"
@@ -360,7 +370,7 @@ public class TagControllerTest {
     class DeleteTagControllerTest{
 
         @Test
-        void should_delete_tag() throws Exception{
+        void tag11_returns_204() throws Exception{
             mockMvc.perform(delete("/api/tags/1"))
                     .andExpect(status().isNoContent());
 
@@ -368,7 +378,7 @@ public class TagControllerTest {
         }
 
         @Test
-        void should_return_404_when_tag_is_not_found() throws Exception{
+        void tag11_returns_404_when_missing() throws Exception{
             doThrow(new ResourceNotFoundException("Tag", "id", "1"))
                     .when(deleteTagUseCase)
                     .execute("1");

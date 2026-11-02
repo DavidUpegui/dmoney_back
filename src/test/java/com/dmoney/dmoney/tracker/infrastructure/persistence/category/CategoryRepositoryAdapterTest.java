@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,9 @@ class CategoryRepositoryAdapterTest {
     private CategoryJpaRepository jpaRepository;
     private CategoryRepositoryAdapter adapter;
 
+    @Autowired
+    private JdbcTemplate jdbc;
+
     @BeforeEach
     void setUp(){
         adapter = new CategoryRepositoryAdapter(jpaRepository);
@@ -31,7 +35,7 @@ class CategoryRepositoryAdapterTest {
     @Nested
     class FindById{
         @Test
-        void should_save_and_find_category(){
+        void cat01_persists_category(){
             UserId userId = UserId.newId();
             Category category = Category.create(
                     userId,
@@ -50,7 +54,7 @@ class CategoryRepositoryAdapterTest {
         }
 
         @Test
-        void should_return_empty_when_no_category_found(){
+        void cat07_returns_empty(){
             UserId userId = UserId.newId();
             Category category = Category.create(
                     userId,
@@ -71,7 +75,7 @@ class CategoryRepositoryAdapterTest {
     @Nested
     class FindAll{
         @Test
-        void should_return_the_categories(){
+        void cat06_returns_categories_adapter(){
             UserId userId = UserId.newId();
             Category category1 = Category.create(
                     userId,
@@ -101,7 +105,7 @@ class CategoryRepositoryAdapterTest {
         }
 
         @Test
-        void should_return_void_when_no_categories(){
+        void cat06_returns_empty_adapter(){
 
             List<Category> categoryList = adapter.findAllByUserId(UserId.newId());
             assertTrue(categoryList.isEmpty());
@@ -112,7 +116,7 @@ class CategoryRepositoryAdapterTest {
     class Save{
 
         @Test
-        void should_persist_category_and_return_mapped_domain() {
+        void cat01_persists_and_maps() {
             UserId userId = UserId.newId();
             Category category = Category.create(
                     userId,
@@ -138,7 +142,7 @@ class CategoryRepositoryAdapterTest {
     @Nested
     class existsByUserIdAndNameIgnoreCase{
         @Test
-         void should_return_true_if_exists(){
+         void cat05_detects_existing_name(){
             UserId userId = UserId.newId();
             Category category = Category.create(
                     userId,
@@ -158,7 +162,7 @@ class CategoryRepositoryAdapterTest {
         }
 
         @Test
-        void should_return_true_if_exists_and_ignore_case(){
+        void cat05_detects_existing_name_ignoring_case(){
             UserId userId = UserId.newId();
             Category category = Category.create(
                     userId,
@@ -177,7 +181,7 @@ class CategoryRepositoryAdapterTest {
             assertTrue(exists);
         }
         @Test
-        void should_return_false_if_does_not_exists(){
+        void cat05_reports_unknown_name(){
             UserId userId = UserId.newId();
             Category category = Category.create(
                     userId,
@@ -200,7 +204,7 @@ class CategoryRepositoryAdapterTest {
     @Nested
     class Delete{
         @Test
-        void should_delete_by_id(){
+        void cat09_deletes_adapter(){
             UserId userId = UserId.newId();
             Category category = Category.create(
                     userId,
@@ -221,13 +225,44 @@ class CategoryRepositoryAdapterTest {
         }
 
         @Test
-        void should_return_false_if_not_deleted(){
+        void cat09_reports_missing_adapter(){
             UserId userId = UserId.newId();
             CategoryId anyCategoryId = CategoryId.newId();
 
             boolean deleted = adapter.deleteByUserIdAndId(userId,anyCategoryId);
 
             assertThat(deleted).isFalse();
+        }
+    }
+
+    @Nested
+    class DeleteCategoryCascadeTest {
+        @Test
+        void cat10_deleting_a_category_removes_its_subcategories(){
+            UserId userId = UserId.newId();
+            Category category = Category.create(
+                    userId,
+                    CategoryName.from("Food"),
+                    CategoryDescription.from("Description"),
+                    CategoryType.OUTCOME
+            );
+            Subcategory subcategory = category.addSubcategory(
+                    SubcategoryName.from("Groceries"),
+                    SubcategoryDescription.from("")
+            );
+            SubcategoryId subcategoryId = subcategory.id();
+
+            adapter.save(category);
+
+            boolean deleted = adapter.deleteByUserIdAndId(userId, category.id());
+            jpaRepository.flush();
+
+            assertThat(deleted).isTrue();
+            assertThat(jdbc.queryForObject(
+                    "select count(*) from subcategory where id = ?",
+                    Integer.class,
+                    subcategoryId.value()
+            )).isZero();
         }
     }
 }

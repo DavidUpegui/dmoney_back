@@ -32,7 +32,7 @@ class TagUniquenessCheckerTest {
     }
 
     @Test
-    void should_throw_exception_when_name_already_exists() {
+    void tag04_rejects_existing_name() {
         TagName name = TagName.from("Food");
 
         when(tagRepository.existsByUserIdAndNameIgnoreCase(userId, name))
@@ -43,7 +43,7 @@ class TagUniquenessCheckerTest {
     }
 
     @Test
-    void should_not_throw_exception_when_name_does_not_exist() {
+    void tag04_accepts_new_name() {
         TagName name = TagName.from("Food");
 
         when(tagRepository.existsByUserIdAndNameIgnoreCase(userId, name))
@@ -53,7 +53,7 @@ class TagUniquenessCheckerTest {
     }
 
     @Test
-    void should_check_when_name_is_different() {
+    void tag09_checks_when_name_changes() {
         TagName newName = TagName.from("Transport");
         TagName currentName = TagName.from("Food");
 
@@ -66,7 +66,7 @@ class TagUniquenessCheckerTest {
     }
 
     @Test
-    void should_not_check_when_name_is_the_same() {
+    void tag09_skips_check_when_same_name() {
         TagName name = TagName.from("Food");
 
         assertDoesNotThrow(() -> checker.check(userId, name, name));
@@ -75,7 +75,7 @@ class TagUniquenessCheckerTest {
     }
 
     @Test
-    void should_throw_exception_when_new_name_already_exists() {
+    void tag09_rejects_existing_new_name() {
         TagName newName = TagName.from("Transport");
         TagName currentName = TagName.from("Food");
 

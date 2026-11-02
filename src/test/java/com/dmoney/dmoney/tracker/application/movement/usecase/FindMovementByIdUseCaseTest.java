@@ -62,7 +62,7 @@ class FindMovementByIdUseCaseTest {
     }
 
     @Test
-    void should_return_movement_when_found(){
+    void mov09_finds_own_movement(){
         String id = movement.movementId().value().toString();
         when(movementRepository.findByUserIdAndId(any(), any()))
                 .thenReturn(Optional.of(movement));
@@ -74,7 +74,7 @@ class FindMovementByIdUseCaseTest {
     }
 
     @Test
-    void should_throw_when_movement_not_found(){
+    void mov09_rejects_missing_movement(){
         String id = MovementId.newId().value().toString();
         when(movementRepository.findByUserIdAndId(any(), any()))
                 .thenReturn(Optional.empty());

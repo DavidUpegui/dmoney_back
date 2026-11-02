@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CategoryTest {
 
     @Test
-    void shouldCreateCategory(){
+    void cat01_creates_category(){
         UserId userId = UserId.newId();
         CategoryName name = CategoryName.from("name");
         CategoryDescription description = CategoryDescription.from("description");
@@ -48,14 +48,16 @@ class CategoryTest {
                 CategoryName.from("name"),
                 CategoryDescription.from("description"),
                 subcategories,
-                CategoryType.INCOME
+                CategoryType.INCOME,
+                null,
+                null
         );
 
         assertEquals(1, category.subcategories().size());
     }
 
     @Test
-    void shouldChangeName(){
+    void cat08_changes_name(){
         Category category = Category.create(
                 UserId.newId(),
                 CategoryName.from("name"),
@@ -70,7 +72,7 @@ class CategoryTest {
     }
 
     @Test
-    void shouldChangeDescription(){
+    void cat08_changes_description(){
         Category category = Category.create(
                 UserId.newId(),
                 CategoryName.from("name"),
@@ -85,7 +87,7 @@ class CategoryTest {
     }
 
     @Test
-    void should_change_type(){
+    void cat08_changes_type(){
         Category category = Category.create(
                 UserId.newId(),
                 CategoryName.from("name"),
@@ -101,7 +103,7 @@ class CategoryTest {
 
 
     @Test
-    void shouldAddNewSubcategory(){
+    void cat12_adds_subcategory_to_aggregate(){
         Category category = Category.create(
                 UserId.newId(),
                 CategoryName.from("name"),
@@ -148,7 +150,7 @@ class CategoryTest {
     }
 
     @Test
-    void shouldThrowErrorWhenAddingSubcategoryWithANameAlreadyUsed(){
+    void cat13_rejects_duplicate_subcategory_name(){
         Category category = Category.create(
                 UserId.newId(),
                 CategoryName.from("name"),
@@ -189,7 +191,7 @@ class CategoryTest {
         }
 
         @Test
-        void shouldEditTheSubcategory(){
+        void cat15_updates_subcategory_in_aggregate(){
             SubcategoryId subcategoryId = subcategory.id();
             SubcategoryName newSubcategoryName = SubcategoryName.from("newName");
             SubcategoryDescription newSubcategoryDescription = SubcategoryDescription.from("newDescription");
@@ -201,7 +203,7 @@ class CategoryTest {
         }
 
         @Test
-        void shouldEditOnlyTheSubcategoryName(){
+        void cat15_edits_only_name(){
             SubcategoryId subcategoryId = subcategory.id();
             SubcategoryName newSubcategoryName = SubcategoryName.from("newName");
             SubcategoryDescription oldSubcategoryDescription = subcategory.description();
@@ -213,7 +215,7 @@ class CategoryTest {
         }
 
         @Test
-        void shouldEditOnlyTheSubcategoryDescription(){
+        void cat15_edits_only_description(){
             SubcategoryId subcategoryId = subcategory.id();
             SubcategoryDescription newDescription = SubcategoryDescription.from("newDescription");
             SubcategoryName oldSubcategoryName = subcategory.name();
@@ -235,7 +237,7 @@ class CategoryTest {
         }
 
         @Test
-        void shouldThrowExceptionWhenSubcategoryIdWasNotFound(){
+        void cat15_rejects_missing_subcategory_in_aggregate(){
             SubcategoryId differentSubcategoryId = SubcategoryId.newId();
             SubcategoryName newSubcategoryName = SubcategoryName.from("newName");
             SubcategoryDescription newDescription = SubcategoryDescription.from("newDescription");
@@ -250,7 +252,7 @@ class CategoryTest {
         }
 
         @Test
-        void shouldThrowExceptionWhenThereExistASubcategoryWithSameNameInTheEdition(){
+        void cat13_rejects_duplicate_on_rename(){
             String sameName = "sameName";
             category.addSubcategory(SubcategoryName.from(sameName), SubcategoryDescription.empty());
             SubcategoryId subcategoryIdToEdit = subcategory.id();
@@ -265,7 +267,7 @@ class CategoryTest {
         }
 
         @Test
-        void shouldNotThrowExceptionWhenThereExistASubcategoryWithDifferentNameInTheEdition(){
+        void cat13_allows_rename_to_new_name(){
             Subcategory sc1 = subcategory;
 
             category.addSubcategory(
@@ -286,7 +288,7 @@ class CategoryTest {
         }
 
         @Test
-        void shouldDeleteASubcategory(){
+        void cat16_deletes_subcategory_in_aggregate(){
             int initialSubcategoriesSize = category.subcategories().toArray().length;
             SubcategoryId subcategoryId = subcategory.id();
 
@@ -297,11 +299,69 @@ class CategoryTest {
         }
 
         @Test
-        void shouldThrowExceptionWhenSubcategoryIsNotFoundWhenDeleting(){
+        void cat16_rejects_missing_subcategory_in_aggregate(){
             SubcategoryId nonExistingSubcategoryId = SubcategoryId.newId();
 
             assertThrows(ResourceNotFoundException.class,
                     () -> category.deleteSubcategory(nonExistingSubcategoryId));
         }
     }
+
+    @Test
+    void cat18_storesIconAndColorOnCreate() {
+        Category category = Category.create(
+                UserId.newId(),
+                CategoryName.from("Food"),
+                CategoryDescription.from("Food"),
+                CategoryType.OUTCOME,
+                CategoryIcon.from("utensils"),
+                CategoryColor.from("amber")
+        );
+
+        assertEquals("utensils", category.icon().value());
+        assertEquals("amber", category.color().value());
+    }
+
+    @Test
+    void cat21_changesAndClearsIconAndColor() {
+        Category category = Category.create(
+                UserId.newId(),
+                CategoryName.from("Food"),
+                CategoryDescription.from("Food"),
+                CategoryType.OUTCOME
+        );
+
+        category.changeIcon(CategoryIcon.from("utensils"));
+        category.changeColor(CategoryColor.from("amber"));
+
+        assertEquals("utensils", category.icon().value());
+        assertEquals("amber", category.color().value());
+
+        category.changeIcon(null);
+        category.changeColor(null);
+
+        assertNull(category.icon());
+        assertNull(category.color());
+    }
+
+    @Test
+    void cat22_addsSubcategoryWithIconAndColor() {
+        Category category = Category.create(
+                UserId.newId(),
+                CategoryName.from("Food"),
+                CategoryDescription.from("Food"),
+                CategoryType.OUTCOME
+        );
+
+        Subcategory subcategory = category.addSubcategory(
+                SubcategoryName.from("Groceries"),
+                SubcategoryDescription.from("Groceries"),
+                CategoryIcon.from("shopping-basket"),
+                CategoryColor.from("green")
+        );
+
+        assertEquals("shopping-basket", subcategory.icon().value());
+        assertEquals("green", subcategory.color().value());
+    }
+
 }

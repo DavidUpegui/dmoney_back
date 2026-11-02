@@ -43,7 +43,7 @@ class FindAllCategoriesUseCaseTest {
     }
 
     @Test
-    void should_return_all_categories_mapped_to_result() {
+    void cat06_lists_own_categories() {
         // Arrange
         Category category1 = Category.create(
                 userId,
@@ -71,7 +71,7 @@ class FindAllCategoriesUseCaseTest {
         verify(categoryRepository).findAllByUserId(userId);
     }
     @Test
-    void should_return_empty_list_when_no_categories_exist() {
+    void cat06_returns_empty_list() {
         when(categoryRepository.findAllByUserId(userId))
                 .thenReturn(List.of());
 

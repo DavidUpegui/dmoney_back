@@ -5,9 +5,7 @@ import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.domain.tag.model.TagName;
 import com.dmoney.dmoney.tracker.domain.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-@Service
 @RequiredArgsConstructor
 public class TagUniquenessChecker {
     private final TagRepository tagRepository;

@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class TagNameTest {
 
     @Test
-    void should_create_name_from_constructor(){
+    void tag02_creates_name_from_constructor(){
         String name = "Name";
 
         TagName tagName = new TagName(name);
@@ -18,7 +18,7 @@ class TagNameTest {
     }
 
     @Test
-    void should_create_name_from_string(){
+    void tag02_creates_name_from_string(){
         String name = "Name";
 
         TagName tagName = TagName.from(name);
@@ -27,7 +27,7 @@ class TagNameTest {
     }
 
     @Test
-    void should_trim_value(){
+    void tag02_trims_name(){
         String name = "           Name       ";
 
         TagName tagName = TagName.from(name);
@@ -36,7 +36,7 @@ class TagNameTest {
     }
 
     @Test
-    void should_throw_illegal_argument_exception_when_null(){
+    void tag02_rejects_null_name(){
         ValidationException exception =  assertThrows(ValidationException.class,
                 () -> new TagName(null));
 
@@ -44,10 +44,15 @@ class TagNameTest {
     }
 
     @Test
-    void should_throw_illegal_argument_exception_when_value_is_blank(){
+    void tag02_rejects_blank_name(){
         ValidationException exception =  assertThrows(ValidationException.class,
                 () -> new TagName(""));
 
         assertEquals("Tag name cannot be null or blank.", exception.getMessage());
+    }
+
+    @Test
+    void tag02_rejects_too_long_name(){
+        assertThrows(ValidationException.class, () -> TagName.from("a".repeat(256)));
     }
 }

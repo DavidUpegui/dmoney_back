@@ -36,7 +36,13 @@ public class EditCategoryUseCase {
             category.changeDescription(CategoryDescription.from(command.description()));
         }
         if(command.type() != null){
-            category.changeType(CategoryType.valueOf(command.type()));
+            category.changeType(CategoryType.from(command.type()));
+        }
+        if(command.icon() != null){
+            category.changeIcon(CategoryIcon.fromNullable(command.icon()));
+        }
+        if(command.color() != null){
+            category.changeColor(CategoryColor.fromNullable(command.color()));
         }
 
         return CategoryResult.from(categoryRepository.save(category));

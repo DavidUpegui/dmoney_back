@@ -66,7 +66,7 @@ class CreateMovementUseCaseTest {
     }
 
     @Test
-    void should_create_movement_and_save(){
+    void mov01_creates_and_saves(){
         MovementResponse response = useCase.execute(command("OUTCOME", "Arriendo"));
 
         assertEquals(new BigDecimal("85.50"), response.amount());
@@ -79,14 +79,14 @@ class CreateMovementUseCaseTest {
     }
 
     @Test
-    void should_accept_lowercase_type(){
+    void mov03_accepts_lowercase_type(){
         MovementResponse response = useCase.execute(command("income", "salary"));
 
         assertEquals("INCOME", response.type());
     }
 
     @Test
-    void should_accept_null_description(){
+    void mov04_accepts_null_description(){
         MovementResponse response = useCase.execute(command("OUTCOME", null));
 
         assertEquals("", response.description());

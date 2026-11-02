@@ -5,9 +5,11 @@ import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.application.category.commands.DeleteSubcategoryCommand;
 import com.dmoney.dmoney.tracker.application.category.helpers.CategoryLoader;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
+import com.dmoney.dmoney.shared.domain.exceptions.ResourceInUseException;
 import com.dmoney.dmoney.tracker.application.port.AuthenticatedUserProvider;
 import com.dmoney.dmoney.tracker.domain.category.model.*;
 import com.dmoney.dmoney.tracker.domain.category.repository.CategoryRepository;
+import com.dmoney.dmoney.tracker.domain.movement.repository.MovementRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +35,9 @@ class DeleteSubcategoryUseCaseTest {
     @Mock
     private AuthenticatedUserProvider authProvider;
 
+    @Mock
+    private MovementRepository movementRepository;
+
     @InjectMocks
     DeleteSubcategoryUseCase useCase;
 
@@ -52,7 +57,7 @@ class DeleteSubcategoryUseCaseTest {
     }
 
     @Test
-    void should_delete_subcategory_and_save_category(){
+    void cat16_deletes_subcategory(){
         Subcategory subcategory = category.addSubcategory(
                 SubcategoryName.from("Subcategory name"),
                 SubcategoryDescription.from("Subcategory description")
@@ -77,7 +82,7 @@ class DeleteSubcategoryUseCaseTest {
     }
 
     @Test
-    void should_propagate_category_not_found_exception(){
+    void cat17_rejects_foreign_category_on_subcategory_delete(){
         CategoryId notExistingId = CategoryId.newId();
         DeleteSubcategoryCommand command =
                 new DeleteSubcategoryCommand(
@@ -96,7 +101,7 @@ class DeleteSubcategoryUseCaseTest {
     }
 
     @Test
-    void should_propagate_subcategory_not_found_exception(){
+    void cat16_rejects_missing_subcategory(){
 
         CategoryId categoryId = category.id();
         SubcategoryId notExistingSubcategoryId = SubcategoryId.newId();
@@ -114,6 +119,28 @@ class DeleteSubcategoryUseCaseTest {
                 () -> useCase.execute(command));
 
         verify(categoryLoader).load(userId, categoryId);
+        verify(categoryRepository, never()).save(any());
+    }
+
+    @Test
+    void cat16_rejects_delete_when_the_subcategory_has_movements(){
+        Subcategory subcategory = category.addSubcategory(
+                SubcategoryName.from("Subcategory name"),
+                SubcategoryDescription.from("Subcategory description")
+        );
+        CategoryId categoryId = category.id();
+        SubcategoryId subcategoryId = subcategory.id();
+        DeleteSubcategoryCommand command = new DeleteSubcategoryCommand(
+                categoryId.value().toString(),
+                subcategoryId.value().toString()
+        );
+
+        when(categoryLoader.load(userId, categoryId)).thenReturn(category);
+        when(movementRepository.existsByUserIdAndSubcategoryId(userId, subcategoryId))
+                .thenReturn(true);
+
+        assertThrows(ResourceInUseException.class, () -> useCase.execute(command));
+
         verify(categoryRepository, never()).save(any());
     }
 }

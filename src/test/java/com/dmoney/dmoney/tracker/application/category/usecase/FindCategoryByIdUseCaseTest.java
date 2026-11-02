@@ -40,7 +40,7 @@ class FindCategoryByIdUseCaseTest {
 
 
     @Test
-    void should_return_category_by_id(){
+    void cat07_finds_own_category(){
         CategoryName categoryName = CategoryName.from("Category name");
         CategoryDescription categoryDescription = CategoryDescription.from("Category description");
         CategoryType type = CategoryType.INCOME;
@@ -61,7 +61,7 @@ class FindCategoryByIdUseCaseTest {
     }
 
     @Test
-    void should_propagate_category_not_found_exception(){
+    void cat07_rejects_missing_or_foreign_category(){
         CategoryId categoryId = CategoryId.newId();
 
         when(categoryLoader.load(userId, categoryId))

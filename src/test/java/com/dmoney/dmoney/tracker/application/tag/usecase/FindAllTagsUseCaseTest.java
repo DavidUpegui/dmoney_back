@@ -43,7 +43,7 @@ class FindAllTagsUseCaseTest {
     }
 
     @Test
-    void should_return_list_of_tags(){
+    void tag06_lists_own_tags(){
         List<Tag> tagList = List.of(
                 Tag.create(
                         userId,
@@ -75,7 +75,7 @@ class FindAllTagsUseCaseTest {
     }
 
     @Test
-    void should_return_empty_array_if_not_found(){
+    void tag06_returns_empty_list(){
         List<Tag> emptyList = List.of();
 
         when(tagRepository.findAllByUserId(userId))

@@ -7,6 +7,7 @@ import com.dmoney.dmoney.auth.infrastructure.security.JwtAuthenticationFilter;
 import com.dmoney.dmoney.auth.infrastructure.security.JwtTokenParser;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException;
 import com.dmoney.dmoney.shared.domain.exceptions.UnauthenticatedException;
+import com.dmoney.dmoney.shared.domain.exceptions.ValidationException;
 import com.dmoney.dmoney.shared.domain.models.UserId;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -46,7 +47,7 @@ public class AuthControllerTest {
     @Nested
     class RegisterControllerTest{
         @Test
-        void should_return_user_id_and_status_201_when_register() throws Exception{
+        void auth01_returns_user_id_and_201() throws Exception{
             UserId userId = UserId.newId();
             String json = """
                         {
@@ -71,7 +72,7 @@ public class AuthControllerTest {
                             command.name().equals("Name")));
         }
         @Test
-        void should_return_400_when_email_is_blank() throws Exception {
+        void auth02_rejects_blank_email() throws Exception {
             mockMvc.perform(post("/auth/register")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
@@ -85,7 +86,7 @@ public class AuthControllerTest {
         }
 
         @Test
-        void should_return_400_when_password_is_blank() throws Exception {
+        void auth09_rejects_blank_password() throws Exception {
             mockMvc.perform(post("/auth/register")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
@@ -99,7 +100,7 @@ public class AuthControllerTest {
         }
 
         @Test
-        void should_return_400_when_name_is_blank() throws Exception {
+        void auth08_rejects_blank_name() throws Exception {
             mockMvc.perform(post("/auth/register")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
@@ -113,7 +114,7 @@ public class AuthControllerTest {
         }
 
         @Test
-        void should_return_409_when_email_already_exists() throws Exception {
+        void auth03_returns_409_on_duplicate_email() throws Exception {
             when(registerUserUseCase.execute(any()))
                     .thenThrow(new ResourceAlreadyExistsException("Email", "value", "test@email.com"));
 
@@ -130,7 +131,25 @@ public class AuthControllerTest {
         }
 
         @Test
-        void should_return_400_when_malformed_json() throws Exception {
+        void auth09_returns_400_when_password_is_too_short() throws Exception {
+            when(registerUserUseCase.execute(any()))
+                    .thenThrow(new ValidationException("Password must be at least 8 characters"));
+
+            mockMvc.perform(post("/auth/register")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("""
+                                {
+                                    "email": "test@email.com",
+                                    "password": "short",
+                                    "name": "John Doe"
+                                }
+                            """))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.status").value(400));
+        }
+
+        @Test
+        void returns_400_when_json_is_malformed() throws Exception {
             mockMvc.perform(post("/auth/register")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
@@ -143,7 +162,7 @@ public class AuthControllerTest {
         }
 
         @Test
-        void should_return_500_when_unexpected_error() throws Exception {
+        void returns_500_when_unexpected_error() throws Exception {
             when(registerUserUseCase.execute(any()))
                     .thenThrow(new RuntimeException("Unexpected error"));
 
@@ -164,7 +183,7 @@ public class AuthControllerTest {
     class LoginControllerTests {
 
         @Test
-        void should_login_and_return_200_with_token() throws Exception {
+        void auth05_returns_token() throws Exception {
             String token = "eyJhbGciOiJIUzI1NiJ9.token";
 
             when(loginUserUseCase.execute(any()))
@@ -188,7 +207,7 @@ public class AuthControllerTest {
         }
 
         @Test
-        void should_return_400_when_email_is_blank() throws Exception {
+        void auth02_rejects_blank_email_on_login() throws Exception {
             mockMvc.perform(post("/auth/login")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
@@ -201,7 +220,7 @@ public class AuthControllerTest {
         }
 
         @Test
-        void should_return_400_when_password_is_blank() throws Exception {
+        void returns_400_when_password_is_blank() throws Exception {
             mockMvc.perform(post("/auth/login")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
@@ -214,7 +233,7 @@ public class AuthControllerTest {
         }
 
         @Test
-        void should_return_401_when_invalid_credentials() throws Exception {
+        void auth06_returns_401_on_invalid_credentials() throws Exception {
             when(loginUserUseCase.execute(any()))
                     .thenThrow(new UnauthenticatedException("Invalid credentials"));
 
@@ -230,7 +249,7 @@ public class AuthControllerTest {
         }
 
         @Test
-        void should_return_400_when_malformed_json() throws Exception {
+        void returns_400_when_json_is_malformed_on_login() throws Exception {
             mockMvc.perform(post("/auth/login")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content("""
@@ -243,7 +262,7 @@ public class AuthControllerTest {
         }
 
         @Test
-        void should_return_500_when_unexpected_error() throws Exception {
+        void returns_500_when_unexpected_error_on_login() throws Exception {
             when(loginUserUseCase.execute(any()))
                     .thenThrow(new RuntimeException("Unexpected error"));
 

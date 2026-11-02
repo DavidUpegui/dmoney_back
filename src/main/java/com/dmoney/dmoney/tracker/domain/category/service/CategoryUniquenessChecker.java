@@ -4,9 +4,7 @@ import com.dmoney.dmoney.shared.domain.exceptions.ResourceAlreadyExistsException
 import com.dmoney.dmoney.shared.domain.models.UserId;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
 import com.dmoney.dmoney.tracker.domain.category.repository.CategoryRepository;
-import org.springframework.stereotype.Service;
 
-@Service
 public class CategoryUniquenessChecker {
     private final CategoryRepository categoryRepository;
 

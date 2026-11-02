@@ -15,6 +15,8 @@ public class Category {
     private CategoryName name;
     private CategoryDescription description;
     private CategoryType categoryType;
+    private CategoryIcon icon;
+    private CategoryColor color;
     private final Set<Subcategory> subcategories = new HashSet<>();
 
     private Category(
@@ -22,40 +24,44 @@ public class Category {
             CategoryId id,
             CategoryName name,
             CategoryDescription description,
-            CategoryType categoryType
-    ){
-        this.userId = Objects.requireNonNull(userId);
-        this.id = Objects.requireNonNull(id);
-        this.name = Objects.requireNonNull(name);
-        this.description = Objects.requireNonNull(description);
-        this.categoryType = Objects.requireNonNull(categoryType);
-    }
-
-    private Category(
-            UserId userId,
-            CategoryId id,
-            CategoryName name,
-            CategoryDescription description,
             Set<Subcategory> subcategories,
-            CategoryType categoryType
+            CategoryType categoryType,
+            CategoryIcon icon,
+            CategoryColor color
     ) {
         this.userId = Objects.requireNonNull(userId);
         this.id = Objects.requireNonNull(id);
         this.name = Objects.requireNonNull(name);
         this.description = Objects.requireNonNull(description);
+        this.categoryType = Objects.requireNonNull(categoryType);
+        this.icon = icon;
+        this.color = color;
         this.subcategories.addAll(
                 Objects.requireNonNull(subcategories)
         );
-        this.categoryType = Objects.requireNonNull(categoryType);
     }
 
     public static Category create(UserId userId, CategoryName name, CategoryDescription description, CategoryType categoryType){
+        return create(userId, name, description, categoryType, null, null);
+    }
+
+    public static Category create(
+            UserId userId,
+            CategoryName name,
+            CategoryDescription description,
+            CategoryType categoryType,
+            CategoryIcon icon,
+            CategoryColor color
+    ){
         return new Category(
                 userId,
                 CategoryId.newId(),
                 name,
                 description,
-                categoryType
+                Set.of(),
+                categoryType,
+                icon,
+                color
         );
     }
 
@@ -64,14 +70,18 @@ public class Category {
                               CategoryName name,
                               CategoryDescription description,
                               Set<Subcategory> subcategories,
-                                     CategoryType categoryType){
+                              CategoryType categoryType,
+                              CategoryIcon icon,
+                              CategoryColor color){
         return new Category(
                 userId,
                 categoryId,
                 name,
                 description,
                 subcategories,
-                categoryType
+                categoryType,
+                icon,
+                color
         );
     }
 
@@ -87,7 +97,24 @@ public class Category {
         this.categoryType = type;
     }
 
+    public void changeIcon(CategoryIcon icon){
+        this.icon = icon;
+    }
+
+    public void changeColor(CategoryColor color){
+        this.color = color;
+    }
+
     public Subcategory addSubcategory(SubcategoryName name, SubcategoryDescription description){
+        return addSubcategory(name, description, null, null);
+    }
+
+    public Subcategory addSubcategory(
+            SubcategoryName name,
+            SubcategoryDescription description,
+            CategoryIcon icon,
+            CategoryColor color
+    ){
         Objects.requireNonNull(name);
         Objects.requireNonNull(description);
 
@@ -97,7 +124,9 @@ public class Category {
         Subcategory subcategory = new Subcategory(
                 SubcategoryId.newId(),
                 name,
-                description
+                description,
+                icon,
+                color
         );
         subcategories.add(subcategory);
 
@@ -167,5 +196,11 @@ public class Category {
     }
     public CategoryType categoryType(){
         return this.categoryType;
+    }
+    public CategoryIcon icon(){
+        return this.icon;
+    }
+    public CategoryColor color(){
+        return this.color;
     }
 }

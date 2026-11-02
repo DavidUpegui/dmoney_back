@@ -1,78 +1,39 @@
-# Feature: <Feature Name>
+# <Capability>
 
-- **Status:** `draft`
-- **Folder:** `NNN-<feature-name>`
-- **Related module:** `tracker` | `auth`
+<Who uses it and what problem it solves. Two or three lines.>
 
-## 1. Overview
+## Requirements
 
-A short paragraph describing what this feature does and why it exists. Who are
-the actors, and what problem does it solve?
+- **XXX01** — <One verifiable guarantee, in business language.>
+- **XXX02** — <Another one. If it needs a second rule, it needs a second ID.>
 
-## 2. Requirements
+## API Contract
 
-### Functional (FR)
+| Method | Path | Req | Success | Errors |
+|--------|------|-----|---------|--------|
+| `POST` | `/api/<resource>` | XXX01, XXX02 | `201` | `400`, `401`, `409` |
 
-- **FR-1** — Description of a required capability.
-- **FR-2** — ...
-
-### Non-functional (NFR)
-
-- **NFR-1** — Security: only the authenticated owner can access their resources.
-- **NFR-2** — Performance / validation / etc.
-
-## 3. API Contract
-
-| Method | Path | Description | Auth |
-|--------|------|-------------|------|
-| `POST` | `/api/<resource>` | Create | required |
-| `GET`  | `/api/<resource>` | List | required |
-
-### Request / Response examples
+### Request / Response
 
 ```json
 POST /api/<resource>
 { "field": "value" }
 ```
 
-```json
-201 Created
-{ "id": "..." }
-```
+### Errors
 
-### Status codes
+All errors use the `ApiError` body (`status`, `error`, `message`,
+`timestamp`).
 
-- `201` — created
-- `400` — validation error
-- `401` — unauthenticated
-- `404` — resource not found
-
-## 4. Data Model
+## Data Model
 
 | Entity | Fields | Constraints |
 |--------|--------|-------------|
-| `X`    | `id`, ... | `id` UUID PK, etc. |
+| `X`    | `id`, ... | `id` UUID PK, ... |
 
-Value objects (immutable, self-validating): list each with its invariants.
+Value objects are immutable and self-validating. List each one with its
+invariants.
 
-## 5. Business Rules & Validation
+## Out of Scope
 
-- Rules stated as testable statements.
-- Ownership: every query/command is scoped by `UserId`.
-
-## 6. Edge Cases
-
-- Empty / null inputs.
-- Duplicate names.
-- Missing referenced resources.
-- Case sensitivity.
-
-## 7. Acceptance Criteria
-
-Each criterion maps to a test.
-
-- **AC-1** — Given X, when Y, then Z.
-
-## 8. Out of Scope
-
-- Things deliberately not included in this feature.
+- <Deliberately excluded. Keep it short.>

@@ -8,7 +8,7 @@ class BCryptPasswordHasherTest {
     private final BCryptPasswordHasher hasher = new BCryptPasswordHasher();
 
     @Test
-    void should_hash_password() {
+    void auth04_hashes_password() {
         String raw = "password123";
 
         String hashed = hasher.hash(raw);
@@ -18,7 +18,7 @@ class BCryptPasswordHasherTest {
     }
 
     @Test
-    void should_match_password_with_hash() {
+    void auth04_matches_password() {
         String raw = "password123";
         String hashed = hasher.hash(raw);
 
@@ -26,7 +26,7 @@ class BCryptPasswordHasherTest {
     }
 
     @Test
-    void should_not_match_wrong_password() {
+    void auth04_rejects_wrong_password() {
         String raw = "password123";
         String hashed = hasher.hash(raw);
 

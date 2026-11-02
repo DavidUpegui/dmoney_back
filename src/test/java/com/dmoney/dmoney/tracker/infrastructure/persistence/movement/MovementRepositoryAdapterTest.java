@@ -73,7 +73,7 @@ class MovementRepositoryAdapterTest {
     @Nested
     class SaveMovementRepositoryAdapterTest {
         @Test
-        void should_persist_movement_and_return_mapped_domain(){
+        void mov01_persists_movement(){
             Movement toCreate = newMovement(UserId.newId());
 
             Movement created = adapter.save(toCreate);
@@ -92,7 +92,7 @@ class MovementRepositoryAdapterTest {
     @Nested
     class FindAllByUserIdMovementRepositoryAdapterTest {
         @Test
-        void should_find_only_movements_belonging_to_user(){
+        void mov08_finds_only_own(){
             UserId userId = UserId.newId();
             Movement own = newMovement(userId);
             Movement foreign = newMovement(UserId.newId());
@@ -107,7 +107,7 @@ class MovementRepositoryAdapterTest {
         }
 
         @Test
-        void should_return_empty_list_when_no_movements_found(){
+        void mov08_returns_empty(){
             List<Movement> found = adapter.findAllByUserId(UserId.newId(), emptyFilter());
 
             assertTrue(found.isEmpty());
@@ -139,7 +139,7 @@ class MovementRepositoryAdapterTest {
         }
 
         @Test
-        void should_filter_by_category(){
+        void mov12_filters_by_category(){
             List<Movement> found = adapter.findAllByUserId(userId,
                     MovementFilter.of(List.of(food.value().toString()), null, null, null, null, null, null));
 
@@ -147,7 +147,7 @@ class MovementRepositoryAdapterTest {
         }
 
         @Test
-        void should_filter_by_subcategory(){
+        void mov13_filters_by_subcategory(){
             List<Movement> found = adapter.findAllByUserId(userId,
                     MovementFilter.of(null, List.of(groceries.value().toString()), null, null, null, null, null));
 
@@ -155,7 +155,7 @@ class MovementRepositoryAdapterTest {
         }
 
         @Test
-        void should_filter_by_tag(){
+        void mov14_filters_by_tag(){
             List<Movement> found = adapter.findAllByUserId(userId,
                     MovementFilter.of(null, null, List.of(important.value().toString()), null, null, null, null));
 
@@ -163,7 +163,7 @@ class MovementRepositoryAdapterTest {
         }
 
         @Test
-        void should_filter_by_multiple_categories(){
+        void mov12_filters_by_multiple_categories(){
             List<Movement> found = adapter.findAllByUserId(userId,
                     MovementFilter.of(
                             List.of(food.value().toString(), transport.value().toString()),
@@ -174,7 +174,7 @@ class MovementRepositoryAdapterTest {
         }
 
         @Test
-        void should_filter_by_any_of_multiple_tags(){
+        void mov14_filters_by_any_tag(){
             TagId secondTag = TagId.newId();
             Movement second = adapter.save(movement(
                     userId, food, SubcategoryId.newId(), MovementType.OUTCOME,
@@ -191,7 +191,7 @@ class MovementRepositoryAdapterTest {
         }
 
         @Test
-        void should_filter_by_type(){
+        void mov15_filters_by_type(){
             Movement salary = adapter.save(movement(
                     userId, CategoryId.newId(), SubcategoryId.newId(), MovementType.INCOME,
                     "July salary", LocalDate.of(2026, 7, 1), Set.of()
@@ -209,7 +209,7 @@ class MovementRepositoryAdapterTest {
         }
 
         @Test
-        void should_filter_by_date_range(){
+        void mov16_filters_by_date_range(){
             List<Movement> found = adapter.findAllByUserId(userId,
                     MovementFilter.of(null, null, null, null,
                             LocalDate.of(2026, 7, 15), LocalDate.of(2026, 7, 31), null));
@@ -218,7 +218,7 @@ class MovementRepositoryAdapterTest {
         }
 
         @Test
-        void should_search_by_description_case_insensitively(){
+        void mov17_searches_case_insensitively(){
             List<Movement> found = adapter.findAllByUserId(userId,
                     MovementFilter.of(null, null, null, null, null, null, "tAxI"));
 
@@ -226,7 +226,7 @@ class MovementRepositoryAdapterTest {
         }
 
         @Test
-        void should_combine_filters_with_and(){
+        void mov18_combines_with_and(){
             List<Movement> found = adapter.findAllByUserId(userId,
                     MovementFilter.of(List.of(transport.value().toString()), null, null, "OUTCOME",
                             LocalDate.of(2026, 7, 20), LocalDate.of(2026, 7, 20), null));
@@ -235,7 +235,7 @@ class MovementRepositoryAdapterTest {
         }
 
         @Test
-        void should_not_return_other_users_movements(){
+        void mov20_does_not_return_other_users(){
             adapter.save(movement(
                     UserId.newId(), food, groceries, MovementType.OUTCOME,
                     "Foreign groceries", LocalDate.of(2026, 7, 14), Set.of()
@@ -248,7 +248,7 @@ class MovementRepositoryAdapterTest {
         }
 
         @Test
-        void should_return_empty_when_no_match(){
+        void mov18_returns_empty_when_no_match(){
             List<Movement> found = adapter.findAllByUserId(userId,
                     MovementFilter.of(null, null, null, "INCOME", null, null, null));
 
@@ -259,7 +259,7 @@ class MovementRepositoryAdapterTest {
     @Nested
     class FindByUserIdAndIdMovementRepositoryAdapterTest {
         @Test
-        void should_find_movement_by_id(){
+        void mov09_finds_by_id(){
             UserId userId = UserId.newId();
             Movement toFind = newMovement(userId);
             adapter.save(toFind);
@@ -271,7 +271,7 @@ class MovementRepositoryAdapterTest {
         }
 
         @Test
-        void should_return_empty_when_movement_not_found(){
+        void mov09_returns_empty_for_unknown(){
             Optional<Movement> found = adapter.findByUserIdAndId(
                     UserId.newId(),
                     MovementId.newId()
@@ -284,7 +284,7 @@ class MovementRepositoryAdapterTest {
     @Nested
     class DeleteByUserIdAndIdMovementRepositoryAdapterTest {
         @Test
-        void should_delete_movement_by_id(){
+        void mov11_deletes_by_id(){
             UserId userId = UserId.newId();
             Movement toDelete = newMovement(userId);
             adapter.save(toDelete);
@@ -298,13 +298,39 @@ class MovementRepositoryAdapterTest {
         }
 
         @Test
-        void should_return_false_when_movement_not_deleted(){
+        void mov11_reports_missing(){
             boolean deleted = adapter.deleteByUserIdAndId(
                     UserId.newId(),
                     MovementId.newId()
             );
 
             assertThat(deleted).isFalse();
+        }
+    }
+
+    @Nested
+    class ExistsByCategoryAndSubcategoryMovementRepositoryAdapterTest {
+        @Test
+        void cat11_and_cat16_report_movements_for_the_owner_only(){
+            UserId owner = UserId.newId();
+            UserId other = UserId.newId();
+            CategoryId categoryId = CategoryId.newId();
+            SubcategoryId subcategoryId = SubcategoryId.newId();
+
+            adapter.save(movement(
+                    owner,
+                    categoryId,
+                    subcategoryId,
+                    MovementType.OUTCOME,
+                    "Rent",
+                    LocalDate.of(2026, 7, 14),
+                    Set.of()
+            ));
+
+            assertThat(adapter.existsByUserIdAndCategoryId(owner, categoryId)).isTrue();
+            assertThat(adapter.existsByUserIdAndSubcategoryId(owner, subcategoryId)).isTrue();
+            assertThat(adapter.existsByUserIdAndCategoryId(other, categoryId)).isFalse();
+            assertThat(adapter.existsByUserIdAndSubcategoryId(other, subcategoryId)).isFalse();
         }
     }
 }

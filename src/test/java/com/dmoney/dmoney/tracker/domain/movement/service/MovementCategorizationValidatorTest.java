@@ -63,7 +63,7 @@ class MovementCategorizationValidatorTest {
     }
 
     @Test
-    void shouldPassWhenCategorySubcategoryAndTagsAreValid(){
+    void mov05_accepts_own_category(){
         when(categoryRepository.findByUserIdAndId(userId, category.id()))
                 .thenReturn(Optional.of(category));
         when(tagRepository.existsByUserIdAndId(userId, tagId))
@@ -74,7 +74,7 @@ class MovementCategorizationValidatorTest {
     }
 
     @Test
-    void shouldPassWhenTagsAreEmpty(){
+    void mov07_accepts_no_tags(){
         when(categoryRepository.findByUserIdAndId(userId, category.id()))
                 .thenReturn(Optional.of(category));
 
@@ -83,7 +83,7 @@ class MovementCategorizationValidatorTest {
     }
 
     @Test
-    void shouldThrowWhenCategoryNotFound(){
+    void mov05_rejects_foreign_category(){
         CategoryId unknownCategoryId = CategoryId.newId();
         when(categoryRepository.findByUserIdAndId(userId, unknownCategoryId))
                 .thenReturn(Optional.empty());
@@ -93,7 +93,7 @@ class MovementCategorizationValidatorTest {
     }
 
     @Test
-    void shouldThrowWhenSubcategoryDoesNotBelongToCategory(){
+    void mov06_rejects_mismatched_subcategory(){
         SubcategoryId foreignSubcategoryId = SubcategoryId.newId();
         when(categoryRepository.findByUserIdAndId(userId, category.id()))
                 .thenReturn(Optional.of(category));
@@ -103,7 +103,7 @@ class MovementCategorizationValidatorTest {
     }
 
     @Test
-    void shouldThrowWhenTagNotFound(){
+    void mov07_rejects_foreign_tag(){
         when(categoryRepository.findByUserIdAndId(userId, category.id()))
                 .thenReturn(Optional.of(category));
         when(tagRepository.existsByUserIdAndId(userId, tagId))

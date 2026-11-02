@@ -13,6 +13,10 @@ public interface MovementJpaRepository extends JpaRepository<MovementEntity, UUI
 
     Optional<MovementEntity> findByUserIdAndId(UUID userId, UUID id);
 
+    boolean existsByUserIdAndCatId(UUID userId, UUID catId);
+
+    boolean existsByUserIdAndSubcatId(UUID userId, UUID subcatId);
+
     @Modifying(clearAutomatically = true)
     @Transactional
     int deleteByUserIdAndId(UUID userId, UUID id);

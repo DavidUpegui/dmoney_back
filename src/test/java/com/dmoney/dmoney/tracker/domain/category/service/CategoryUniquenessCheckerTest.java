@@ -32,7 +32,7 @@ class CategoryUniquenessCheckerTest {
     }
 
     @Test
-    void should_throw_exception_when_name_already_exists() {
+    void cat05_rejects_existing_name() {
         CategoryName name = CategoryName.from("Food");
 
         when(categoryRepository.existsByUserIdAndNameIgnoreCase(userId, name))
@@ -43,7 +43,7 @@ class CategoryUniquenessCheckerTest {
     }
 
     @Test
-    void should_not_throw_exception_when_name_does_not_exist() {
+    void cat05_accepts_new_name() {
         CategoryName name = CategoryName.from("Food");
 
         when(categoryRepository.existsByUserIdAndNameIgnoreCase(userId, name))
@@ -54,7 +54,7 @@ class CategoryUniquenessCheckerTest {
 
 
     @Test
-    void should_check_when_name_is_different() {
+    void cat05_checks_changed_name() {
         CategoryName newName = CategoryName.from("Transport");
         CategoryName currentName = CategoryName.from("Food");
 
@@ -67,7 +67,7 @@ class CategoryUniquenessCheckerTest {
     }
 
     @Test
-    void should_not_check_when_name_is_the_same() {
+    void cat05_skips_same_name() {
         CategoryName name = CategoryName.from("Food");
 
         assertDoesNotThrow(() -> checker.check(userId, name, name));
@@ -76,7 +76,7 @@ class CategoryUniquenessCheckerTest {
     }
 
     @Test
-    void should_throw_exception_when_new_name_already_exists() {
+    void cat05_rejects_existing_changed_name() {
         CategoryName newName = CategoryName.from("Transport");
         CategoryName currentName = CategoryName.from("Food");
 

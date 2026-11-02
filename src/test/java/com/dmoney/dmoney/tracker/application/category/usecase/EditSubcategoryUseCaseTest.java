@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -55,7 +56,7 @@ class EditSubcategoryUseCaseTest {
     }
 
     @Test
-    void should_edit_subcategory_and_save_category(){
+    void cat15_updates_subcategory(){
         CategoryId categoryId = category.id();
         SubcategoryId subcategoryId = subcategory.id();
 
@@ -66,7 +67,9 @@ class EditSubcategoryUseCaseTest {
                 categoryId.value().toString(),
                 subcategoryId.value().toString(),
                 newSubcategoryName,
-                newSubcategoryDescription
+                newSubcategoryDescription,
+                null,
+                null
         );
 
         when(categoryLoader.load(userId, categoryId))
@@ -88,7 +91,7 @@ class EditSubcategoryUseCaseTest {
     }
 
     @Test
-    void should_edit_only_subcategory_name_and_save_category(){
+    void cat15_updates_only_name(){
         CategoryId categoryId = category.id();
         SubcategoryId subcategoryId = subcategory.id();
 
@@ -100,6 +103,8 @@ class EditSubcategoryUseCaseTest {
                 categoryId.value().toString(),
                 subcategoryId.value().toString(),
                 newSubcategoryName,
+                null,
+                null,
                 null
         );
 
@@ -122,7 +127,7 @@ class EditSubcategoryUseCaseTest {
     }
 
     @Test
-    void should_edit_only_subcategory_description_and_save_category(){
+    void cat15_updates_only_description(){
         CategoryId categoryId = category.id();
         SubcategoryId subcategoryId = subcategory.id();
 
@@ -133,7 +138,9 @@ class EditSubcategoryUseCaseTest {
                 categoryId.value().toString(),
                 subcategoryId.value().toString(),
                 null,
-                newSubcategoryDescription
+                newSubcategoryDescription,
+                null,
+                null
         );
 
         when(categoryLoader.load(userId, categoryId))
@@ -155,7 +162,7 @@ class EditSubcategoryUseCaseTest {
     }
 
     @Test
-    void should_propagate_category_not_found_exception(){
+    void cat17_rejects_foreign_category_on_subcategory_edit(){
         CategoryId anyId = CategoryId.newId();
         SubcategoryId subcategoryId = subcategory.id();
 
@@ -166,7 +173,9 @@ class EditSubcategoryUseCaseTest {
                 anyId.value().toString(),
                 subcategoryId.value().toString(),
                 newSubcategoryName,
-                newSubcategoryDescription
+                newSubcategoryDescription,
+                null,
+                null
         );
 
         when(categoryLoader.load(userId, anyId))
@@ -184,7 +193,7 @@ class EditSubcategoryUseCaseTest {
     }
 
     @Test
-    void should_propagate_subcategory_not_found_exception(){
+    void cat15_rejects_missing_subcategory(){
         CategoryId categoryId = category.id();
         SubcategoryId anyId = SubcategoryId.newId();
 
@@ -195,7 +204,9 @@ class EditSubcategoryUseCaseTest {
                 categoryId.value().toString(),
                 anyId.value().toString(),
                 newSubcategoryName,
-                newSubcategoryDescription
+                newSubcategoryDescription,
+                null,
+                null
         );
 
         when(categoryLoader.load(userId, categoryId))
@@ -207,4 +218,81 @@ class EditSubcategoryUseCaseTest {
         verify(categoryLoader).load(userId, categoryId);
         verify(categoryRepository, never()).save(any());
     }
+
+    @Test
+    void cat22_updatesSubcategoryIconAndColor() {
+        CategoryId categoryId = category.id();
+        SubcategoryId subcategoryId = subcategory.id();
+
+        EditSubcategoryCommand command = new EditSubcategoryCommand(
+                categoryId.value().toString(),
+                subcategoryId.value().toString(),
+                null,
+                null,
+                "carrot",
+                "green"
+        );
+
+        when(categoryLoader.load(userId, categoryId)).thenReturn(category);
+        when(categoryRepository.save(any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        SubcategoryResult result = editSubcategoryUseCase.execute(command);
+
+        assertEquals("carrot", result.icon());
+        assertEquals("green", result.color());
+    }
+
+    @Test
+    void cat22_clearsSubcategoryIconToInherit() {
+        CategoryId categoryId = category.id();
+        SubcategoryId subcategoryId = subcategory.id();
+        subcategory.changeIcon(CategoryIcon.from("carrot"));
+        subcategory.changeColor(CategoryColor.from("green"));
+
+        EditSubcategoryCommand command = new EditSubcategoryCommand(
+                categoryId.value().toString(),
+                subcategoryId.value().toString(),
+                null,
+                null,
+                "",
+                ""
+        );
+
+        when(categoryLoader.load(userId, categoryId)).thenReturn(category);
+        when(categoryRepository.save(any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        SubcategoryResult result = editSubcategoryUseCase.execute(command);
+
+        assertNull(result.icon());
+        assertNull(result.color());
+    }
+
+    @Test
+    void cat22_keepsSubcategoryVisualWhenAbsent() {
+        CategoryId categoryId = category.id();
+        SubcategoryId subcategoryId = subcategory.id();
+        subcategory.changeIcon(CategoryIcon.from("carrot"));
+        subcategory.changeColor(CategoryColor.from("green"));
+
+        EditSubcategoryCommand command = new EditSubcategoryCommand(
+                categoryId.value().toString(),
+                subcategoryId.value().toString(),
+                null,
+                null,
+                null,
+                null
+        );
+
+        when(categoryLoader.load(userId, categoryId)).thenReturn(category);
+        when(categoryRepository.save(any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        SubcategoryResult result = editSubcategoryUseCase.execute(command);
+
+        assertEquals("carrot", result.icon());
+        assertEquals("green", result.color());
+    }
+
 }

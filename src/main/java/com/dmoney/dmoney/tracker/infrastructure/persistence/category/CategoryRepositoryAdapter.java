@@ -5,6 +5,7 @@ import com.dmoney.dmoney.tracker.domain.category.model.Category;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryId;
 import com.dmoney.dmoney.tracker.domain.category.model.CategoryName;
 import com.dmoney.dmoney.tracker.domain.category.repository.CategoryRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -42,9 +43,14 @@ public class CategoryRepositoryAdapter implements CategoryRepository {
         return jpaRepo.existsByUserIdAndNameIgnoreCase(userId.value(), name.value());
     }
 
+    @Transactional
     @Override
     public boolean deleteByUserIdAndId(UserId userId, CategoryId id) {
-        int deleted = jpaRepo.deleteByUserIdAndId(userId.value(), id.value());
-        return deleted > 0;
+        Optional<CategoryEntity> entity = jpaRepo.findByUserIdAndId(userId.value(), id.value());
+        if (entity.isEmpty()) {
+            return false;
+        }
+        jpaRepo.delete(entity.get());
+        return true;
     }
 }

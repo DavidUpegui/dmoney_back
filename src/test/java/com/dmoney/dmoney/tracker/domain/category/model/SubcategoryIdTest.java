@@ -36,6 +36,11 @@ class SubcategoryIdTest {
     }
 
     @Test
+    void shouldThrowWhenUuidIsMalformed() {
+        assertThrows(ValidationException.class, () -> SubcategoryId.from("not-a-uuid"));
+    }
+
+    @Test
     void shouldGenerateDifferentIds() {
         SubcategoryId id1 = SubcategoryId.newId();
         SubcategoryId id2 = SubcategoryId.newId();

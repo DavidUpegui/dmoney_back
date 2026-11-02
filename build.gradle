@@ -81,6 +81,7 @@ jacocoTestReport {
 }
 
 jacocoTestCoverageVerification{
+	dependsOn test
 	classDirectories.setFrom(
 			files(classDirectories.files.collect {
 				fileTree(dir: it, exclude: excludedClasses)
@@ -95,9 +96,222 @@ jacocoTestCoverageVerification{
 	}
 }
 
-//check.dependsOn jacocoTestCoverageVerification
+check.dependsOn jacocoTestCoverageVerification
 
 tasks.named('test') {
 	useJUnitPlatform()
 	finalizedBy jacocoTestReport
+}
+
+// Requirements audit: cross-checks the IDs in specs/ against the test results.
+// Read-only. See specs/README.md.
+def requirementIdPattern = ~/^-\s+\*\*([A-Z]{2,6}\d{2})\*\*/
+def taskBlockPattern = ~/^#{1,6}\s+([A-Z]{2,6}\d{2})\b/
+def validatedPattern = ~/^-\s+\[([ xX])\]\s+\*\*Validado\*\*/
+def uncheckedItemPattern = ~/^-\s+\[\s\]\s+/
+
+tasks.register('requirementsCheck') {
+	group = 'verification'
+	description = 'Cross-checks requirement IDs in specs/ against the test results (read-only).'
+	dependsOn 'test'
+
+	doLast {
+		def errors = []
+		def legacy = []
+		def requirements = [:]   // id -> spec path
+		def blocks = [:]         // id -> [validated, unchecked, file]
+
+		fileTree('specs') {
+			include '**/spec.md', '**/SYSTEM.md'
+			exclude '**/_template/**'
+		}.files.sort { it.path }.each { specFile ->
+			def relativeSpec = specFile.path.replace(projectDir.path + File.separator, '')
+
+			def ids = []
+			specFile.eachLine { line ->
+				def matcher = line =~ requirementIdPattern
+				if (matcher.find()) {
+					def id = matcher.group(1)
+					if (!ids.contains(id)) ids << id
+				}
+			}
+
+			if (ids.isEmpty()) {
+				legacy << relativeSpec
+				return
+			}
+
+			def tasksFile = specFile.name == 'SYSTEM.md'
+					? file('specs/tasks-system.md')
+					: new File(specFile.parentFile, 'tasks.md')
+
+			ids.each { id ->
+				if (requirements.containsKey(id)) {
+					errors << "duplicate requirement $id in $relativeSpec and ${requirements[id]}"
+				}
+				requirements[id] = relativeSpec
+			}
+
+			if (!tasksFile.exists()) {
+				errors << "$relativeSpec has ${ids.size()} requirement(s) but ${tasksFile.name} is missing"
+				return
+			}
+
+			def found = [:]
+			def current = null
+			tasksFile.eachLine { line ->
+				def header = line =~ taskBlockPattern
+				def validated = line =~ validatedPattern
+				def unchecked = line =~ uncheckedItemPattern
+				if (header.find()) {
+					current = [id: header.group(1), validated: false, unchecked: 0]
+					found[current.id] = current
+				} else if (current != null) {
+					if (validated.find()) {
+						current.validated = validated.group(1).toLowerCase() == 'x'
+					} else if (unchecked.find()) {
+						current.unchecked = current.unchecked + 1
+					}
+				}
+			}
+
+			ids.each { id ->
+				if (found.containsKey(id)) {
+					blocks[id] = found[id] + [file: tasksFile.name]
+				} else {
+					errors << "${tasksFile.name}: missing block for $id"
+				}
+			}
+			found.each { id, block ->
+				if (!ids.contains(id)) {
+					errors << "${tasksFile.name}: block $id is not a requirement in $relativeSpec"
+				}
+			}
+		}
+
+		def testsById = [:]
+		def resultsDir = file("${buildDir}/test-results")
+		if (resultsDir.exists()) {
+			fileTree(resultsDir) { include '**/*.xml' }.files.each { xml ->
+				def root = new groovy.xml.XmlSlurper(false, false).parse(xml)
+				root.'**'.findAll { it.name() == 'testcase' }.each { testcase ->
+					def name = testcase.@name.text()
+					def matcher = name =~ /(?i)^([a-z]{2,6}\d{2})[_\s-]/
+					if (matcher.find()) {
+						def status = 'pass'
+						if (!testcase.failure.isEmpty() || !testcase.error.isEmpty()) {
+							status = 'fail'
+						} else if (!testcase.skipped.isEmpty()) {
+							status = 'skip'
+						}
+						testsById.computeIfAbsent(matcher.group(1).toUpperCase(), { [] }) << [name: name, status: status]
+					}
+				}
+			}
+		}
+
+		def capabilities = []
+		def capabilitiesFile = file('specs/CAPABILITIES.md')
+		if (capabilitiesFile.exists()) {
+			capabilitiesFile.eachLine { line ->
+				def trimmed = line.trim()
+				if (!trimmed.startsWith('|')) return
+				def cells = trimmed.split('\\|', -1).collect { it.trim() }
+				if (cells.size() < 6) return
+				def capability = cells[1]
+				if (capability.isEmpty() || capability == 'Capability' || capability ==~ /^:?-+:?$/) return
+				capabilities << [
+						capability: capability,
+						context   : cells[2].replaceAll('`', '').trim(),
+						spec      : cells[3].replaceAll('`', '').trim(),
+						state     : cells[4].replaceAll('`', '').trim()
+				]
+			}
+		} else {
+			logger.warn('specs/CAPABILITIES.md is missing; capability coverage was not checked.')
+		}
+
+		capabilities.each { row ->
+			if (row.spec && row.spec != '—' && row.spec != '-') {
+				def specPath = file(row.spec)
+				if (!specPath.exists()) {
+					errors << "specs/CAPABILITIES.md: ${row.capability} points to ${row.spec}, which does not exist"
+				} else if (row.state == 'modeled' &&
+						fileTree(specPath) { include '**/spec.md' }.files.isEmpty()) {
+					errors << "specs/CAPABILITIES.md: ${row.capability} is 'modeled' but ${row.spec} has no spec.md"
+				}
+			}
+		}
+
+		fileTree('specs') {
+			include '**/spec.md'
+			exclude '**/_template/**'
+		}.files.each { specFile ->
+			def registered = capabilities.any { row ->
+				row.spec && row.spec != '—' && row.spec != '-' &&
+						specFile.parentFile.canonicalPath.startsWith(file(row.spec).canonicalPath)
+			}
+			if (!registered) {
+				def relativeSpec = specFile.path.replace(projectDir.path + File.separator, '')
+				errors << "$relativeSpec is not listed in specs/CAPABILITIES.md"
+			}
+		}
+
+		blocks.each { id, block ->
+			if (!block.validated) return
+			def tests = testsById[id] ?: []
+			if (block.unchecked > 0) {
+				errors << "${block.file} ($id): Validado is checked but ${block.unchecked} sub-item(s) are open"
+			}
+			if (tests.isEmpty()) {
+				errors << "${block.file} ($id): Validado is checked but no test name starts with ${id.toLowerCase()}_"
+			} else if (tests.any { it.status != 'pass' }) {
+				def bad = tests.findAll { it.status != 'pass' }.collect { "${it.name} (${it.status})" }
+				errors << "${block.file} ($id): Validado is checked but these tests are not green: ${bad.join(', ')}"
+			}
+		}
+
+		testsById.keySet().findAll { !requirements.containsKey(it) }.each { id ->
+			errors << "test '${testsById[id].first().name}' references $id, which is not a requirement in specs/"
+		}
+
+		def validated = requirements.keySet().count { blocks[it]?.validated }
+
+		if (capabilities) {
+			println ''
+			println 'Capability coverage'
+			println '-' * 64
+			capabilities.sort { it.capability }.each { row ->
+				def spec = (row.spec && row.spec != '—' && row.spec != '-') ? row.spec : '—'
+				println String.format('  %-12s %-9s %s', row.capability, row.state, spec)
+			}
+			def missingSpecs = capabilities.findAll { it.state == 'missing' }
+			if (missingSpecs) {
+				println "  Missing specs: ${missingSpecs.collect { it.capability }.join(', ')}"
+			}
+			println '-' * 64
+		}
+
+		println ''
+		println "Requirement coverage (${validated}/${requirements.size()} validated)"
+		println '-' * 64
+		requirements.keySet().sort().each { id ->
+			def tests = testsById[id] ?: []
+			def passed = tests.count { it.status == 'pass' }
+			def state = blocks[id]?.validated ? 'validado' : 'pendiente'
+			println String.format('  %-7s %2d tests  %2d pass   %s', id, tests.size(), passed, state)
+		}
+		println '-' * 64
+		if (legacy) {
+			println "Legacy specs without requirement IDs (skipped): ${legacy.join(', ')}"
+		}
+
+		if (!errors.isEmpty()) {
+			throw new GradleException('Requirement check failed:\n  - ' + errors.join('\n  - '))
+		}
+	}
+}
+
+tasks.named('check') {
+	dependsOn 'requirementsCheck'
 }

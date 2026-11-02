@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -46,13 +47,15 @@ class CreateCategoryUseCaseTest {
 
 
     @Test
-    void should_add_category_and_save() {
+    void cat01_creates_and_saves() {
 
         CreateCategoryCommand command =
                 new CreateCategoryCommand(
                         "new category",
                         "desc",
-                        "INCOME"
+                        "INCOME",
+                        null,
+                        null
                 );
 
         when(repository.save(any()))
@@ -68,9 +71,11 @@ class CreateCategoryUseCaseTest {
     }
 
     @Test
-    void should_throw_exception_when_category_already_exists(){
+    void cat05_rejects_duplicate_name(){
         CreateCategoryCommand categoryCommand =
-                new CreateCategoryCommand("existing","desc", "INCOME");
+                new CreateCategoryCommand("existing","desc", "INCOME",
+                    null,
+                    null);
 
         doThrow(new ResourceAlreadyExistsException("Category", "name", "existing"))
                 .when(uniquenessChecker).check(userId, CategoryName.from("existing"));
@@ -80,4 +85,45 @@ class CreateCategoryUseCaseTest {
 
         verify(repository, never()).save(any());
     }
+
+    @Test
+    void cat18_createsCategoryWithIconAndColor() {
+        CreateCategoryCommand command =
+                new CreateCategoryCommand(
+                        "new category",
+                        "desc",
+                        "INCOME",
+                        "utensils",
+                        "amber"
+                );
+
+        when(repository.save(any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        CategoryResult result = useCase.execute(command);
+
+        assertEquals("utensils", result.icon());
+        assertEquals("amber", result.color());
+    }
+
+    @Test
+    void cat19_blankColorIsStoredAsNull() {
+        CreateCategoryCommand command =
+                new CreateCategoryCommand(
+                        "new category",
+                        "desc",
+                        "INCOME",
+                        "utensils",
+                        "   "
+                );
+
+        when(repository.save(any()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        CategoryResult result = useCase.execute(command);
+
+        assertEquals("utensils", result.icon());
+        assertNull(result.color());
+    }
+
 }

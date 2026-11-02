@@ -16,6 +16,7 @@ public class RegisterUserUseCase {
     private final PasswordHasher passwordHasher;
 
     public UserId execute(UserRegistrationCommand command){
+        Password.from(command.password());
         UserEmail email = new UserEmail(command.email());
 
         userRepository.findByEmail(email)

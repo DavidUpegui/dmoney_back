@@ -3,6 +3,7 @@ package com.dmoney.dmoney.tracker.infrastructure.controller.movement;
 import com.dmoney.dmoney.auth.infrastructure.security.JwtAuthenticationFilter;
 import com.dmoney.dmoney.auth.infrastructure.security.JwtTokenParser;
 import com.dmoney.dmoney.shared.domain.exceptions.ResourceNotFoundException;
+import com.dmoney.dmoney.tracker.domain.category.exceptions.SubcategoryDoesNotBelongToCategoryException;
 import com.dmoney.dmoney.tracker.application.movement.response.MovementResponse;
 import com.dmoney.dmoney.tracker.application.movement.usecase.CreateMovementUseCase;
 import com.dmoney.dmoney.tracker.application.movement.usecase.DeleteMovementUseCase;
@@ -85,7 +86,7 @@ class MovementControllerTest {
     @Nested
     class CreateMovementControllerTest {
         @Test
-        void should_create_movement_and_return_201() throws Exception {
+        void mov01_returns_201() throws Exception {
             String json = """
                     {
                         "categoryId": "%s",
@@ -113,7 +114,7 @@ class MovementControllerTest {
         }
 
         @Test
-        void should_return_400_when_amount_is_not_positive() throws Exception {
+        void mov02_returns_400_on_non_positive() throws Exception {
             String json = """
                     {
                         "categoryId": "%s",
@@ -133,7 +134,7 @@ class MovementControllerTest {
         }
 
         @Test
-        void should_return_400_when_required_fields_missing() throws Exception {
+        void mov01_rejects_missing_fields() throws Exception {
             String json = """
                     {
                         "amount": 85.50
@@ -145,12 +146,37 @@ class MovementControllerTest {
                             .content(json))
                     .andExpect(status().isBadRequest());
         }
+
+        @Test
+        void sys03_returns400_when_subcategory_does_not_belong_to_category() throws Exception {
+            String json = """
+                    {
+                        "categoryId": "%s",
+                        "subcategoryId": "%s",
+                        "amount": 85.50,
+                        "type": "OUTCOME",
+                        "date": "2026-07-14"
+                    }
+                    """.formatted(CATEGORY_ID, SUBCATEGORY_ID);
+
+            when(createMovementUseCase.execute(any()))
+                    .thenThrow(new SubcategoryDoesNotBelongToCategoryException(
+                            CATEGORY_ID,
+                            SUBCATEGORY_ID
+                    ));
+
+            mockMvc.perform(post("/api/movements")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(json))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.status").value(400));
+        }
     }
 
     @Nested
     class FindAllMovementsControllerTest {
         @Test
-        void should_return_all_movements() throws Exception {
+        void mov08_returns_movements() throws Exception {
             when(findAllMovementsUseCase.execute(any(MovementFilter.class)))
                     .thenReturn(List.of(response()));
 
@@ -163,7 +189,7 @@ class MovementControllerTest {
         }
 
         @Test
-        void should_build_filter_from_query_params() throws Exception {
+        void mov18_builds_filter_from_query() throws Exception {
             when(findAllMovementsUseCase.execute(any(MovementFilter.class)))
                     .thenReturn(List.of(response()));
 
@@ -181,7 +207,7 @@ class MovementControllerTest {
         }
 
         @Test
-        void should_bind_multiple_category_and_tag_ids() throws Exception {
+        void mov12_binds_multiple_ids() throws Exception {
             when(findAllMovementsUseCase.execute(any(MovementFilter.class)))
                     .thenReturn(List.of(response()));
 
@@ -197,7 +223,7 @@ class MovementControllerTest {
         }
 
         @Test
-        void should_return_400_when_type_is_invalid() throws Exception {
+        void mov19_returns_400_on_invalid_type() throws Exception {
             mockMvc.perform(get("/api/movements")
                             .param("type", "FOO"))
                     .andExpect(status().isBadRequest());
@@ -207,7 +233,7 @@ class MovementControllerTest {
     @Nested
     class FindMovementByIdControllerTest {
         @Test
-        void should_return_movement_when_found() throws Exception {
+        void mov09_returns_movement() throws Exception {
             when(findMovementByIdUseCase.execute(MOVEMENT_ID)).thenReturn(response());
 
             mockMvc.perform(get("/api/movements/" + MOVEMENT_ID))
@@ -218,7 +244,7 @@ class MovementControllerTest {
         }
 
         @Test
-        void should_return_404_when_movement_not_found() throws Exception {
+        void mov09_returns_404() throws Exception {
             when(findMovementByIdUseCase.execute(MOVEMENT_ID))
                     .thenThrow(new ResourceNotFoundException("Movement", "id", MOVEMENT_ID));
 
@@ -230,7 +256,7 @@ class MovementControllerTest {
     @Nested
     class EditMovementControllerTest {
         @Test
-        void should_edit_movement() throws Exception {
+        void mov10_returns_updated_movement() throws Exception {
             String json = """
                     {
                         "amount": 99.99
@@ -252,7 +278,7 @@ class MovementControllerTest {
         }
 
         @Test
-        void should_return_404_when_movement_not_found() throws Exception {
+        void mov10_returns_404() throws Exception {
             String json = """
                     {
                         "amount": 99.99
@@ -269,7 +295,7 @@ class MovementControllerTest {
         }
 
         @Test
-        void should_return_400_when_amount_is_not_positive() throws Exception {
+        void mov02_returns_400_on_non_positive_edit() throws Exception {
             String json = """
                     {
                         "amount": -5
@@ -286,7 +312,7 @@ class MovementControllerTest {
     @Nested
     class DeleteMovementControllerTest {
         @Test
-        void should_delete_movement() throws Exception {
+        void mov11_returns_204() throws Exception {
             mockMvc.perform(delete("/api/movements/" + MOVEMENT_ID))
                     .andExpect(status().isNoContent());
 
@@ -294,7 +320,7 @@ class MovementControllerTest {
         }
 
         @Test
-        void should_return_404_when_movement_not_found() throws Exception {
+        void mov11_returns_404() throws Exception {
             doThrow(new ResourceNotFoundException("Movement", "id", MOVEMENT_ID))
                     .when(deleteMovementUseCase).execute(MOVEMENT_ID);
 

@@ -1,59 +1,128 @@
-# Spec-Driven Development (SDD)
+# Requirements-Driven Development
 
-This directory contains the specifications that drive the implementation of
-the `dmoney` backend. The rule is simple: **no code without a spec first**.
+No code without a requirement. A spec is not a planning document: it is the
+list of guarantees the back-end owes, and each one is verifiable by a test.
 
-## Structure
+There are two files per capability:
 
 ```
 specs/
-  README.md               # this file — conventions & workflow
-  _template/              # reusable spec scaffold
-    spec.md               # WHAT: requirements, API, data model, rules, acceptance
-    plan.md               # HOW: implementation plan mapped to code layers
-    tasks.md              # TRACKING: checklist of work items
-  001-movement/           # one folder per feature, numbered in build order
-    README.md             # index: slices + order/dependencies
-    001-crud/             # vertical slices (independently shippable)
-    002-filter/
+  CAPABILITIES.md        # capability → spec map, read by the audit
+  SYSTEM.md              # transversal requirements (SYS01...), written once
+  tasks-system.md        # work blocks for the SYS requirements
+  _template/
+  NNN-<capability>/
+    spec.md              # requirements + API contract + data model
+    tasks.md             # one block per requirement, closes with Validado
 ```
 
-Each feature gets a numbered folder (`NNN-kebab-case-name`). Features may
-contain multiple numbered **slices** — vertical, independently shippable
-pieces (e.g. CRUD vs filter). Numbers reflect build order, not priority.
+There is no `plan.md`. `tasks.md` is the plan: the order of its blocks is the
+order of the work, and the checked boxes are the record of what landed.
 
-## Workflow
+## Requirement IDs
 
-1. **Spec** — write `spec.md` before touching code: *requirements*, *API
-   contract*, *data model*, *business rules*, *edge cases*, and *acceptance
-   criteria*.
-2. **Plan** — break the spec into work items in `plan.md`, mapped to the
-   hexagonal layers (domain → application → infrastructure).
-3. **Implement** — work through `tasks.md`, ticking items off as they land.
-4. **Test** — every acceptance criterion maps to at least one test (see
-   `docs/testing.md`).
-5. **Verify** — `./gradlew clean build` + coverage ≥ 80% before marking done.
+- Capability prefix plus two digits: `TAG01`, `MOV01`, `CAT01`, `AUTH01`.
+- Transversal: `SYS01`, `SYS02`... in `SYSTEM.md`.
+- An ID is written once. Never renumber it, never reuse it. If a requirement
+  is dropped, strike it through and keep the number reserved.
+- One requirement is one verifiable sentence in business language. If it
+  needs another rule, it is another ID.
 
-## Golden rules
+## Capabilities
 
-- The spec is the source of truth; if code and spec disagree, reconcile them
-  explicitly (never leave them divergent).
-- API contracts are written against the actual endpoint paths (`/api/...`).
-- Business rules are stated as testable statements (Given/When/Then).
-- Split by **vertical slice**, never by layer.
-- Global rules (owner-scoping, security, Liquibase, testing) live in
-  `AGENTS.md`/`docs/` and are **not** repeated in every spec.
+`CAPABILITIES.md` lists every capability and the spec that covers it. The audit
+reports entries marked `missing` on every build. Adding a capability means
+adding a row; creating a spec folder that is not listed fails the audit.
 
-## Status markers
+## `spec.md`
 
-| Status         | Meaning                                  |
-|----------------|------------------------------------------|
-| `draft`        | Spec in progress, not yet implemented     |
-| `in-progress`  | Some tasks implemented, spec stable       |
-| `implemented`  | All tasks done and verified               |
+```markdown
+# <Capability>
 
-## Template
+<2-3 lines of context: who uses it and what problem it solves.>
+
+## Requirements
+
+- **TAG01** — <guarantee the system must provide, in business language.>
+
+## API Contract
+
+| Method | Path | Req | Success | Errors |
+|--------|------|-----|---------|--------|
+| `POST` | `/api/tags` | TAG01, TAG02 | `201` | `400`, `401`, `409` |
+
+## Data Model
+
+<Tables, columns, constraints, value objects and their invariants.>
+
+## Out of Scope
+
+<What was deliberately excluded. Keep it short.>
+```
+
+No dates, authors, versions, priorities or status fields. The requirement
+list is the bulk of the file; the rest is the technical contract needed to
+build it.
+
+## `tasks.md`
+
+One block per requirement, in execution order:
+
+```markdown
+## TAG02 — Name is unique per user
+- [x] Normalise the name for comparison (`TagName`, domain)
+- [x] Reject duplicates in `CreateTagUseCase` (application)
+- [x] Unique index `(user_id, lower(name))` (Liquibase)
+- [x] Map `DataIntegrityViolation` to 409 (infrastructure)
+- [x] **Validado** — `tag02_*` (5 tests)
+```
+
+Rules:
+
+- **`Validado` is the last line of every block.** The requirement is not done
+  while that box is unchecked.
+- It may only be checked when every box in the block is checked **and** the
+  tests that reference the ID pass.
+- If a requirement changes or one of its tests goes red, uncheck `Validado`
+  before doing anything else. The diff is the record of the change.
+- Sub-items are work, not requirements. Keep them short and name the layer.
+
+## Tests
+
+A test that verifies a requirement starts its name with the lowercase ID:
+
+```java
+void tag02_rejectsDuplicateNameForSameUser()
+```
+
+Several tests may cover one requirement, in any layer. See
+`docs/testing.md`. `grep -ri tag02` returns the tests and, from there, the
+implementation the requirement depends on.
+
+## Definition of done
+
+- A requirement: every box in its block checked plus `Validado` with evidence.
+- A capability: every ID in its `spec.md` has `Validado`.
+
+## Audit
 
 ```bash
-cp -r specs/_template specs/NNN-your-feature
+./gradlew requirementsCheck
 ```
+
+Read-only. Cross-checks requirement IDs against the Gradle test results and
+fails when: an ID has no block in `tasks.md`, a block does not match any
+requirement, a block is `Validado` with unchecked boxes, or `Validado` has no
+passing tests. It also lists the requirements that are still pending. It runs
+as part of `check`.
+
+## Splitting
+
+Split a capability into numbered slices when it has independent deliverables
+or more than ~15 requirements. Slices are vertical (shippable end to end),
+never by layer. A parent `README.md` lists the slices and their order.
+
+## Legacy
+
+A spec without requirement IDs is skipped by the audit. There are none left in
+this repository; new specs must use IDs from the start.

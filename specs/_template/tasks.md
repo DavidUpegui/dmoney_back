@@ -1,21 +1,17 @@
-# Tasks: <Feature Name>
+# Tasks: <Capability>
 
-Checklist of work items. Mark `[x]` when done.
+<!-- Optional. Only when there is a decision that is not obvious from the
+blocks themselves:
+## Approach
+- <e.g. the unique index lives in Liquibase because two instances can race.>
+-->
 
-## Spec
-- [ ] `spec.md` written and reviewed
+## XXX01 — <Requirement title>
+- [ ] <Work item> (`domain`)
+- [ ] <Work item> (`application`)
+- [ ] <Work item> (`infrastructure`)
+- [ ] **Validado** — `xxx01_*` (N tests)
 
-## Implementation
-- [ ] Domain layer done
-- [ ] Application layer done
-- [ ] Infrastructure layer done
-- [ ] Migrations done (if needed)
-
-## Tests
-- [ ] Value object tests
-- [ ] Use case tests
-- [ ] Controller / integration tests
-
-## Verification
-- [ ] `./gradlew clean build` passes
-- [ ] Coverage ≥ 80%
+## XXX02 — <Requirement title>
+- [ ] <Work item>
+- [ ] **Validado** — `xxx02_*` (N tests)

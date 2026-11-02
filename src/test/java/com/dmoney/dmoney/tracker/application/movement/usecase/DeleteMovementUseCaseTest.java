@@ -39,7 +39,7 @@ class DeleteMovementUseCaseTest {
     }
 
     @Test
-    void should_delete_movement(){
+    void mov11_deletes_movement(){
         String id = MovementId.newId().value().toString();
         when(movementRepository.deleteByUserIdAndId(any(), any())).thenReturn(true);
 
@@ -49,7 +49,7 @@ class DeleteMovementUseCaseTest {
     }
 
     @Test
-    void should_throw_when_movement_not_deleted(){
+    void mov11_rejects_missing_movement(){
         String id = MovementId.newId().value().toString();
         when(movementRepository.deleteByUserIdAndId(any(), any())).thenReturn(false);
 

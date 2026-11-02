@@ -14,7 +14,14 @@ public record TagId(
     }
 
     public static TagId from(String id){
-        return new TagId(UUID.fromString(id));
+        if(id == null || id.isBlank()){
+            throw new ValidationException("Invalid tag id: " + id);
+        }
+        try {
+            return new TagId(UUID.fromString(id));
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException("Invalid tag id: " + id);
+        }
     }
 
     public static TagId newId(){

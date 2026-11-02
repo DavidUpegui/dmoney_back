@@ -9,28 +9,28 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class SubcategoryDescriptionTest {
 
     @Test
-    void shouldCreateDescription(){
+    void cat12_creates_subcategory_description(){
         SubcategoryDescription description = new SubcategoryDescription("description");
 
         assertEquals("description", description.value());
     }
 
     @Test
-    void shouldCreateDescriptionFromValue(){
+    void cat12_creates_subcategory_description_from_value(){
         SubcategoryDescription description = SubcategoryDescription.from("description");
 
         assertEquals("description", description.value());
     }
 
     @Test
-    void shouldCreateEmptyDescriptionWhenConstructorValueIsNull(){
+    void cat12_subcategory_null_becomes_empty(){
         SubcategoryDescription description = new SubcategoryDescription(null);
 
         assertEquals("", description.value());
     }
 
     @Test
-    void shouldThrowErrorIfValueIsGreater(){
+    void cat12_rejects_too_long_subcategory_description(){
         String tooLong = "a".repeat(256);
 
         ValidationException exception = assertThrows(
@@ -42,21 +42,21 @@ class SubcategoryDescriptionTest {
     }
 
     @Test
-    void shouldReturnEmptyWhenUseFromNullableWithNull(){
+    void cat12_subcategory_nullable_null_becomes_empty(){
         SubcategoryDescription description = SubcategoryDescription.fromNullable(null);
 
         assertEquals("", description.value());
     }
 
     @Test
-    void shouldReturnValueWhenUseFromNullableWithValue(){
+    void cat12_creates_subcategory_description_from_nullable(){
         SubcategoryDescription description = SubcategoryDescription.fromNullable("any value");
 
         assertEquals("any value", description.value());
     }
 
     @Test
-    void shouldCreateEmptyDescription(){
+    void cat12_creates_empty_subcategory_description(){
         SubcategoryDescription description = SubcategoryDescription.empty();
 
         assertEquals("", description.value());

@@ -13,7 +13,14 @@ public record CategoryId(UUID value) {
     }
 
     public static CategoryId from(String value){
-        return new CategoryId(UUID.fromString(value));
+        if(value == null || value.isBlank()){
+            throw new ValidationException("Invalid category id: " + value);
+        }
+        try {
+            return new CategoryId(UUID.fromString(value));
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException("Invalid category id: " + value);
+        }
     }
 
 

@@ -1,6 +1,8 @@
 package com.dmoney.dmoney.tracker.infrastructure.persistence.movement;
 
 import com.dmoney.dmoney.shared.domain.models.UserId;
+import com.dmoney.dmoney.tracker.domain.category.model.CategoryId;
+import com.dmoney.dmoney.tracker.domain.category.model.SubcategoryId;
 import com.dmoney.dmoney.tracker.domain.movement.model.Movement;
 import com.dmoney.dmoney.tracker.domain.movement.model.MovementFilter;
 import com.dmoney.dmoney.tracker.domain.movement.model.MovementId;
@@ -44,6 +46,16 @@ public class MovementRepositoryAdapter implements MovementRepository {
     public boolean deleteByUserIdAndId(UserId userId, MovementId id) {
         int deleted = jpaRepo.deleteByUserIdAndId(userId.value(), id.value());
         return deleted > 0;
+    }
+
+    @Override
+    public boolean existsByUserIdAndCategoryId(UserId userId, CategoryId categoryId) {
+        return jpaRepo.existsByUserIdAndCatId(userId.value(), categoryId.value());
+    }
+
+    @Override
+    public boolean existsByUserIdAndSubcategoryId(UserId userId, SubcategoryId subcategoryId) {
+        return jpaRepo.existsByUserIdAndSubcatId(userId.value(), subcategoryId.value());
     }
 
     private Specification<MovementEntity> userOwned(UserId userId) {

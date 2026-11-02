@@ -73,7 +73,7 @@ class EditMovementUseCaseTest {
     }
 
     @Test
-    void should_edit_amount_without_revalidating_categorization(){
+    void mov10_updates_amount(){
         EditMovementCommand command = new EditMovementCommand(
                 movement.movementId().value().toString(),
                 null, null, new BigDecimal("99"), null, null, null, null
@@ -88,7 +88,7 @@ class EditMovementUseCaseTest {
     }
 
     @Test
-    void should_edit_category_and_revalidate_categorization(){
+    void mov10_revalidates_categorization(){
         String newCategoryId = CategoryId.newId().value().toString();
 
         EditMovementCommand command = new EditMovementCommand(
@@ -105,7 +105,7 @@ class EditMovementUseCaseTest {
     }
 
     @Test
-    void should_accept_lowercase_type(){
+    void mov03_accepts_lowercase_type_on_edit(){
         EditMovementCommand command = new EditMovementCommand(
                 movement.movementId().value().toString(),
                 null, null, null, "outcome", null, null, null
@@ -117,7 +117,7 @@ class EditMovementUseCaseTest {
     }
 
     @Test
-    void should_throw_when_movement_not_found(){
+    void mov10_rejects_missing_movement(){
         when(movementRepository.findByUserIdAndId(any(), any()))
                 .thenReturn(Optional.empty());
 

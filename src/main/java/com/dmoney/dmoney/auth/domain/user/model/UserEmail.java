@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 public record UserEmail(String value) {
     private static final Pattern EMAIL_PATTERN =
             Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
+    private static final int MAX_LENGTH = 255;
 
     public UserEmail(String value){
         if(value == null){
@@ -16,6 +17,10 @@ public record UserEmail(String value) {
 
         if(normalized.isBlank()){
             throw new ValidationException("Email cannot be blank.");
+        }
+
+        if(normalized.length() > MAX_LENGTH){
+            throw new ValidationException("Email is too long.");
         }
 
         if(!EMAIL_PATTERN.matcher(normalized).matches()){

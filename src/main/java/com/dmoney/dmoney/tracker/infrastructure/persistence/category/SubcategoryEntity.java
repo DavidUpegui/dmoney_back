@@ -27,4 +27,10 @@ public class SubcategoryEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private CategoryEntity category;
+
+    @Column(length = 48)
+    private String icon;
+
+    @Column(length = 32)
+    private String color;
 }
